@@ -76,7 +76,10 @@
 <script>
 import { validUsername } from '@/utils/validate'
 import SocialSign from './components/SocialSignin'
-
+import {
+  login
+} from '@/api/backend.js'
+const md5 = require('md5')
 export default {
   name: 'Login',
   components: { SocialSign },
@@ -98,7 +101,7 @@ export default {
     return {
       loginForm: {
         username: 'admin',
-        password: '111111'
+        password: '123456'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -161,14 +164,30 @@ export default {
       })
     },
     handleLogin() {
+      console.log('=============handleLogin============')
       this.$refs.loginForm.validate(valid => {
+        console.log('valid--:', valid)
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm)
-            .then(() => {
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+          const secretString = 'md5' + this.loginForm.username + this.loginForm.password + 'md5'
+          const secret = md5(secretString)
+
+          const params = {
+            username: this.loginForm.username,
+            secret: secret
+          }
+          console.log('params--:', params)
+          login(params).then(data => {
+            console.log('data--:', data)
+            if (data.res === 'login success!') {
               this.loading = false
-            })
+              this.$store.dispatch('user/login', this.loginForm).then(() => {
+                this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              })
+            }
+          })
+          //
+          //
             .catch(() => {
               this.loading = false
             })

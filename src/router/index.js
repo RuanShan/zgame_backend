@@ -71,6 +71,19 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/authorize',
+    component: Layout,
+    redirect: '/authorize',
+    children: [
+      {
+        path: 'authorize',
+        component: () => import('@/views/authorize/index'),
+        name: '授权',
+        meta: { title: '授权', icon: 'dashboard', affix: true }
+      }
+    ]
+  },
+  {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
