@@ -1,26 +1,34 @@
 <template>
   <div class="app-container documentation-container">
     <div class="home">
-      <a :href="authUrl">点击授权</a>
+      <!-- <a :href="authUrl">新增</a> -->
     </div>
   </div>
 </template>
 
 <script>
+// import DropdownMenu from '@/components/Share/DropdownMenu'
 import {
-  getAuthorize
+  getAuthorize,
+  // addGameRound,
+  // modifyGameRound,
+  // removeGameRound,
+  getGameRoundInfo
 } from '@/api/backend.js'
 
 export default {
   name: 'Authorize',
+  // components: { DropdownMenu },
   data() {
     return {
       company: {},
-      authUrl: ''
+      authUrl: '',
+      gameRoundList: []
     }
   },
   created() {
-    this.getAuthorize()
+    // this.getGameRoundInfo()
+    // this.getAuthorize()
   },
   methods: {
     getAuthorize: function() {
@@ -29,7 +37,17 @@ export default {
         console.log(data)
         this.authUrl = data.url
       })
+    },
+    getGameRoundInfo: function() {
+      const params = {
+        id: 1
+      }
+      getGameRoundInfo()(params).then(data => {
+        console.log(data)
+        this.gameRoundList = data.gameRoundList
+      })
     }
+
   }
 }
 </script>

@@ -85,6 +85,8 @@ export default {
   components: { SocialSign },
   data() {
     const validateUsername = (rule, value, callback) => {
+      console.log('value---:', value)
+
       if (!validUsername(value)) {
         callback(new Error('Please enter the correct user name'))
       } else {
@@ -100,7 +102,7 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
+        username: '13844445555',
         password: '123456'
       },
       loginRules: {
@@ -173,7 +175,7 @@ export default {
           const secret = md5(secretString)
 
           const params = {
-            username: this.loginForm.username,
+            cellphone: this.loginForm.username,
             secret: secret
           }
           console.log('params--:', params)

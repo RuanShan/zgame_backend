@@ -84,6 +84,19 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/gameround',
+    component: Layout,
+    redirect: '/gameround',
+    children: [
+      {
+        path: 'gameround',
+        component: () => import('@/views/gameround/index'),
+        name: 'gameround',
+        meta: { title: 'gameround', icon: 'dashboard', affix: true }
+      }
+    ]
+  },
+  {
     path: '/',
     component: Layout,
     redirect: '/dashboard',

@@ -3,6 +3,7 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const state = {
+  id: '',
   token: getToken(),
   name: '',
   avatar: '',
@@ -11,6 +12,9 @@ const state = {
 }
 
 const mutations = {
+  SET_ID: (state, id) => {
+    state.id = id
+  },
   SET_TOKEN: (state, token) => {
     state.token = token
   },
