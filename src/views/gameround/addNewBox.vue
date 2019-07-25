@@ -145,6 +145,7 @@ export default {
       }
       if (msg_is_ok) {
         const game = {
+          user_id: 1,
           name: gamename,
           desc: gamedesc,
           code: 'ztoupiao',
@@ -153,6 +154,7 @@ export default {
 
         addGameRound(game).then(res => {
           console.log('res----:', res)
+          this.$emit('addNew_over')
         })
       }
     }

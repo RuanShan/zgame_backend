@@ -1,5 +1,35 @@
 <template>
   <div class="app-container documentation-container">
+    <table>
+      <tr>
+        <td>
+          headimg
+        </td>
+        <td>
+          appid
+        </td>
+        <td>
+          name
+        </td>
+        <td>
+          alias
+        </td>
+      </tr>
+      <tr v-for="oauth in oauthList" :key="oauth.id">
+        <td>
+          <img id="headimg" :src="oauth.head_img">
+        </td>
+        <td>
+          {{ oauth.appid }}
+        </td>
+        <td>
+          {{ oauth.nick_name }}
+        </td>
+        <td>
+          {{ oauth.alias }}
+        </td>
+      </tr>
+    </table>
     <div class="home">
       <a :href="authUrl">点击授权</a>
     </div>
@@ -8,7 +38,8 @@
 
 <script>
 import {
-  getAuthorize
+  getAuthorize,
+  getWxMpUsers
 } from '@/api/backend.js'
 
 export default {
@@ -16,11 +47,19 @@ export default {
   data() {
     return {
       company: {},
-      authUrl: ''
+      authUrl: '',
+      oauthList: []
     }
   },
   created() {
     this.getAuthorize()
+    const params = {
+      user_id: 1
+    }
+    getWxMpUsers(params).then(data => {
+      console.log('getWxMpUsers---:', data)
+      this.oauthList = data
+    })
   },
   methods: {
     getAuthorize: function() {

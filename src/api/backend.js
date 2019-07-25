@@ -14,5 +14,8 @@ export const getGameRoundInfo = (data) => fetch(basePath + '/base/getGameRoundIn
 export const addGameRound = (data) => fetch(basePath + '/base/addGameRound', data, 'POST')
 export const modifyGameRound = (data) => fetch(basePath + '/base/modifyGameRound', data, 'POST')
 export const removeGameRound = (data) => fetch(basePath + '/base/removeGameRound', data, 'POST')
+export const getWxMpUsers = (data) => fetch(basePath + '/base/getWxMpUsers', data, 'POST')
+
+export const entry = (number, data) => fetch(basePath + '/ztoupiao/' + number + '/entry', data, 'GET')
 
 export const getAuthorize = (data) => fetch('/api/wxopen/auth', data, 'POST')

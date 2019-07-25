@@ -28,16 +28,22 @@
             <a>{{ gameRound.desc }}</a>
           </td>
           <td>
-            <a>{{ gameRound.started_at }}</a>
+            http://testwx.natapp4.cc/api/backend/ztoupiao/{{ gameRound.number }}/entry
+          </td>
+          <!-- <td>
+            <a>{{ gameRound.start_at }}</a>
           </td>
           <td>
             <a>{{ gameRound.end_at }}</a>
+          </td> -->
+          <td>
+            <button type="button" @click="modify(gameRound)">modify</button>
           </td>
           <td>
-            <button type="button">modify</button>
+            <button type="button" @click="remove(gameRound)">remove</button>
           </td>
           <td>
-            <button type="button">remove</button>
+            <button type="button" @click="entry(gameRound)">entry</button>
           </td>
         </tr>
       </table>
@@ -46,15 +52,17 @@
       </div>
     </div>
 
-    <modifyBox :command="ui.modifyBoxVisiable" :game-round-to-modify="gameRoundToModify" />
-    <addNewBox :command="ui.addNewBoxVisiable" />
+    <modifyBox :command="ui.modifyBoxVisiable" :gameround="gameRoundToModify" @modify_over="modify_over" />
+    <addNewBox :command="ui.addNewBoxVisiable" @addNew_over="addNew_over" />
   </div>
 
 </template>
 
 <script>
 import {
-  getGameRoundInfo
+  getGameRoundInfo,
+  entry,
+  removeGameRound
 } from '@/api/backend.js'
 import modifyBox from './modifyBox.vue'
 import addNewBox from './addNewBox.vue'
@@ -93,9 +101,17 @@ export default {
     this.getGameRoundInfo()
   },
   methods: {
+    modify_over: function(event) {
+      console.log('modify_over')
+      this.ui.modifyBoxVisiable = false
+    },
     addNew: function() {
       this.ui.addNewBoxVisiable = true
-      this.ui.gameRoundListVisiable = false
+    },
+    addNew_over: function(event) {
+      console.log('addNew_over')
+      this.ui.addNewBoxVisiable = false
+      this.getGameRoundInfo()
     },
     getGameRoundInfo: function() {
       console.log('========getGameRoundInfo========')
@@ -107,6 +123,28 @@ export default {
         this.gameRoundList = data
 
         console.log('this.gameRoundList--:', this.gameRoundList)
+      })
+    },
+    entry: function(gameRound) {
+      console.log('entry---:', gameRound.number)
+      const number = gameRound.number
+      const params = {
+      }
+      entry(number, params)
+    },
+    modify: function(gameRound) {
+      console.log('================modify==============')
+      this.gameRoundToModify = gameRound
+      this.ui.modifyBoxVisiable = true
+    },
+    remove: function(gameRound) {
+      console.log('entry---:', gameRound.number)
+      const params = {
+        number: gameRound.number,
+        code: gameRound.code
+      }
+      removeGameRound(params).then(data => {
+        this.getGameRoundInfo()
       })
     }
 

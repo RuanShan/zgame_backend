@@ -1,72 +1,171 @@
 <template>
-  <div class="app-container documentation-container">
-    <div class="home">
-      <!-- <a :href="authUrl">新增</a> -->
+  <div v-show="ui.addNewBoxVisiable" class="addNewBox">
+    <div class="weui-toptips weui-toptips_warn js_tooltips" />
+    <div id="awardUserInfoBox" class="page  input js_show">
+      <div class="awardUserInfoForm">
+        <div class="weui-cells weui-cells_form">
+          <div class="weui-cell contactInput-ausername contactInput">
+            <div class="weui-cell__hd"><label class="weui-label">game名称</label></div>
+            <div class="weui-cell__bd">
+              <input
+                id="gamename"
+                v-model="modifygame.name"
+                style="margin:0px;border: none;"
+                class="weui-input theInputDecide textInput"
+                propname="game名称"
+                propkey="gameName"
+                type="text"
+                placeholder="限15字符"
+              >
+            </div>
+            <div class="weui-cell__ft warnIcon hide">
+              <i class="weui-icon-warn" />
+            </div>
+          </div>
+
+          <div class="weui-cell">
+            <div class="weui-cell__bd">
+              <textarea id="gamedesc" v-model="modifygame.desc" class="weui-textarea" placeholder="限60字符" rows="3" />
+              <div class="weui-textarea-counter"><span>0</span>/60</div>
+            </div>
+          </div>
+
+          <div class="weui-cell contactInput-ausername contactInput">
+            <div class="weui-cell__hd"><label class="weui-label">game duration</label></div>
+            <div class="weui-cell__bd">
+              <input
+                id="gameduration"
+                v-model="modifygame.duration"
+                style="margin:0px;border: none;"
+                class="weui-input theInputDecide textInput"
+                propname="gameduration"
+                propkey="gameduration"
+                type="text"
+                placeholder="限15字符"
+              >
+            </div>
+            <div class="weui-cell__ft warnIcon hide">
+              <i class="weui-icon-warn" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="weui-cells__tips">
+        注:若因未填写资料或资料填写错误导致无法兑奖，主办方不承担相关法律责任;
+      </div>
+      <div class="weui-btn-area">
+        <a id="showTooltips" class="weui-btn weui-btn_primary userSubmitBtn" href="javascript:" @click="post_msg">提交</a>
+      </div>
     </div>
   </div>
+
 </template>
 
 <script>
-// import DropdownMenu from '@/components/Share/DropdownMenu'
-import {
-  getAuthorize,
-  // addGameRound,
-  // modifyGameRound,
-  // removeGameRound,
-  getGameRoundInfo
-} from '@/api/backend.js'
 
+import weui from 'weui.js'
+
+import { modifyGameRound } from '@/api/backend.js'
 export default {
-  name: 'Authorize',
-  // components: { DropdownMenu },
+  props: {
+    command: {
+      default: false
+    },
+    gameround: {
+    }
+  },
   data() {
     return {
-      company: {},
-      authUrl: '',
-      gameRoundList: []
+      fileToDelete: [],
+      game: {
+        name: '',
+        desc: '',
+        duration: ''
+      },
+      account: '',
+      password: '',
+      ui: {
+        addNewBoxVisiable: false
+      },
+      modifygame: {}
     }
   },
-  created() {
-    // this.getGameRoundInfo()
-    // this.getAuthorize()
-  },
-  methods: {
-    getAuthorize: function() {
-      const params = {}
-      getAuthorize(params).then(data => {
-        console.log(data)
-        this.authUrl = data.url
-      })
-    },
-    getGameRoundInfo: function() {
-      const params = {
-        id: 1
+  watch: {
+    command: function(val, oldVal) {
+      // 外部触发游戏开始
+      console.log('watch-command new: %s, old: %s', val, oldVal)
+      if (val === true) {
+        this.ui.addNewBoxVisiable = true
+        console.log('show');
+        (this.game = {
+          name: '',
+          desc: '',
+          duration: ''
+        })
       }
-      getGameRoundInfo()(params).then(data => {
-        console.log(data)
-        this.gameRoundList = data.gameRoundList
-      })
+    },
+    gameround: function(val, oldVal) {
+      console.log('watch-command new: %s, old: %s', val, oldVal)
+      this.modifygame = val
     }
+  },
+  created() {},
+  methods: {
+    post_msg: async function(e) {
+      console.log('========post_msg========')
 
+      weui.form.validate('#form', (error) => {
+        if (!error) {
+          // var loading = weui.loading('提交中...');
+          // setTimeout(function () {
+          //     loading.hide();
+          //     weui.toast('提交成功', 3000);
+          // }, 1500);
+        }
+        // return true; // 当return true时，不会显示错误
+      }, {
+        regexp: {
+          VCODE: /^.{4}$/
+        }
+      })
+      var msg_is_ok = true
+      var gamename = this.modifygame.name
+      var gamedesc = this.modifygame.desc
+      var gameduration = this.modifygame.duration
+      var number = this.modifygame.number
+      if (gamename === '') {
+        weui.form.showErrorTips({
+          ele: gamename,
+          msg: 'game名不能为空'
+        })
+        msg_is_ok = false
+      }
+      if (gamedesc === '') {
+        weui.form.showErrorTips({
+          ele: gamedesc,
+          msg: 'game描述不能为空'
+        })
+        msg_is_ok = false
+      }
+      if (msg_is_ok) {
+        const game = {
+          user_id: 1,
+          number: number,
+          name: gamename,
+          desc: gamedesc,
+          code: 'ztoupiao',
+          duration: gameduration
+        }
+
+        modifyGameRound(game).then(res => {
+          console.log('res----:', res)
+          this.ui.addNewBoxVisiable = false
+          this.$emit('modify_over')
+        })
+      }
+    }
   }
 }
+
 </script>
-
-<style lang="scss" scoped>
-.documentation-container {
-  margin: 50px;
-  .document-btn {
-    float: left;
-    margin-left: 50px;
-    display: block;
-    cursor: pointer;
-    background: black;
-    color: white;
-    height: 60px;
-    width: 200px;
-    line-height: 60px;
-    font-size: 20px;
-    text-align: center;
-  }
-}
-</style>
