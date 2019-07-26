@@ -28,7 +28,7 @@
             <a>{{ gameRound.desc }}</a>
           </td>
           <td>
-            http://testwx.natapp4.cc/api/backend/ztoupiao/{{ gameRound.number }}/entry
+            http://testwx.natapp4.cc/ztoupiao/{{ gameRound.number }}/entry
           </td>
           <!-- <td>
             <a>{{ gameRound.start_at }}</a>
@@ -47,13 +47,10 @@
           </td>
         </tr>
       </table>
-      <div class="add">
-        <button type="button" @click="addNew()">新增</button>
-      </div>
     </div>
 
-    <modifyBox :command="ui.modifyBoxVisiable" :gameround="gameRoundToModify" @modify_over="modify_over" />
-    <addNewBox :command="ui.addNewBoxVisiable" @addNew_over="addNew_over" />
+    <modifyBox :command="ui.modifyBoxVisiable" :game-round="gameRoundToModify" @modify_over="modify_over" />
+
   </div>
 
 </template>
@@ -65,12 +62,10 @@ import {
   removeGameRound
 } from '@/api/backend.js'
 import modifyBox from './modifyBox.vue'
-import addNewBox from './addNewBox.vue'
 export default {
   name: 'Authorize',
   components: {
-    modifyBox,
-    addNewBox
+    modifyBox
   },
   data() {
     return {
@@ -80,8 +75,7 @@ export default {
       gameRoundToModify: {},
       ui: {
         modifyBoxVisiable: false,
-        gameRoundListVisiable: true,
-        addNewBoxVisiable: false
+        gameRoundListVisiable: true
       }
     }
   },
@@ -105,12 +99,8 @@ export default {
       console.log('modify_over')
       this.ui.modifyBoxVisiable = false
     },
-    addNew: function() {
-      this.ui.addNewBoxVisiable = true
-    },
     addNew_over: function(event) {
       console.log('addNew_over')
-      this.ui.addNewBoxVisiable = false
       this.getGameRoundInfo()
     },
     getGameRoundInfo: function() {
@@ -134,6 +124,7 @@ export default {
     },
     modify: function(gameRound) {
       console.log('================modify==============')
+      console.log('gameRound===:', gameRound)
       this.gameRoundToModify = gameRound
       this.ui.modifyBoxVisiable = true
     },

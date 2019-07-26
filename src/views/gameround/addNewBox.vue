@@ -1,5 +1,5 @@
 <template>
-  <div v-show="ui.addNewBoxVisiable" class="addNewBox">
+  <div class="addNewBox">
     <div class="weui-toptips weui-toptips_warn js_tooltips" />
     <div id="awardUserInfoBox" class="page  input js_show">
       <div class="awardUserInfoForm">
@@ -51,6 +51,33 @@
         </div>
       </div>
 
+      <div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+          <div class="weui-cell__bd">
+            <div class="weui-uploader">
+              <div class="weui-uploader__hd">
+                <p class="weui-uploader__title">图片上传</p>
+                <div class="weui-uploader__info">0/2</div>
+              </div>
+              <div class="weui-uploader__bd">
+                <ul id="uploaderFiles" class="weui-uploader__files">
+                  <li
+                    v-for="photo in albumData.Photos"
+                    :key="photo.id"
+                    class="weui-uploader__file"
+                    :style="{backgroundImage:'url(\''+photo.originalUrl+'\')'}"
+                    @click="readyToRemove(photo)"
+                  />
+                </ul>
+                <div class="weui-uploader__input-box">
+                  <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple="" @change="showImg">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="weui-cells__tips">
         注:若因未填写资料或资料填写错误导致无法兑奖，主办方不承担相关法律责任;
       </div>
@@ -65,8 +92,14 @@
 <script>
 
 import weui from 'weui.js'
-
+import $ from 'jquery'
+import queryString from 'query-string'
 import { addGameRound } from '@/api/backend.js'
+import {
+  createPoster
+} from '@/api/albums.js'
+import { FileChecksum } from '@/lib/direct_upload/file_checksum'
+import { BlobUpload } from '@/lib/direct_upload/blob_upload'
 export default {
   props: {
     command: {
@@ -75,6 +108,12 @@ export default {
   },
   data() {
     return {
+      albumData: {
+        name: '',
+        desc: '',
+        Photos: []
+      },
+      filelist: [],
       fileToDelete: [],
       game: {
         name: '',
@@ -82,10 +121,8 @@ export default {
         duration: ''
       },
       account: '',
-      password: '',
-      ui: {
-        addNewBoxVisiable: false
-      }
+      password: ''
+
     }
   },
   watch: {
@@ -93,7 +130,6 @@ export default {
       // 外部触发游戏开始
       console.log('watch-command new: %s, old: %s', val, oldVal)
       if (val === true) {
-        this.ui.addNewBoxVisiable = true
         console.log('show');
         (this.game = {
           name: '',
@@ -102,7 +138,6 @@ export default {
         })
       } else {
         console.log('hide')
-        this.ui.addNewBoxVisiable = false
       }
     }
   },
@@ -152,11 +187,139 @@ export default {
           duration: gameduration
         }
 
-        addGameRound(game).then(res => {
+        addGameRound(game).then(async res => {
           console.log('res----:', res)
+          const album = {
+            name: gamename,
+            desc: gamedesc
+          }
+          const parsed = queryString.parse(location.search)
+          var number = res.number
+          var files = this.filelist
+          const photos = []
+          const promise = new Promise(async(resolve, reject) => {
+            for (var i = 0; i < files.length; i++) {
+              if (this.fileToDelete.indexOf(files[i].src) > -1) {
+                continue
+              }
+              const photo = {}
+              photo.okey = 'okey'
+              photo.file_name = files[i].name
+              photo.content_type = files[i].type
+              photo.file_size = files[i].size
+              await FileChecksum.create(files[i], (error, checksum) => {
+                if (error) {
+                  return
+                }
+                photo.checksum = checksum
+                photos.push(photo)
+                console.log(' photos.length:', photos.length, 'files.length:', files.length - this.fileToDelete.length)
+                if (photos.length === files.length - this.fileToDelete.length) {
+                  console.log('========resolve=======')
+                  var data = {
+                    gamename: gamename,
+                    duration: gameduration,
+                    desc: gamedesc,
+                    code: 'ztoupiao',
+                    parsed: parsed,
+                    album: album,
+                    photos: photos
+                  }
+
+                  resolve(data)
+                }
+              })
+            }
+          })
+          await promise.then((data) => {
+            console.log('data------:', data)
+            createPoster(number, data).then((res) => {
+              console.log('res========:', res)
+              const directUploadData = res.directUploadData
+              console.log('directUploadData----:', directUploadData)
+
+              for (var i = 0; i < directUploadData.length; i++) {
+                const url = directUploadData[i].url
+                const headers = directUploadData[i].headers
+                console.log('url---:', url)
+                console.log('headers----:', headers)
+
+                const upload = new BlobUpload(files[i], directUploadData[i])
+                this.notify(null, 'directUploadWillStoreFileWithXHR', upload.xhr)
+                upload.create(error => {
+                  if (error) {
+                    // upload.callback(error)
+                  } else {
+                    // upload.callback(null, blob.toJSON())
+                    this.game = {
+                      name: '',
+                      desc: '',
+                      duration: ''
+                    }
+
+                    this.albumData = {
+                      name: '',
+                      desc: '',
+                      Photos: []
+                    }
+                  }
+                })
+              }
+            })
+          })
           this.$emit('addNew_over')
         })
       }
+    },
+    notify: function(object, methodName, ...messages) {
+      if (object && typeof object[methodName] === 'function') {
+        return object[methodName](...messages)
+      }
+    },
+    readyToRemove(photo) {
+      console.log('==========readyToRemove==========')
+      this.fileToDelete.push(photo.originalUrl)
+      for (var i = 0; i < this.albumData.Photos.length; i++) {
+        if (this.albumData.Photos[i].originalUrl === photo.originalUrl) {
+          this.albumData.Photos.splice(i, 1) // 删除下标为i的元素
+          break
+        }
+      }
+
+      console.log('this.album------:', this.album)
+    },
+    showImg(e) {
+      console.log('=============================showImg==================================')
+      // var tmpl = '<li class="weui-uploader__file" style="background-image:url(#url#)"></li>',
+      var $gallery = $('#gallery'); var $galleryImg = $('#galleryImg')
+      // $uploaderInput = $("#uploaderInput"),
+      var $uploaderFiles = $('#uploaderFiles')
+
+      console.log('e----------:', e)
+      var src; var url = window.URL || window.webkitURL || window.mozURL; var files = e.target.files
+      console.log('files----:', files)
+      for (var i = 0, len = files.length; i < len; ++i) {
+        var file = files[i]
+        if (url) {
+          src = url.createObjectURL(file)
+        } else {
+          src = e.target.result
+        }
+        const photo = {
+          originalUrl: src
+        }
+        file.src = src
+        this.filelist.push(file)
+        this.albumData.Photos.push(photo)
+        // $uploaderFiles.append($(tmpl.replace('#url#', src)));
+      }
+      $uploaderFiles.on('click', 'li', function() {
+        $galleryImg.attr('style', this.getAttribute('style'))
+        $gallery.fadeIn(100)
+      })
+      $gallery.on('click', function() {
+        $gallery.fadeOut(100)
+      })
     }
   }
 }

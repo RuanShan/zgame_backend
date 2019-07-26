@@ -87,12 +87,23 @@ export const constantRoutes = [
     path: '/gameround',
     component: Layout,
     redirect: '/gameround',
+    name: 'gameround',
+    meta: {
+      title: 'gameround',
+      icon: 'dashboard'
+    },
     children: [
+      {
+        path: 'creategameround',
+        component: () => import('@/views/gameround/addNewBox'),
+        name: 'create',
+        meta: { title: 'create', icon: 'dashboard', affix: true }
+      },
       {
         path: 'gameround',
         component: () => import('@/views/gameround/index'),
-        name: 'gameround',
-        meta: { title: 'gameround', icon: 'dashboard', affix: true }
+        name: 'gameroundList',
+        meta: { title: 'gameroundList', icon: 'dashboard', affix: true }
       }
     ]
   },

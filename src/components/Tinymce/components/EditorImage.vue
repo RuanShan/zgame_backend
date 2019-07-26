@@ -32,6 +32,12 @@
 <script>
 // import { getToken } from 'api/qiniu'
 
+import {
+  createDesc
+} from '@/api/albums.js'
+import { FileChecksum } from '@/lib/direct_upload/file_checksum'
+import { BlobUpload } from '@/lib/direct_upload/blob_upload'
+
 export default {
   name: 'EditorSlideUpload',
   props: {
@@ -74,6 +80,7 @@ export default {
       }
     },
     handleRemove(file) {
+      console.log('file----------:', file)
       const uid = file.uid
       const objKeyArr = Object.keys(this.listObj)
       for (let i = 0, len = objKeyArr.length; i < len; i++) {
@@ -83,18 +90,57 @@ export default {
         }
       }
     },
-    beforeUpload(file) {
-      const _self = this
-      const _URL = window.URL || window.webkitURL
-      const fileName = file.uid
-      this.listObj[fileName] = {}
-      return new Promise((resolve, reject) => {
-        const img = new Image()
-        img.src = _URL.createObjectURL(file)
-        img.onload = function() {
-          _self.listObj[fileName] = { hasSuccess: false, uid: file.uid, width: this.width, height: this.height }
+    notify: function(object, methodName, ...messages) {
+      if (object && typeof object[methodName] === 'function') {
+        return object[methodName](...messages)
+      }
+    },
+    beforeUpload: async function(file) {
+      console.log('file----------:', file)
+      const photo = {}
+      photo.okey = 'okey'
+      photo.file_name = file.name
+      photo.content_type = file.type
+      photo.file_size = file.size
+      await FileChecksum.create(file, (error, checksum) => {
+        if (error) {
+          return
         }
-        resolve(true)
+        photo.checksum = checksum
+        console.log('photo----:', photo)
+        var number = '0819f0751ad8b84acbf35ae1ee6506e2'
+        var data = {
+          code: 'ztoupiao',
+          photo: photo
+        }
+        createDesc(number, data).then((res) => {
+          const directUploadData = res.directUploadData
+
+          // const url = directUploadData.url
+          // const headers = directUploadData.headers
+
+          const upload = new BlobUpload(file, directUploadData)
+          this.notify(null, 'directUploadWillStoreFileWithXHR', upload.xhr)
+
+          upload.create(error => {
+            if (error) {
+              // upload.callback(error)
+            } else {
+              const _self = this
+              const _URL = window.URL || window.webkitURL
+              const fileName = file.uid
+              this.listObj[fileName] = {}
+              return new Promise((resolve, reject) => {
+                const img = new Image()
+                img.src = _URL.createObjectURL(file)
+                img.onload = function() {
+                  _self.listObj[fileName] = { hasSuccess: false, uid: file.uid, width: this.width, height: this.height }
+                }
+                resolve(true)
+              })
+            }
+          })
+        })
       })
     }
   }
