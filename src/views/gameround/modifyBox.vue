@@ -23,13 +23,6 @@
             </div>
           </div>
 
-          <div class="weui-cell">
-            <div class="weui-cell__bd">
-              <textarea id="gamedesc" v-model="modifygame.desc" class="weui-textarea" placeholder="限60字符" rows="3" />
-              <div class="weui-textarea-counter"><span>0</span>/60</div>
-            </div>
-          </div>
-
           <div class="weui-cell contactInput-ausername contactInput">
             <div class="weui-cell__hd"><label class="weui-label">game duration</label></div>
             <div class="weui-cell__bd">
@@ -55,7 +48,7 @@
           <div class="weui-cell__bd">
             <div class="weui-uploader">
               <div class="weui-uploader__hd">
-                <p class="weui-uploader__title">图片上传</p>
+                <p class="weui-uploader__title">海报上传</p>
                 <div class="weui-uploader__info">0/2</div>
               </div>
               <div class="weui-uploader__bd">
@@ -76,10 +69,8 @@
           </div>
         </div>
       </div>
-
-      <div class="weui-cells__tips">
-        注:若因未填写资料或资料填写错误导致无法兑奖，主办方不承担相关法律责任;
-      </div>
+      <p class="weui-uploader__title">游戏描述编辑</p>
+      <Tinymce ref="editor" v-model="modifygame.desc" :height="400" />
       <div class="weui-btn-area">
         <a id="showTooltips" class="weui-btn weui-btn_primary userSubmitBtn" href="javascript:" @click="readyToModify">提交</a>
       </div>
@@ -96,7 +87,9 @@ import { FileChecksum } from '@/lib/direct_upload/file_checksum'
 import { BlobUpload } from '@/lib/direct_upload/blob_upload'
 import { modifyGameRound } from '@/api/backend.js'
 import { getPoster, modifyPoster } from '@/api/albums.js'
+import Tinymce from '@/components/Tinymce'
 export default {
+  components: { Tinymce },
   props: {
     command: {
       default: false

@@ -85,6 +85,7 @@ import { fetchArticle } from '@/api/article'
 import { searchUser } from '@/api/remote-search'
 import Warning from './Warning'
 import { CommentDropdown, PlatformDropdown, SourceUrlDropdown } from './Dropdown'
+import { modifyDesc } from '@/api/backend'
 
 const defaultForm = {
   status: 'draft',
@@ -207,7 +208,16 @@ export default {
       document.title = `${title} - ${this.postForm.id}`
     },
     submitForm() {
-      console.log(this.postForm)
+      console.log('postForm-------:', this.postForm)
+      console.log('content------:', this.postForm.content)
+      const param = {
+        code: 'ztoupiao',
+        number: '0819f0751ad8b84acbf35ae1ee6506e2',
+        desc: this.postForm.content
+      }
+      modifyDesc(param).then((res) => {
+        console.log('res----:', res)
+      })
       this.$refs.postForm.validate(valid => {
         if (valid) {
           this.loading = true

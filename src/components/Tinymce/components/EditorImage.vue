@@ -63,6 +63,7 @@ export default {
         this.$message('Please wait for all images to be uploaded successfully. If there is a network problem, please refresh the page and upload again!')
         return
       }
+      console.log('arr======:', arr)
       this.$emit('successCBK', arr)
       this.listObj = {}
       this.fileList = []
@@ -73,7 +74,7 @@ export default {
       const objKeyArr = Object.keys(this.listObj)
       for (let i = 0, len = objKeyArr.length; i < len; i++) {
         if (this.listObj[objKeyArr[i]].uid === uid) {
-          this.listObj[objKeyArr[i]].url = response.files.file
+          // this.listObj[objKeyArr[i]].url = response.files.file
           this.listObj[objKeyArr[i]].hasSuccess = true
           return
         }
@@ -115,6 +116,7 @@ export default {
         }
         createDesc(number, data).then((res) => {
           const directUploadData = res.directUploadData
+          console.log('directUploadData-----:', directUploadData)
 
           // const url = directUploadData.url
           // const headers = directUploadData.headers
@@ -127,14 +129,14 @@ export default {
               // upload.callback(error)
             } else {
               const _self = this
-              const _URL = window.URL || window.webkitURL
               const fileName = file.uid
               this.listObj[fileName] = {}
               return new Promise((resolve, reject) => {
                 const img = new Image()
-                img.src = _URL.createObjectURL(file)
+                img.src = directUploadData.url
+                console.log('img.src----:', img.src)
                 img.onload = function() {
-                  _self.listObj[fileName] = { hasSuccess: false, uid: file.uid, width: this.width, height: this.height }
+                  _self.listObj[fileName] = { hasSuccess: false, uid: file.uid, width: this.width, height: this.height, url: directUploadData.url }
                 }
                 resolve(true)
               })

@@ -23,13 +23,6 @@
             </div>
           </div>
 
-          <div class="weui-cell">
-            <div class="weui-cell__bd">
-              <textarea id="gamedesc" v-model="game.desc" class="weui-textarea" placeholder="限60字符" rows="3" />
-              <div class="weui-textarea-counter"><span>0</span>/60</div>
-            </div>
-          </div>
-
           <div class="weui-cell contactInput-ausername contactInput">
             <div class="weui-cell__hd"><label class="weui-label">game duration</label></div>
             <div class="weui-cell__bd">
@@ -56,7 +49,7 @@
           <div class="weui-cell__bd">
             <div class="weui-uploader">
               <div class="weui-uploader__hd">
-                <p class="weui-uploader__title">图片上传</p>
+                <p class="weui-uploader__title">海报上传</p>
                 <div class="weui-uploader__info">0/2</div>
               </div>
               <div class="weui-uploader__bd">
@@ -77,13 +70,12 @@
           </div>
         </div>
       </div>
-
-      <div class="weui-cells__tips">
-        注:若因未填写资料或资料填写错误导致无法兑奖，主办方不承担相关法律责任;
-      </div>
+      <p class="weui-uploader__title">游戏描述编辑</p>
+      <Tinymce ref="editor" v-model="postForm.content" :height="400" />
       <div class="weui-btn-area">
         <a id="showTooltips" class="weui-btn weui-btn_primary userSubmitBtn" href="javascript:" @click="post_msg">提交</a>
       </div>
+
     </div>
   </div>
 
@@ -98,9 +90,12 @@ import { addGameRound } from '@/api/backend.js'
 import {
   createPoster
 } from '@/api/albums.js'
+import Tinymce from '@/components/Tinymce'
 import { FileChecksum } from '@/lib/direct_upload/file_checksum'
 import { BlobUpload } from '@/lib/direct_upload/blob_upload'
+import { modifyDesc } from '@/api/backend'
 export default {
+  components: { Tinymce },
   props: {
     command: {
       default: false
@@ -108,6 +103,7 @@ export default {
   },
   data() {
     return {
+      postForm: {},
       albumData: {
         name: '',
         desc: '',
@@ -162,7 +158,6 @@ export default {
       })
       var msg_is_ok = true
       var gamename = this.game.name
-      var gamedesc = this.game.desc
       var gameduration = this.game.duration
       if (gamename === '') {
         weui.form.showErrorTips({
@@ -171,27 +166,28 @@ export default {
         })
         msg_is_ok = false
       }
-      if (gamedesc === '') {
-        weui.form.showErrorTips({
-          ele: gamedesc,
-          msg: 'game描述不能为空'
-        })
-        msg_is_ok = false
-      }
       if (msg_is_ok) {
         const game = {
           user_id: 1,
           name: gamename,
-          desc: gamedesc,
           code: 'ztoupiao',
           duration: gameduration
         }
 
         addGameRound(game).then(async res => {
           console.log('res----:', res)
+          console.log('postForm-------:', this.postForm)
+          console.log('content------:', this.postForm.content)
+          const param = {
+            code: res.code,
+            number: res.number,
+            desc: this.postForm.content
+          }
+          modifyDesc(param).then((res) => {
+            console.log('res----:', res)
+          })
           const album = {
-            name: gamename,
-            desc: gamedesc
+            name: gamename
           }
           const parsed = queryString.parse(location.search)
           var number = res.number
@@ -219,7 +215,6 @@ export default {
                   var data = {
                     gamename: gamename,
                     duration: gameduration,
-                    desc: gamedesc,
                     code: 'ztoupiao',
                     parsed: parsed,
                     album: album,

@@ -13,6 +13,7 @@ export const modify = (data) => fetch(basePath + '/base/modify', data, 'POST')
 export const getGameRoundInfo = (data) => fetch(basePath + '/base/getGameRoundInfo', data, 'POST')
 export const addGameRound = (data) => fetch(basePath + '/base/addGameRound', data, 'POST')
 export const modifyGameRound = (data) => fetch(basePath + '/base/modifyGameRound', data, 'POST')
+export const modifyDesc = (data) => fetch(basePath + '/base/modifyDesc', data, 'POST')
 export const removeGameRound = (data) => fetch(basePath + '/base/removeGameRound', data, 'POST')
 export const getWxMpUsers = (data) => fetch(basePath + '/base/getWxMpUsers', data, 'POST')
 
