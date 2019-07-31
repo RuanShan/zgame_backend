@@ -89,21 +89,28 @@ export const constantRoutes = [
     redirect: '/gameround',
     name: 'gameround',
     meta: {
-      title: 'gameround',
-      icon: 'dashboard'
+      title: '活动中心',
+      icon: 'example'
     },
     children: [
       {
-        path: 'creategameround',
-        component: () => import('@/views/gameround/addNewBox'),
+        path: 'create',
+        component: () => import('@/views/gameround/create'),
         name: 'create',
-        meta: { title: 'create', icon: 'dashboard', affix: true }
+        meta: { title: '创建活动', icon: 'edit', affix: true }
       },
       {
-        path: 'gameround',
+        path: 'index',
         component: () => import('@/views/gameround/index'),
         name: 'gameroundList',
-        meta: { title: 'gameroundList', icon: 'dashboard', affix: true }
+        meta: { title: '管理活动', icon: 'list' }
+      },
+      {
+        path: 'edit/:id(\\d+)',
+        component: () => import('@/views/gameround/edit'),
+        name: 'EditArticle',
+        meta: { title: '编辑', noCache: true, activeMenu: '/gameround/list' },
+        hidden: true
       }
     ]
   },

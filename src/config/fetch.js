@@ -1,5 +1,8 @@
-import { baseUrl } from './env'
 import fetch from 'cross-fetch'
+import { MessageBox, Message } from 'element-ui'
+import { baseUrl } from './env'
+import store from '@/store'
+import { getToken } from '@/utils/auth'
 
 export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
   type = type.toUpperCase()
@@ -27,6 +30,14 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
     mode: 'cors',
     cache: 'force-cache'
   }
+  console.log(' store.getters.token ', store.getters.token)
+  if (store.getters.token) {
+    // let each request carry token
+    // ['X-Token'] is a custom headers key
+    // please modify it according to the actual situation
+    // get token from cookies, cookies 有过期时间，可能为空
+    requestConfig.headers['Authorization'] = 'Bearer ' + getToken()
+  }
 
   if (type === 'POST' || type === 'PUT') {
     Object.defineProperty(requestConfig, 'body', {
@@ -39,14 +50,36 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
     const response = await fetch(url, requestConfig)
 
     if (response.status >= 400) {
-      throw new Error('Bad response from server')
+      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
+      if (response.status === 401) {
+        // unauthorized 401
+        // unprocessable_entity 422
+        // not_found 404
+        // to re-login
+        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
+          confirmButtonText: 'Re-Login',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+          store.dispatch('user/resetToken').then(() => {
+            location.reload()
+          })
+        })
+      } else {
+        throw new Error('Bad response from server')
+      }
     }
 
     const responseJson = await response.json()
 
     return responseJson
   } catch (error) {
-    console.log(url + error)
+    console.log('err' + error) // for debug
+    Message({
+      message: error.message,
+      type: 'error',
+      duration: 5 * 1000
+    })
     throw new Error(error)
   }
 }

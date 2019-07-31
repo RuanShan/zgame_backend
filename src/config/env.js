@@ -8,10 +8,7 @@
  */
 const baseUrl = ''
 const baseImageUrl = ''
-const gameSkinName = process.env.GAME_SKIN_NAME || 'default'
-console.log('gameSkinName', gameSkinName)
 export {
   baseUrl,
-  baseImageUrl,
-  gameSkinName
+  baseImageUrl
 }
