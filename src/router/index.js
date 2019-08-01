@@ -108,6 +108,54 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/post',
+    component: Layout,
+    redirect: '/post',
+    name: 'post',
+    meta: {
+      title: 'post',
+      icon: 'dashboard'
+    },
+    children: [
+      {
+        path: 'createpost',
+        component: () => import('@/views/post/addNewBox'),
+        name: 'create',
+        meta: { title: 'create', icon: 'dashboard', affix: true }
+      },
+      {
+        path: 'postList',
+        component: () => import('@/views/post/index'),
+        name: 'postList',
+        meta: { title: 'postList', icon: 'dashboard', affix: true }
+      }
+    ]
+  },
+  {
+    path: '/term',
+    component: Layout,
+    redirect: '/term',
+    name: 'term',
+    meta: {
+      title: 'term',
+      icon: 'dashboard'
+    },
+    children: [
+      {
+        path: 'createterm',
+        component: () => import('@/views/term/addNewBox'),
+        name: 'create',
+        meta: { title: 'create', icon: 'dashboard', affix: true }
+      },
+      {
+        path: 'termList',
+        component: () => import('@/views/term/index'),
+        name: 'termList',
+        meta: { title: 'termList', icon: 'dashboard', affix: true }
+      }
+    ]
+  },
+  {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
