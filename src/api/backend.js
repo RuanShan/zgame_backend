@@ -7,9 +7,10 @@ import fetch from '@/config/fetch'
 
 var basePath = '/api/backend'
 
-export const login = (data) => fetch(basePath + '/base/login', data, 'POST')
-export const check = (data) => fetch(basePath + '/base/check', data, 'POST')
-export const modify = (data) => fetch(basePath + '/base/modify', data, 'POST')
+export const login = (data) => fetch('/api/sessions', data, 'POST')
+export const getUserInfo = (data) => fetch(basePath + '/users/show', data)
+export const getGameRounds = (data) => fetch(basePath + '/game_rounds', data)
+
 export const getGameRoundInfo = (data) => fetch(basePath + '/base/getGameRoundInfo', data, 'POST')
 export const addGameRound = (data) => fetch(basePath + '/base/addGameRound', data, 'POST')
 export const modifyGameRound = (data) => fetch(basePath + '/base/modifyGameRound', data, 'POST')
