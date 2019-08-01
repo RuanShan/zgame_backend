@@ -79,7 +79,7 @@ import SocialSign from './components/SocialSignin'
 import {
   login
 } from '@/api/backend.js'
-const md5 = require('md5')
+
 export default {
   name: 'Login',
   components: { SocialSign },
@@ -102,7 +102,7 @@ export default {
     }
     return {
       loginForm: {
-        username: '13844445555',
+        username: '13812345678',
         password: '123456'
       },
       loginRules: {
@@ -171,26 +171,22 @@ export default {
         console.log('valid--:', valid)
         if (valid) {
           this.loading = true
-          const secretString = 'md5' + this.loginForm.username + this.loginForm.password + 'md5'
-          const secret = md5(secretString)
 
           const params = {
             cellphone: this.loginForm.username,
-            secret: secret
+            password: this.loginForm.password
           }
           console.log('params--:', params)
           login(params).then(data => {
             console.log('data--:', data)
-            if (data.res === 'login success!') {
+            if (data.success) {
               this.loading = false
-              this.$store.dispatch('user/login', this.loginForm).then(() => {
+              this.$store.dispatch('user/login', data).then(() => {
                 this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
                 console.log('this.$store====:', this.$store)
               })
             }
           })
-          //
-          //
             .catch(() => {
               this.loading = false
             })
