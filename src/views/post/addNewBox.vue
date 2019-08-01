@@ -65,13 +65,12 @@
       </div>
       <el-select v-model="postData.term" multiple placeholder="请选择">
         <el-option
-        v-for="term in termList"
-        :key="term.id"
-        :label="term.name"
-        :value="term.id">
-        </el-option>
+          v-for="term in termList"
+          :key="term.id"
+          :label="term.name"
+          :value="term.id"
+        />
       </el-select>
-
 
       <p class="weui-uploader__title">游戏描述编辑</p>
       <Tinymce ref="editor" v-model="postData.content" :height="400" />
@@ -88,7 +87,7 @@
 import weui from 'weui.js'
 import $ from 'jquery'
 import queryString from 'query-string'
-import { addPost,getTermInfo } from '@/api/backend.js'
+import { addPost, getTermInfo } from '@/api/backend.js'
 import Tinymce from '@/components/Tinymce'
 export default {
   components: { Tinymce },
@@ -102,11 +101,11 @@ export default {
       postData: {
         name: '',
         desc: '',
-        content:'',
-        title:'',
-        term:''
+        content: '',
+        title: '',
+        term: ''
       },
-      termList:[]
+      termList: []
     }
   },
   watch: {
@@ -165,8 +164,8 @@ export default {
           user_id: 1,
           name: postname,
           title: title,
-          desc:desc,
-          term:term,
+          desc: desc,
+          term: term,
           content: this.postData.content
         }
 

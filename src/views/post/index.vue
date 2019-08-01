@@ -1,55 +1,38 @@
 <template>
   <div class="app-container documentation-container">
-    <div v-show="ui.gameRoundListVisiable" class="gameRoundList">
+    <div v-show="ui.gameRoundListVisiable" class="postList">
       <table>
         <tr>
           <td>name</td>
-          <td>code</td>
-          <td>duration</td>
-          <td>state</td>
+          <td>alias</td>
           <td>desc</td>
-          <td>started_at</td>
-          <td>end_at</td>
+          <td>created_at</td>
         </tr>
-        <tr v-for="gameRound in gameRoundList" :key="gameRound.id">
+        <tr v-for="post in postList" :key="post.id">
           <td>
-            <a>{{ gameRound.name }}</a>
+            <a>{{ post.name }}</a>
           </td>
           <td>
-            <a>{{ gameRound.code }}</a>
+            <a>{{ post.alias }}</a>
           </td>
           <td>
-            <a>{{ gameRound.duration }}</a>
+            <a>{{ post.desc }}</a>
           </td>
           <td>
-            <a>{{ gameRound.state }}</a>
-          </td>
-          <td>
-            <a>{{ gameRound.desc }}</a>
-          </td>
-          <td>
-            http://testwx.natapp4.cc/ztoupiao/{{ gameRound.number }}/entry
+            <a>{{ post.created_at }}</a>
           </td>
           <!-- <td>
-            <a>{{ gameRound.start_at }}</a>
-          </td>
-          <td>
-            <a>{{ gameRound.end_at }}</a>
+            <button type="button" @click="modify(post)">modify</button>
           </td> -->
           <td>
-            <button type="button" @click="modify(gameRound)">modify</button>
+            <button type="button" @click="remove(post)">remove</button>
           </td>
-          <td>
-            <button type="button" @click="remove(gameRound)">remove</button>
-          </td>
-          <td>
-            <button type="button" @click="entry(gameRound)">entry</button>
-          </td>
+          <!-- <td>
+            <button type="button" @click="entry(post)">entry</button>
+          </td> -->
         </tr>
       </table>
     </div>
-
-    <modifyBox :command="ui.modifyBoxVisiable" :game-round="gameRoundToModify" @modify_over="modify_over" />
 
   </div>
 
@@ -57,9 +40,8 @@
 
 <script>
 import {
-  getGameRoundInfo,
-  entry,
-  removeGameRound
+  getPostInfo,
+  removePost
 } from '@/api/backend.js'
 import modifyBox from './modifyBox.vue'
 export default {
@@ -71,7 +53,7 @@ export default {
     return {
       company: {},
       authUrl: '',
-      gameRoundList: [],
+      postList: [],
       gameRoundToModify: {},
       ui: {
         modifyBoxVisiable: false,
@@ -80,62 +62,24 @@ export default {
     }
   },
   watch: {
-    gameRoundListVisiable: function(val, oldVal) {
-      // 外部触发游戏开始
-      console.log('watch-command new: %s, old: %s', val, oldVal)
-      if (val === true) {
-        console.log('show')
-        this.getGameRoundInfo()
-      } else {
-        console.log('hide')
-      }
-    }
   },
   created() {
-    this.getGameRoundInfo()
+    getPostInfo().then(async res => {
+      console.log('res----:', res)
+      this.postList = res
+    })
   },
   methods: {
-    modify_over: function(event) {
-      console.log('modify_over')
-      this.ui.modifyBoxVisiable = false
-    },
-    addNew_over: function(event) {
-      console.log('addNew_over')
-      this.getGameRoundInfo()
-    },
-    getGameRoundInfo: function() {
-      console.log('========getGameRoundInfo========')
+    remove: function(post) {
+      console.log('entry---:', post.id)
       const params = {
-        id: 1
+        id: post.id
       }
-      getGameRoundInfo(params).then(data => {
-        console.log('getGameRoundInfo--------------:', data)
-        this.gameRoundList = data
-
-        console.log('this.gameRoundList--:', this.gameRoundList)
-      })
-    },
-    entry: function(gameRound) {
-      console.log('entry---:', gameRound.number)
-      const number = gameRound.number
-      const params = {
-      }
-      entry(number, params)
-    },
-    modify: function(gameRound) {
-      console.log('================modify==============')
-      console.log('gameRound===:', gameRound)
-      this.gameRoundToModify = gameRound
-      this.ui.modifyBoxVisiable = true
-    },
-    remove: function(gameRound) {
-      console.log('entry---:', gameRound.number)
-      const params = {
-        number: gameRound.number,
-        code: gameRound.code
-      }
-      removeGameRound(params).then(data => {
-        this.getGameRoundInfo()
+      removePost(params).then(data => {
+        getPostInfo().then(async res => {
+          console.log('res----:', res)
+          this.postList = res
+        })
       })
     }
 

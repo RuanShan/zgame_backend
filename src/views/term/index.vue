@@ -34,15 +34,14 @@
       </table>
     </div>
 
-    <modifyBox :command="ui.modifyBoxVisiable" :game-round="gameRoundToModify" @modify_over="modify_over" />
-
   </div>
 
 </template>
 
 <script>
 import {
-  getTermInfo
+  getTermInfo,
+  removeTerm
 } from '@/api/backend.js'
 import modifyBox from './modifyBox.vue'
 export default {
@@ -54,7 +53,7 @@ export default {
     return {
       company: {},
       authUrl: '',
-      termList:[],
+      termList: [],
       gameRoundToModify: {},
       ui: {
         modifyBoxVisiable: false,
@@ -76,8 +75,11 @@ export default {
       const params = {
         id: term.id
       }
-      removeGameRound(params).then(data => {
-        this.getGameRoundInfo()
+      removeTerm(params).then(data => {
+        getTermInfo().then(async res => {
+          console.log('res----:', res)
+          this.termList = res
+        })
       })
     }
 

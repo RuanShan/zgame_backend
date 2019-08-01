@@ -112,8 +112,8 @@ export default {
       termData: {
         name: '',
         alias: '',
-        parent:'',
-        desc:''
+        parent: '',
+        desc: ''
       },
       account: '',
       password: ''
@@ -170,7 +170,7 @@ export default {
         const termData = {
           name: termname,
           alias: alias,
-          desc:desc,
+          desc: desc,
           parent: parent
         }
 

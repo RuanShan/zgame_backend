@@ -162,11 +162,11 @@ export default {
           number: number
         }
 
-          console.log('data------:', data)
-          modifyPost(data).then((res) => {
-            this.$emit('signUpOver', res)
-            this.statusBox = false
-          })
+        console.log('data------:', data)
+        modifyPost(data).then((res) => {
+          this.$emit('signUpOver', res)
+          this.statusBox = false
+        })
       }
     }
   }
