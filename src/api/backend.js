@@ -10,8 +10,8 @@ var basePath = '/api/backend'
 export const login = (data) => fetch('/api/sessions', data, 'POST')
 export const getUserInfo = (data) => fetch(basePath + '/users/show', data)
 export const getGameRounds = (data) => fetch(basePath + '/game_rounds', data)
+export const getGameRound = (id, data) => fetch(basePath + '/game_rounds/' + id, data)
 
-export const getGameRoundInfo = (data) => fetch(basePath + '/base/getGameRoundInfo', data, 'POST')
 export const addGameRound = (data) => fetch(basePath + '/base/addGameRound', data, 'POST')
 export const modifyGameRound = (data) => fetch(basePath + '/base/modifyGameRound', data, 'POST')
 export const modifyDesc = (data) => fetch(basePath + '/base/modifyDesc', data, 'POST')

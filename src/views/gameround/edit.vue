@@ -1,86 +1,26 @@
 <template>
-  <div v-show="ui.addNewBoxVisiable" class="addNewBox">
-    <div class="weui-toptips weui-toptips_warn js_tooltips" />
-    <div id="awardUserInfoBox" class="page  input js_show">
-      <el-form ref="form" :model="form" label-width="80px">
-        <div class="awardUserInfoForm">
-          <div class="weui-cells weui-cells_form">
-            <div class="weui-cell contactInput-ausername contactInput">
-              <el-form-item label="活动名称">
-                <el-input v-model="form.name" />
-              </el-form-item>
+  <div class="edit-wrap">
 
-              <div class="weui-cell__hd"><label class="weui-label">game名称</label></div>
-              <div class="weui-cell__bd">
-                <input
-                  id="gamename"
-                  v-model="modifygame.name"
-                  style="margin:0px;border: none;"
-                  class="weui-input theInputDecide textInput"
-                  propname="game名称"
-                  propkey="gameName"
-                  type="text"
-                  placeholder="限15字符"
-                >
-              </div>
-              <div class="weui-cell__ft warnIcon hide">
-                <i class="weui-icon-warn" />
-              </div>
-            </div>
+    <el-steps :active="activeStep" simple process-state="success">
+      <el-step status="wait" :class="{ active: activeStep==1 }" @click.native="handleStepClick(1)">
+        <span slot="title"> 活动设置</span>
+      </el-step>
+      <el-step status="wait" :class="{ active: activeStep==2 }" @click.native="handleStepClick(2)"><span slot="title"> 通用设置</span> </el-step>
+      <el-step status="wait" :class="{ active: activeStep==3 }" @click.native="handleStepClick(3)"> <span slot="title"> 选手管理</span> </el-step>
+      <el-step status="wait" :class="{ active: activeStep==4 }" @click.native="handleStepClick(4)"> <span slot="title"> 投票设置</span> </el-step>
+    </el-steps>
 
-            <div class="weui-cell contactInput-ausername contactInput">
-              <div class="weui-cell__hd"><label class="weui-label">game duration</label></div>
-              <div class="weui-cell__bd">
-                <input
-                  id="gameduration"
-                  v-model="modifygame.duration"
-                  style="margin:0px;border: none;"
-                  class="weui-input theInputDecide textInput"
-                  propname="gameduration"
-                  propkey="gameduration"
-                  type="text"
-                  placeholder="限15字符"
-                >
-              </div>
-              <div class="weui-cell__ft warnIcon hide">
-                <i class="weui-icon-warn" />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="weui-cells weui-cells_form">
-          <div class="weui-cell">
-            <div class="weui-cell__bd">
-              <div class="weui-uploader">
-                <div class="weui-uploader__hd">
-                  <p class="weui-uploader__title">海报上传</p>
-                  <div class="weui-uploader__info">0/2</div>
-                </div>
-                <div class="weui-uploader__bd">
-                  <ul id="uploaderFiles" class="weui-uploader__files">
-                    <li
-                      v-for="photo in postersData"
-                      :key="photo.id"
-                      class="weui-uploader__file"
-                      :style="{backgroundImage:'url(\''+photo.originalUrl+'\')'}"
-                      @click="readyToRemove(photo)"
-                    />
-                  </ul>
-                  <div class="weui-uploader__input-box">
-                    <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple="" @change="showImg">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <p class="weui-uploader__title">游戏描述编辑</p>
-        <Tinymce ref="editor" v-model="modifygame.desc" :height="400" />
-        <div class="weui-btn-area">
-          <a id="showTooltips" class="weui-btn weui-btn_primary userSubmitBtn" href="javascript:" @click="readyToModify">提交</a>
-        </div>
-      </el-form>
+    <div class="content">
+      <div class="preview-wrap">
+        <Preview :game-round="gameRound" />
+      </div>
+
+      <div class="setup-wrap">
+        <RoundForm v-show="activeStep==1" :game-round="gameRound" />
+        <GeneralForm v-show="activeStep==2" :game-round="gameRound" />
+      </div>
     </div>
+
   </div>
 
 </template>
@@ -91,23 +31,24 @@ import weui from 'weui.js'
 import $ from 'jquery'
 import { FileChecksum } from '@/lib/direct_upload/file_checksum'
 import { BlobUpload } from '@/lib/direct_upload/blob_upload'
-import { modifyGameRound } from '@/api/backend.js'
+import { modifyGameRound, getGameRound } from '@/api/backend.js'
 import { getPoster, modifyPoster } from '@/api/albums.js'
-import Tinymce from '@/components/Tinymce'
+import GeneralForm from './components/GeneralForm'
+import RoundForm from './components/RoundForm'
+import Preview from './components/Preview'
+
 export default {
-  components: { Tinymce },
+  components: { Preview, GeneralForm, RoundForm },
   props: {
-    gameRound: {
-      default: null,
-      type: Object
-    }
   },
   data() {
     return {
-      filelist: [],
-      newfileToDelete: [],
-      oldfileToDelete: [],
-      fileToDelete: [],
+      gameRound: {}, // current gameRound
+      activeStep: 1,
+      activeName: 'second',
+      filelist: [], // 新添加图片，包括添加后删除的。
+      newfileToDelete: [], // 新添加的图片，并且被删除的图片
+      oldfileToDelete: [], // 已有图片，用户点击删除按钮的图片
       game: {
         name: '',
         desc: '',
@@ -116,20 +57,30 @@ export default {
       postersData: [],
       account: '',
       password: '',
-      ui: {
-        addNewBoxVisiable: false
-      },
-      modifygame: {}
+      formData: {
+        name: '',
+        desc: ''
+      }
+
     }
   },
   watch: {
-    gameRound: function(val, oldVal) {
-      console.log('gameRound ===:', val)
-      this.modifygame = val
-    }
+    // call again the method if the route changes
+    '$route': 'initData'
   },
-  created() {},
+  created() {
+    // fetch the data when the view is created and the data is
+    // already being observed
+    this.initData()
+  },
   methods: {
+    async initData() {
+      this.gameRound = await getGameRound(this.$route.params.id)
+      Object.assign(this.formData, this.gameRound)
+    },
+    handleClick(tab, event) {
+      console.log(tab, event)
+    },
     readyToRemove(photo) {
       console.log('==========readyToRemove==========')
       this.newfileToDelete.push(photo.originalUrl)
@@ -148,9 +99,9 @@ export default {
       var files = this.filelist
       console.log('files----:', files)
       var msg_is_ok = true
-      var name = this.modifygame.name
-      var desc = this.modifygame.desc
-      var duration = this.modifygame.duration
+      var name = this.formData.name
+      var desc = this.formData.desc
+      var duration = this.formData.duration
 
       if (name === '') {
         weui.form.showErrorTips({
@@ -299,8 +250,67 @@ export default {
       if (object && typeof object[methodName] === 'function') {
         return object[methodName](...messages)
       }
+    },
+    handleStepClick(i) {
+      console.log('this.activeStep =  ', this.activeStep)
+      this.activeStep = i
     }
   }
 }
 
 </script>
+<style  lang="scss" >
+  .edit-wrap{
+    padding: 40px 45px 20px 50px;
+    .el-step.is-simple .el-step__arrow::before {
+      transform:none;
+      height:0;
+    }
+    .el-step.is-simple .el-step__arrow::after {
+      transform:none;
+    }
+    .el-steps {
+        background-color: transparent;
+    }
+    .el-step__head{
+      display: none;
+    }
+    .el-step__title:hover {
+      cursor: pointer;
+    }
+    .el-step.active .el-step__title{
+      color:#1890ff;
+    }
+    .el-steps--simple{
+      width: 500px;
+      padding: 0 20px;
+    }
+    .content{
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: flex-start;
+      flex-direction: row;
+      padding-top: 40px;
+    }
+    .preview-wrap{
+      position: relative;
+      width: 350px;
+      border-radius: 4px;
+      margin-right: 50px;
+      margin-left: 5px;
+      iframe{
+        height: 100%;
+        width: 100%;
+        border: 0;
+      }
+    }
+    .setup-wrap{
+      height: 100%;
+      overflow: hidden;
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+</style>
