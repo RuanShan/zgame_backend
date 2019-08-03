@@ -35,8 +35,8 @@
 import {
   createDesc
 } from '@/api/albums.js'
-import { FileChecksum } from '@/lib/direct_upload/file_checksum'
-import { BlobUpload } from '@/lib/direct_upload/blob_upload'
+import { FileChecksum } from '@/lib/activestorage/file_checksum'
+import { BlobUpload } from '@/lib/activestorage/blob_upload'
 
 export default {
   name: 'EditorSlideUpload',

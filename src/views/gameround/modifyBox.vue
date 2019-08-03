@@ -83,8 +83,8 @@
 
 import weui from 'weui.js'
 import $ from 'jquery'
-import { FileChecksum } from '@/lib/direct_upload/file_checksum'
-import { BlobUpload } from '@/lib/direct_upload/blob_upload'
+import { FileChecksum } from '@/lib/activestorage/file_checksum'
+import { BlobUpload } from '@/lib/activestorage/blob_upload'
 import { modifyGameRound } from '@/api/backend.js'
 import { getPoster, modifyPoster } from '@/api/albums.js'
 import Tinymce from '@/components/Tinymce'

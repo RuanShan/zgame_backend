@@ -15,7 +15,9 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      formData: {}
+    }
   },
   computed: {
     previewUrl() {
@@ -34,7 +36,7 @@ export default {
   mounted() {},
   methods: {
     initData() {
-      if (this.gameRound != null) {
+      if (this.gameRound) {
         Object.assign(this.formData, this.gameRound)
       }
     }

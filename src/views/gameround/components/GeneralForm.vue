@@ -44,9 +44,9 @@
           </el-upload>
         </el-form-item>
       </el-form>
-      <el-dialog :visible.sync="dialogVisible">
-        <img width="100%" :src="dialogImageUrl" alt="">
-      </el-dialog>
+
+      <ImageBrowser :game-round="gameRound" :dialog-visible.sync="imageBrowserVisible" />
+      <el-button @click="handleOpenImageBrowser"> 添加图片 </el-button>
     </el-tab-pane>
     <el-tab-pane label="活动介绍" name="third">
       <el-form :model="formData" label-width="80px">
@@ -62,10 +62,12 @@
 
 <script>
 import Tinymce from '@/components/Tinymce'
+import ImageBrowser from '@/components/ImageBrowser'
+
 import { tiny } from '@/config/env'
 export default {
   name: 'GameRoundGeneralForm',
-  components: { Tinymce },
+  components: { Tinymce, ImageBrowser },
   props: {
     gameRound: {
       type: Object,
@@ -76,6 +78,7 @@ export default {
     return {
       tinyMenubar: '',
       tinyToolbar: tiny.toolbar,
+      imageBrowserVisible: false,
       activeName: 'first',
       postersData: [],
       formData: {},
@@ -105,8 +108,10 @@ export default {
     },
     handleDownload(file) {
       console.log(file)
+    },
+    handleOpenImageBrowser() {
+      this.imageBrowserVisible = true
     }
-
   }
 }
 </script>

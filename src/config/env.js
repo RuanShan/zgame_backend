@@ -9,6 +9,7 @@
 const basePreviewUrl = process.env.VUE_APP_PREVIEW_URL
 const baseUrl = ''
 const baseImageUrl = ''
+
 module.exports = {
   baseUrl,
   baseImageUrl,
