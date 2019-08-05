@@ -71,9 +71,10 @@
           :value="term.id"
         />
       </el-select>
-      <el-upload
+      <!-- <el-upload
         action="handleUpload"
         list-type="picture-card"
+        :data="{ type: 'poster' }"
         :on-preview="handlePictureCardPreview"
         :on-remove="handleRemove"
         :on-change="handleUpload"
@@ -83,7 +84,22 @@
       </el-upload>
       <el-dialog :visible.sync="dialogVisible">
         <img width="100%" :src="dialogImageUrl" alt="">
-      </el-dialog>
+      </el-dialog> -->
+      <div>
+        <el-upload
+          class="uploads-wrap"
+          action=""
+          :multiple="false"
+          list-type="picture-card"
+          :file-list="newUploads"
+          :data="{ type: 'cover' }"
+          :http-request="handleUpload"
+          :on-success="handleUploadSuccess"
+        >
+
+            <i class="el-icon-plus" />
+        </el-upload>
+      </div>
 
       <p class="weui-uploader__title">游戏描述编辑</p>
       <Tinymce ref="editor" v-model="postData.content" :height="400" />
@@ -102,6 +118,8 @@ import $ from 'jquery'
 import queryString from 'query-string'
 import { addPost, getTermInfo } from '@/api/backend.js'
 import Tinymce from '@/components/Tinymce'
+import { Uploader } from '@/lib/activestorage/uploader'
+const directUploadUrl = '/api/backend/photos/ztoupiao/create'
 export default {
   components: { Tinymce },
   props: {
@@ -121,7 +139,8 @@ export default {
         title: '',
         term: ''
       },
-      termList: []
+      termList: [],
+      newUploads: []
     }
   },
   watch: {
@@ -146,9 +165,29 @@ export default {
     })
   },
   methods: {
-    handleUpload(file, fileList) {
-      console.log('====:', file, fileList)
+    handleUpload(option) {
+      console.log('----------handleUpload-------------');
+      this.newUploads.push(option)
+
     },
+    handleUploadSuccess(response, file, fileList) {
+      console.log('------------------handleUploadSuccess--------------------');
+      console.log(response, file, fileList)
+    },
+    // handleUpload(file, fileList) {
+    //
+    //   console.log('====:', file, fileList)
+    //   const url = directUploadUrl + '?token=' + this.$store.getters.token
+    //   console.log('handleDirectUpload url= ', url)
+    //   const uploader = new Uploader(file, url, '', (blob) => {
+    //     // 上传成功后，应通知服务器，图片上传成功
+    //     // createGroupImageForDirectUpload( id,  { image:{ attachment: blob.signed_id }} ).then((res)=>{
+    //     option.onSuccess(null, file)
+    //     // })
+    //   })
+    //   console.log('uploader=', uploader)
+    //   uploader.upload()
+    // },
     handleRemove(file, fileList) {
       console.log(file, fileList)
     },
@@ -196,8 +235,25 @@ export default {
           content: this.postData.content
         }
 
-        addPost(postData).then(async res => {
+        addPost(postData).then((res) => {
           console.log('res----:', res)
+          console.log('this.newUploads====',this.newUploads);
+          for(var i=0;i<this.newUploads.length;i++){
+            let option = this.newUploads[i]
+            console.log('res++++++',res);
+            option.data.id = res.id
+            const file = option.file
+            const url = directUploadUrl + '?token=' + this.$store.getters.token
+            console.log('handleDirectUpload option= ', option, url)
+            const uploader = new Uploader(file, url, option, (blob) => {
+              // 上传成功后，应通知服务器，图片上传成功
+              // createGroupImageForDirectUpload( id,  { image:{ attachment: blob.signed_id }} ).then((res)=>{
+              option.onSuccess(null, option.file)
+              // })
+            })
+            console.log('uploader=', uploader)
+            uploader.upload()
+          }
         })
       }
     }
