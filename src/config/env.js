@@ -6,9 +6,15 @@
  * baseImgPath: 图片存放地址
  *
  */
+const basePreviewUrl = process.env.VUE_APP_PREVIEW_URL
 const baseUrl = ''
 const baseImageUrl = ''
-export {
+
+module.exports = {
   baseUrl,
-  baseImageUrl
+  baseImageUrl,
+  basePreviewUrl,
+  tiny: {
+    toolbar: ['undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat ']
+  }
 }

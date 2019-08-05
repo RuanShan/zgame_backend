@@ -91,8 +91,8 @@ import {
   createPoster
 } from '@/api/albums.js'
 import Tinymce from '@/components/Tinymce'
-import { FileChecksum } from '@/lib/direct_upload/file_checksum'
-import { BlobUpload } from '@/lib/direct_upload/blob_upload'
+import { FileChecksum } from '@/lib/activestorage/file_checksum'
+import { BlobUpload } from '@/lib/activestorage/blob_upload'
 import { modifyDesc } from '@/api/backend'
 export default {
   components: { Tinymce },
