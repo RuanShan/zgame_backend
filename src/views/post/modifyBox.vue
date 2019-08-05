@@ -63,7 +63,7 @@
       <div class="weui-cell__hd">
         <label for="" class="weui-label">Term</label>
       </div>
-      <el-select v-model="postData.term" multiple placeholder="请选择">
+      <el-select v-model="termssss" multiple placeholder="请选择">
         <el-option
           v-for="term in termList"
           :key="term.id"
@@ -133,7 +133,8 @@ export default {
       uploadData: {
         type: 'cover',
         id: 0
-      }
+      },
+      termssss: []
     }
   },
   watch: {
@@ -165,7 +166,17 @@ export default {
       getPostDetail(param).then((res) => {
         console.log('res---:', res)
         this.postData = res.post
-        this.postData.term = res.term
+        const terms = res.term
+        console.log('terms.length', terms.length)
+        const valueList = []
+        for (var i = 0; i < terms.length; i++) {
+          valueList.push(terms[i].value)
+        }
+        console.log('valueList', valueList)
+        this.termssss = valueList
+        console.log('  this.termssss', this.termssss)
+        console.log('typeof', typeof (this.termssss))
+
         const cover = {
           name: res.cover.file_name,
           url: res.cover.originalUrl
@@ -207,7 +218,7 @@ export default {
       var desc = this.postData.desc
       var title = this.postData.title
       var content = this.postData.content
-      var term = this.postData.term
+      var term = this.termssss
       if (name === '') {
         weui.form.showErrorTips({
           ele: name,
