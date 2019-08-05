@@ -71,12 +71,25 @@
           :value="term.id"
         />
       </el-select>
+      <el-upload
+        action="handleUpload"
+        list-type="picture-card"
+        :on-preview="handlePictureCardPreview"
+        :on-remove="handleRemove"
+        :on-change="handleUpload"
+        :auto-upload="false"
+      >
+        <i class="el-icon-plus" />
+      </el-upload>
+      <el-dialog :visible.sync="dialogVisible">
+        <img width="100%" :src="dialogImageUrl" alt="">
+      </el-dialog>
 
       <p class="weui-uploader__title">游戏描述编辑</p>
       <Tinymce ref="editor" v-model="postData.content" :height="400" />
       <div class="weui-btn-area">
         <a id="showTooltips" class="weui-btn weui-btn_primary userSubmitBtn" href="javascript:" @click="post_msg">提交</a>
-      </div>
+      </div>{}
     </div>
   </div>
 
@@ -98,6 +111,9 @@ export default {
   },
   data() {
     return {
+      dialogImageUrl: '',
+      dialogVisible: false,
+      image: {},
       postData: {
         name: '',
         desc: '',
@@ -130,6 +146,17 @@ export default {
     })
   },
   methods: {
+    handleUpload(file, fileList) {
+      console.log('====:', file, fileList)
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList)
+    },
+    handlePictureCardPreview(file) {
+      console.log('file---:', file)
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
+    },
     post_msg: async function(e) {
       console.log('========post_msg========')
 

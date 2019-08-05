@@ -26,8 +26,10 @@ export const getPostInfo = (data) => fetch(basePath + '/base/getPostInfo', data,
 export const addPost = (data) => fetch(basePath + '/base/addPost', data, 'POST')
 export const modifyPost = (data) => fetch(basePath + '/base/modifyPost', data, 'POST')
 export const removePost = (data) => fetch(basePath + '/base/removePost', data, 'POST')
+export const getPostDetail = (data) => fetch(basePath + '/base/getPostDetail', data, 'POST')
 
 export const getTermInfo = (data) => fetch(basePath + '/base/getTermInfo', data, 'POST')
 export const addTerm = (data) => fetch(basePath + '/base/addTerm', data, 'POST')
 export const modifyTerm = (data) => fetch(basePath + '/base/modifyTerm', data, 'POST')
 export const removeTerm = (data) => fetch(basePath + '/base/removeTerm', data, 'POST')
+export const getTermDetail = (data) => fetch(basePath + '/base/getTermDetail', data, 'POST')

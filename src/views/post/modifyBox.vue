@@ -60,6 +60,17 @@
           </div>
         </div>
       </div>
+      <div class="weui-cell__hd">
+        <label for="" class="weui-label">Term</label>
+      </div>
+      <el-select v-model="postData.term" multiple placeholder="请选择">
+        <el-option
+          v-for="term in termList"
+          :key="term.id"
+          :label="term.name"
+          :value="term.id"
+        />
+      </el-select>
       <p class="weui-uploader__title">游戏描述编辑</p>
       <Tinymce ref="editor" v-model="postData.content" :height="400" />
       <div class="weui-btn-area">
@@ -73,26 +84,20 @@
 <script>
 
 import weui from 'weui.js'
+import queryString from 'query-string'
 import $ from 'jquery'
-import { modifyPost } from '@/api/backend.js'
+import { getPostDetail, modifyPost, getTermInfo } from '@/api/backend.js'
 import Tinymce from '@/components/Tinymce'
 export default {
   components: { Tinymce },
   props: {
     command: {
       default: false
-    },
-    post: {
-      default: null,
-      type: Object
     }
   },
   data() {
     return {
-      filelist: [],
-      newfileToDelete: [],
-      oldfileToDelete: [],
-      fileToDelete: [],
+      termList: [],
       game: {
         name: '',
         desc: '',
@@ -107,10 +112,6 @@ export default {
     }
   },
   watch: {
-    post: function(val, oldVal) {
-      console.log('post ===:', val)
-      this.postData = val
-    },
     command: function(val, oldVal) {
       // 外部触发游戏开始
       console.log('watch-command new: %s, old: %s', val, oldVal)
@@ -123,7 +124,22 @@ export default {
       }
     }
   },
-  created() {},
+  created() {
+    getTermInfo().then((res) => {
+      console.log('res----:', res)
+      this.termList = res
+      const parsed = JSON.parse(JSON.stringify(queryString.parse(location.hash)).replace(/\//g, ''))
+      console.log('id--:', parsed.postmodify)
+      const param = {
+        id: parsed.postmodify
+      }
+      getPostDetail(param).then((res) => {
+        console.log('res---:', res)
+        this.postData = res.post
+        this.postData.term = res.term
+      })
+    })
+  },
   methods: {
     async post_msg() {
       console.log('========post_msg========')
@@ -132,6 +148,7 @@ export default {
       var desc = this.postData.desc
       var title = this.postData.title
       var content = this.postData.content
+      var term = this.postData.term
       if (name === '') {
         weui.form.showErrorTips({
           ele: name,
@@ -149,17 +166,13 @@ export default {
       }
 
       if (msg_is_ok) {
-        console.log('this.post', this.post)
-        const photos = []
-        console.log('files---:', files)
-        console.log('photos---:', photos)
-        console.log('this.newfileToDelete---:', this.newfileToDelete)
         var data = {
+          id: this.postData.id,
           name: name,
           desc: desc,
-          duration: duration,
-          code: code,
-          number: number
+          title: title,
+          content: content,
+          term: term
         }
 
         console.log('data------:', data)

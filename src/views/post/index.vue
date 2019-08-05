@@ -21,9 +21,9 @@
           <td>
             <a>{{ post.created_at }}</a>
           </td>
-          <!-- <td>
+          <td>
             <button type="button" @click="modify(post)">modify</button>
-          </td> -->
+          </td>
           <td>
             <button type="button" @click="remove(post)">remove</button>
           </td>
@@ -81,6 +81,12 @@ export default {
           this.postList = res
         })
       })
+    },
+
+    modify: function(post) {
+      console.log('modify---:', post.id)
+      const src = '/post/modify=' + post.id
+      this.$router.push(src)
     }
 
   }

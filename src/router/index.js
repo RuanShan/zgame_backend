@@ -135,6 +135,13 @@ export const constantRoutes = [
         component: () => import('@/views/post/index'),
         name: 'postList',
         meta: { title: 'postList', icon: 'dashboard', affix: true }
+      },
+      {
+        path: 'modify=:post_id',
+        component: () => import('@/views/post/modifyBox'),
+        name: 'modify',
+        meta: { title: 'modify', icon: 'dashboard', affix: true },
+        hidden: true
       }
     ]
   },

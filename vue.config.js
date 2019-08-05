@@ -50,6 +50,12 @@ module.exports = {
       },
       '/api': {
         target:'http://127.0.0.1:8099'
+      },
+      '/gapi': {
+        target:'http://127.0.0.1:8099'
+      },
+      'handleUpload':{
+        target:'http://127.0.0.1:8099'
       }
     },
     after: require('./mock/mock-server.js')
