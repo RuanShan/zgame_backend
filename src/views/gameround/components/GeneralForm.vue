@@ -4,44 +4,43 @@
     <el-tab-pane label="轮播图设置" name="second">
       <el-form ref="form" :model="formData" label-width="80px">
         <el-form-item label="海报图片">
-
-          <el-upload
-            action="#"
-            list-type="picture-card"
-            :file-list="postersData"
-            :auto-upload="false"
-          >
-            <i slot="default" class="el-icon-plus" />
-            <div slot="file" slot-scope="{file}">
-              <img
-                class="el-upload-list__item-thumbnail"
-                :src="file.url"
-                alt=""
+          <div class="images-wrap">
+            <div v-for="slide in slides" :key="slide.id" class="image-item">
+              <el-popover
+                placement="bottom-start"
+                width="360"
+                trigger="hover"
+                @show="handlePopoverShow(slide.id)"
+                @hide="handlePopoverShow(0)"
               >
-              <span class="el-upload-list__item-actions">
-                <span
-                  class="el-upload-list__item-preview"
-                  @click="handlePictureCardPreview(file)"
-                >
-                  <i class="el-icon-zoom-in" />
-                </span>
-                <span
-                  v-if="!disabled"
-                  class="el-upload-list__item-delete"
-                  @click="handleDownload(file)"
-                >
-                  <i class="el-icon-download" />
-                </span>
-                <span
-                  v-if="!disabled"
-                  class="el-upload-list__item-delete"
-                  @click="handleRemove(file)"
-                >
-                  <i class="el-icon-delete" />
-                </span>
-              </span>
+                <div>
+                  <el-form ref="form" :model="formData" label-width="80px">
+                    <el-form-item label="跳转网址">
+                      <el-input v-model="formData.slideUrl" placeholder="" />
+                    </el-form-item>
+                  </el-form>
+                </div>
+                <div slot="reference" class="image-wrap">
+                  <el-image style="width: 295px; height: 100%" :src="slide.url" fit="contain" />
+                  <div v-show="hoveringImageId == slide.id" class="options-wrap">
+                    <div class="cover" />
+                    <div class="delete-btn">  <el-button type="text"> <i class="el-icon-delete" /></el-button>  </div>
+                    <div class="replace-btn">  <el-link type="text" :underline="false"> 替换图片 </el-link> </div>
+                  </div>
+                </div>
+
+              </el-popover>
+
             </div>
-          </el-upload>
+            <div class="image-item new-image-wrap">
+              <el-image style="width: 295px; height: 100%">
+                <div slot="error" class="image-slot">
+                  <i class="el-icon-picture-outline" />
+                  <div>添加轮播图</div>
+                </div>
+              </el-image>
+            </div>
+          </div>
         </el-form-item>
       </el-form>
 
@@ -57,17 +56,23 @@
     </el-tab-pane>
     <el-tab-pane label="活动动态" name="fourth">活动动态</el-tab-pane>
   </el-tabs>
-
 </template>
 
 <script>
 import Tinymce from '@/components/Tinymce'
 import ImageBrowser from '@/components/ImageBrowser'
-
-import { tiny } from '@/config/env'
+import {
+  buildImageUrlByStyle
+} from '@/utils/oss'
+import {
+  tiny
+} from '@/config/env'
 export default {
   name: 'GameRoundGeneralForm',
-  components: { Tinymce, ImageBrowser },
+  components: {
+    Tinymce,
+    ImageBrowser
+  },
   props: {
     gameRound: {
       type: Object,
@@ -82,8 +87,24 @@ export default {
       activeName: 'first',
       postersData: [],
       formData: {},
+      hoveringImageId: 0,
       dialogImageUrl: null,
       dialogVisible: false
+    }
+  },
+  computed: {
+    slides() {
+      if (this.gameRound.Slides) {
+        return this.gameRound.Slides.map((slide) => {
+          return {
+            id: slide.id,
+            url: buildImageUrlByStyle(slide.originalUrl),
+            file_name: slide.file_name
+          }
+        })
+      } else {
+        return []
+      }
     }
   },
   watch: {
@@ -111,13 +132,93 @@ export default {
     },
     handleOpenImageBrowser() {
       this.imageBrowserVisible = true
+    },
+    handlePopoverShow(id) {
+      this.hoveringImageId = id
     }
   }
 }
 </script>
 
-<style lang="css" >
-  .round-general-wrap  .el-tab-pane{
-    padding: 0 8px;
-  }
+<style lang="scss" >
+.round-general-wrap {
+    .el-tab-pane {
+        padding: 0 8px;
+    }
+    .images-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: row;
+    }
+    .image-item {
+        margin-bottom: 20px;
+        height: 161px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+    .image-wrap{
+       position: relative;
+       .options-wrap{
+         color: #303133;
+         position: absolute;
+         left: 0;
+         width: 100%;
+         bottom: 0;
+         top: 0;
+         .cover{
+           position: absolute;
+           width: 100%;
+           height: 100%;
+           background-color: #fff;
+           opacity: .8;
+         }
+         .delete-btn{
+           position: absolute;
+           right: 0;
+           top:0;
+           i.el-icon-delete{
+             color: #303133;
+           }
+           i.el-icon-delete:hover{
+             color: #F56C6C;
+           }
+         }
+         .replace-btn{
+           position: absolute;
+           right: 0;
+           top:0;
+           bottom: 0;
+           left: 0;
+           line-height: 150px;
+           a:hover{
+             color: #409EFF;
+           }
+         }
+       }
+    }
+
+    .new-image-wrap {
+        width: 295px;
+        height: 161px;
+        .el-image{
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          .image-slot{
+            text-align: center;
+          }
+        }
+
+        i {
+          color: #ccc;
+          font-size: 48px;
+        }
+        div { color: #333; }
+    }
+}
 </style>
