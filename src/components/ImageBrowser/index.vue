@@ -3,20 +3,24 @@
     <div class="flex">
       <div class="left">
         <h5 class="menu-title">轮播图</h5>
-        <el-menu default-active="2" class="menu-vertical">
-          <el-menu-item index="1">
+        <el-menu :default-active="activeMenu" class="menu-vertical" @select="handleMenu">
+          <el-menu-item index="system">
 
             <template slot="title">
               <span>系统推荐</span>
             </template>
           </el-menu-item>
-          <el-menu-item index="2">
+          <el-menu-item index="mine">
 
             <span slot="title">我的轮播</span>
           </el-menu-item>
         </el-menu>
       </div>
-      <div class="right" />
+      <div class="right">
+        <div v-show="activeMenu=='system'"> 系统缺省图片 </div>
+        <div v-show="activeMenu=='mine'">  我的图片 </div>
+
+      </div>
 
       <div class="left-btns">
         <div>
@@ -63,7 +67,8 @@ export default {
   },
   data() {
     return {
-      newUploads: []
+      newUploads: [],
+      activeMenu: 'system'
     }
   },
   created() {},
@@ -84,6 +89,10 @@ export default {
     },
     handleUploadSuccess(response, file, fileList) {
       console.log(response, file, fileList)
+    },
+    handleMenu(key, keyPath) {
+      console.log(key, keyPath)
+      this.activeMenu = key
     }
   }
 }

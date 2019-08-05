@@ -36,7 +36,7 @@
               <el-image style="width: 295px; height: 100%">
                 <div slot="error" class="image-slot">
                   <i class="el-icon-picture-outline" />
-                  <div>添加轮播图</div>
+                  <div><el-button type="text" @click="handleOpenImageBrowser"> 添加图片 </el-button></div>
                 </div>
               </el-image>
             </div>
@@ -45,7 +45,7 @@
       </el-form>
 
       <ImageBrowser :game-round="gameRound" :dialog-visible.sync="imageBrowserVisible" />
-      <el-button @click="handleOpenImageBrowser"> 添加图片 </el-button>
+
     </el-tab-pane>
     <el-tab-pane label="活动介绍" name="third">
       <el-form :model="formData" label-width="80px">
@@ -149,11 +149,11 @@ export default {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
         flex-direction: row;
     }
     .image-item {
-        margin-bottom: 20px;
+        margin: 0 20px 20px 0;
         height: 161px;
         border: 1px solid #ccc;
         border-radius: 5px;
@@ -177,9 +177,10 @@ export default {
          }
          .delete-btn{
            position: absolute;
+           top: 0;
            right: 0;
-           top:0;
            i.el-icon-delete{
+             padding: 8px;
              color: #303133;
            }
            i.el-icon-delete:hover{
@@ -193,6 +194,7 @@ export default {
            bottom: 0;
            left: 0;
            line-height: 150px;
+           text-align: center;
            a:hover{
              color: #409EFF;
            }
