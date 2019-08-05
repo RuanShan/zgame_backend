@@ -32,7 +32,7 @@ class Uploader {
   directUploadDidProgress(e) {
     // Use event.loaded and event.total to update the progress bar
     e.percent = e.loaded / e.total * 100
-    console.log('directUploadDidProgress= ', e)
+    console.log('directUploadDidProgress= ', e, this.file)
     this.uploaderOption.onProgress(e, this.file)
   }
 }

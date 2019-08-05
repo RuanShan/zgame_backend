@@ -25,7 +25,7 @@
             action=""
             :multiple="false"
             :file-list="newUploads"
-            :data="{ number: this.gameRound.number }"
+            :data="{ number: this.gameRound.number, type:'poster' }"
             :http-request="handleDirectUpload"
             :on-success="handleUploadSuccess"
           >
@@ -76,7 +76,7 @@ export default {
       const uploader = new Uploader(file, url, option, (blob) => {
         // 上传成功后，应通知服务器，图片上传成功
         // createGroupImageForDirectUpload( id,  { image:{ attachment: blob.signed_id }} ).then((res)=>{
-        option.onSuccess(null, option.file)
+        // option.onSuccess(null, option.file)
         // })
       })
       console.log('uploader=', uploader)

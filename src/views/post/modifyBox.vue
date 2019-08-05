@@ -71,6 +71,24 @@
           :value="term.id"
         />
       </el-select>
+      <div>
+        <el-upload
+          ref="upload"
+          class="uploads-wrap"
+          action=""
+          :multiple="false"
+          list-type="picture-card"
+          :file-list="newUploads"
+          :data="uploadData"
+          :http-request="handleUpload"
+          :on-success="handleUploadSuccess"
+          :on-remove="handleRemove"
+          :auto-upload="false"
+          :limit="1"
+        >
+          <i class="el-icon-plus" />
+        </el-upload>
+      </div>
       <p class="weui-uploader__title">游戏描述编辑</p>
       <Tinymce ref="editor" v-model="postData.content" :height="400" />
       <div class="weui-btn-area">
@@ -86,8 +104,10 @@
 import weui from 'weui.js'
 import queryString from 'query-string'
 import $ from 'jquery'
-import { getPostDetail, modifyPost, getTermInfo } from '@/api/backend.js'
+import { getPostDetail, modifyPost, getTermInfo, removeCover } from '@/api/backend.js'
 import Tinymce from '@/components/Tinymce'
+import { Uploader } from '@/lib/activestorage/uploader'
+const directUploadUrl = '/api/backend/photos/ztoupiao/create'
 export default {
   components: { Tinymce },
   props: {
@@ -108,7 +128,12 @@ export default {
       ui: {
         addNewBoxVisiable: false
       },
-      postData: {}
+      postData: {},
+      newUploads: [],
+      uploadData: {
+        type: 'cover',
+        id: 0
+      }
     }
   },
   watch: {
@@ -122,6 +147,10 @@ export default {
       } else {
         this.ui.addNewBoxVisiable = false
       }
+    },
+    newUploads: function(val, oldVal) {
+      // 外部触发游戏开始
+      console.log(`watch-newUploads new: %s, old: %s`, val, oldVal)
     }
   },
   created() {
@@ -137,10 +166,40 @@ export default {
         console.log('res---:', res)
         this.postData = res.post
         this.postData.term = res.term
+        const cover = {
+          name: res.cover.file_name,
+          url: res.cover.originalUrl
+        }
+        this.newUploads.push(cover)
       })
     })
   },
   methods: {
+    handleRemove(file, fileList) {
+      console.log('----------handleRemove---------')
+      console.log('file', file)
+      const data = {
+        id: this.postData.id
+      }
+      removeCover(data)
+    },
+    handleUpload(option) {
+      const file = option.file
+      const url = directUploadUrl + '?token=' + this.$store.getters.token
+      console.log('handleDirectUpload option= ', option, url)
+      const uploader = new Uploader(file, url, option, (blob) => {
+        // 上传成功后，应通知服务器，图片上传成功
+        // createGroupImageForDirectUpload( id,  { image:{ attachment: blob.signed_id }} ).then((res)=>{
+        option.onSuccess(null, option.file)
+        // })
+      })
+      console.log('uploader=', uploader)
+      uploader.upload()
+    },
+    handleUploadSuccess(response, file, fileList) {
+      console.log('------------------handleUploadSuccess--------------------')
+      console.log(response, file, fileList)
+    },
     async post_msg() {
       console.log('========post_msg========')
       var msg_is_ok = true
@@ -177,8 +236,9 @@ export default {
 
         console.log('data------:', data)
         modifyPost(data).then((res) => {
-          this.$emit('signUpOver', res)
-          this.statusBox = false
+          console.log('res----:', res)
+          this.uploadData.id = res.id
+          this.$refs.upload.submit()
         })
       }
     }

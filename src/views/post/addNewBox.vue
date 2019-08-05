@@ -71,33 +71,21 @@
           :value="term.id"
         />
       </el-select>
-      <!-- <el-upload
-        action="handleUpload"
-        list-type="picture-card"
-        :data="{ type: 'poster' }"
-        :on-preview="handlePictureCardPreview"
-        :on-remove="handleRemove"
-        :on-change="handleUpload"
-        :auto-upload="false"
-      >
-        <i class="el-icon-plus" />
-      </el-upload>
-      <el-dialog :visible.sync="dialogVisible">
-        <img width="100%" :src="dialogImageUrl" alt="">
-      </el-dialog> -->
       <div>
         <el-upload
+          ref="upload"
           class="uploads-wrap"
           action=""
           :multiple="false"
           list-type="picture-card"
           :file-list="newUploads"
-          :data="{ type: 'cover' }"
+          :data="uploadData"
           :http-request="handleUpload"
           :on-success="handleUploadSuccess"
+          :auto-upload="false"
+          :limit="1"
         >
-
-            <i class="el-icon-plus" />
+          <i class="el-icon-plus" />
         </el-upload>
       </div>
 
@@ -140,7 +128,11 @@ export default {
         term: ''
       },
       termList: [],
-      newUploads: []
+      newUploads: [],
+      uploadData: {
+        type: 'cover',
+        id: 0
+      }
     }
   },
   watch: {
@@ -156,6 +148,10 @@ export default {
       } else {
         console.log('hide')
       }
+    },
+    newUploads: function(val, oldVal) {
+      // 外部触发游戏开始
+      console.log(`watch-newUploads new: %s, old: %s`, val, oldVal)
     }
   },
   created() {
@@ -166,28 +162,22 @@ export default {
   },
   methods: {
     handleUpload(option) {
-      console.log('----------handleUpload-------------');
-      this.newUploads.push(option)
-
+      const file = option.file
+      const url = directUploadUrl + '?token=' + this.$store.getters.token
+      console.log('handleDirectUpload option= ', option, url)
+      const uploader = new Uploader(file, url, option, (blob) => {
+        // 上传成功后，应通知服务器，图片上传成功
+        // createGroupImageForDirectUpload( id,  { image:{ attachment: blob.signed_id }} ).then((res)=>{
+        option.onSuccess(null, option.file)
+        // })
+      })
+      console.log('uploader=', uploader)
+      uploader.upload()
     },
     handleUploadSuccess(response, file, fileList) {
-      console.log('------------------handleUploadSuccess--------------------');
+      console.log('------------------handleUploadSuccess--------------------')
       console.log(response, file, fileList)
     },
-    // handleUpload(file, fileList) {
-    //
-    //   console.log('====:', file, fileList)
-    //   const url = directUploadUrl + '?token=' + this.$store.getters.token
-    //   console.log('handleDirectUpload url= ', url)
-    //   const uploader = new Uploader(file, url, '', (blob) => {
-    //     // 上传成功后，应通知服务器，图片上传成功
-    //     // createGroupImageForDirectUpload( id,  { image:{ attachment: blob.signed_id }} ).then((res)=>{
-    //     option.onSuccess(null, file)
-    //     // })
-    //   })
-    //   console.log('uploader=', uploader)
-    //   uploader.upload()
-    // },
     handleRemove(file, fileList) {
       console.log(file, fileList)
     },
@@ -237,23 +227,8 @@ export default {
 
         addPost(postData).then((res) => {
           console.log('res----:', res)
-          console.log('this.newUploads====',this.newUploads);
-          for(var i=0;i<this.newUploads.length;i++){
-            let option = this.newUploads[i]
-            console.log('res++++++',res);
-            option.data.id = res.id
-            const file = option.file
-            const url = directUploadUrl + '?token=' + this.$store.getters.token
-            console.log('handleDirectUpload option= ', option, url)
-            const uploader = new Uploader(file, url, option, (blob) => {
-              // 上传成功后，应通知服务器，图片上传成功
-              // createGroupImageForDirectUpload( id,  { image:{ attachment: blob.signed_id }} ).then((res)=>{
-              option.onSuccess(null, option.file)
-              // })
-            })
-            console.log('uploader=', uploader)
-            uploader.upload()
-          }
+          this.uploadData.id = res.id
+          this.$refs.upload.submit()
         })
       }
     }
