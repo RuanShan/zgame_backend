@@ -4,21 +4,29 @@
       <div class="left">
         <h5 class="menu-title">轮播图</h5>
         <el-menu :default-active="activeMenu" class="menu-vertical" @select="handleMenu">
-          <el-menu-item index="system">
 
+          <el-menu-item index="system">
             <template slot="title">
               <span>系统推荐</span>
             </template>
           </el-menu-item>
-          <el-menu-item index="mine">
 
+          <el-menu-item index="mine">
             <span slot="title">我的轮播</span>
           </el-menu-item>
+
         </el-menu>
       </div>
       <div class="right">
-        <div v-show="activeMenu=='system'"> 系统缺省图片 </div>
-        <div v-show="activeMenu=='mine'">  我的图片 </div>
+        <div v-show="activeMenu=='system'">
+          系统缺省图片
+        </div>
+        <div v-show="activeMenu=='mine'">
+          我的图片
+          <div v-for="slide in gameRound.Slides" :key="slide.id" class="image-item">
+            <el-image style="width: 295px; height: 100%" :src="slide.originalUrl" fit="contain" />
+          </div>
+        </div>
 
       </div>
 
@@ -29,7 +37,7 @@
             action=""
             :multiple="false"
             :file-list="newUploads"
-            :data="{ number: this.gameRound.number, type:'poster' }"
+            :data="{ number: this.gameRound.number, type:'slide' }"
             :http-request="handleDirectUpload"
             :on-success="handleUploadSuccess"
           >
@@ -46,7 +54,7 @@
 
 <script>
 import { Uploader } from '@/lib/activestorage/uploader'
-
+import { getGameRound } from '@/api/backend.js'
 import {
   DialogMixin
 } from './mixin'
@@ -57,23 +65,31 @@ export default {
   name: 'ImageBrowser',
   mixins: [DialogMixin],
   props: {
-    gameRound: {
-      type: Object,
-      default: () => {}
-    },
+    // gameRound: {
+    //   type: Object,
+    //   default: () => {}
+    // },
     dialogVisible: {
       type: Boolean
     }
   },
   data() {
     return {
+      gameRound:{},
       newUploads: [],
       activeMenu: 'system'
     }
   },
-  created() {},
+  created() {
+    this.initData()
+  },
   mounted() {},
   methods: {
+    async initData() {
+      this.gameRound = await getGameRound(this.$route.params.id)
+      console.log('this.gameRound---:',this.gameRound);
+      // Object.assign(this.formData, this.gameRound)
+    },
     handleDirectUpload(option) {
       const file = option.file
       const url = directUploadUrl + '?token=' + this.$store.getters.token
@@ -93,6 +109,12 @@ export default {
     handleMenu(key, keyPath) {
       console.log(key, keyPath)
       this.activeMenu = key
+    }
+  },
+  watch: {
+    activeMenu: function(val, oldVal) {
+      console.log('watch activeMenu ===:', val)
+      this.initData()
     }
   }
 }

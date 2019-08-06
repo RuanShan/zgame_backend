@@ -24,8 +24,21 @@
                   <el-image style="width: 295px; height: 100%" :src="slide.url" fit="contain" />
                   <div v-show="hoveringImageId == slide.id" class="options-wrap">
                     <div class="cover" />
-                    <div class="delete-btn">  <el-button type="text"> <i class="el-icon-delete" /></el-button>  </div>
-                    <div class="replace-btn">  <el-link type="text" :underline="false"> 替换图片 </el-link> </div>
+                    <div class="delete-btn" @click="deletePhoto(slide.id)">  <el-button type="text" > <i class="el-icon-delete" /></el-button>  </div>
+                    <div class="replace-btn" @click="changePhoto(slide.id)">
+                      <!-- <el-link type="text" :underline="false"> 替换图片 </el-link> -->
+                      <el-upload
+                        class="uploads-wrap"
+                        action=""
+                        :multiple="false"
+                        :file-list="newUploads"
+                        :data="{ number: gameRound.number, type:'slide' }"
+                        :http-request="handleDirectUpload"
+                        :on-success="handleUploadSuccess"
+                      >
+                        <el-button slot="trigger" type="primary"> 替换图片 </el-button>
+                      </el-upload>
+                    </div>
                   </div>
                 </div>
 
@@ -60,6 +73,7 @@
 
 <script>
 import Tinymce from '@/components/Tinymce'
+import { Uploader } from '@/lib/activestorage/uploader'
 import ImageBrowser from '@/components/ImageBrowser'
 import {
   buildImageUrlByStyle
@@ -67,6 +81,7 @@ import {
 import {
   tiny
 } from '@/config/env'
+const directUploadUrl = '/api/backend/photos/ztoupiao/create'
 export default {
   name: 'GameRoundGeneralForm',
   components: {
@@ -81,6 +96,7 @@ export default {
   },
   data() {
     return {
+      newUploads: [],
       tinyMenubar: '',
       tinyToolbar: tiny.toolbar,
       imageBrowserVisible: false,
@@ -94,6 +110,7 @@ export default {
   },
   computed: {
     slides() {
+      console.log('this.gameRound-----:',this.gameRound);
       if (this.gameRound.Slides) {
         return this.gameRound.Slides.map((slide) => {
           return {
@@ -114,6 +131,28 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    handleDirectUpload(option) {
+      const file = option.file
+      const url = directUploadUrl + '?token=' + this.$store.getters.token
+      console.log('handleDirectUpload option= ', option, url)
+      const uploader = new Uploader(file, url, option, (blob) => {
+        // 上传成功后，应通知服务器，图片上传成功
+        // createGroupImageForDirectUpload( id,  { image:{ attachment: blob.signed_id }} ).then((res)=>{
+        // option.onSuccess(null, option.file)
+        // })
+      })
+      console.log('uploader=', uploader)
+      uploader.upload()
+    },
+    handleUploadSuccess(response, file, fileList) {
+      console.log(response, file, fileList)
+    },
+    deletePhoto(id){
+      console.log('deletePhoto-----:',id);
+    },
+    changePhoto(id){
+      console.log('changePhoto-----:',id);
+    },
     initData() {
       Object.assign(this.formData, this.gameRound)
     },
