@@ -167,21 +167,21 @@ export default {
         console.log('res---:', res)
         this.postData = res.post
         const terms = res.term
-        console.log('terms.length', terms.length)
         const valueList = []
         for (var i = 0; i < terms.length; i++) {
           valueList.push(terms[i].value)
         }
-        console.log('valueList', valueList)
         this.termssss = valueList
-        console.log('  this.termssss', this.termssss)
-        console.log('typeof', typeof (this.termssss))
 
-        const cover = {
-          name: res.cover.file_name,
-          url: res.cover.originalUrl
+        for (var i = 0; i < res.post.Covers.length; i++) {
+          console.log('iiiiiiiiiiii', i)
+          console.log('Covers=====', res.post.Covers[i])
+          const cover = {
+            name: res.post.Covers[i].file_name,
+            url: res.post.Covers[i].originalUrl
+          }
+          this.newUploads.push(cover)
         }
-        this.newUploads.push(cover)
       })
     })
   },
