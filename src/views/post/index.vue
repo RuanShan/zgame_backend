@@ -1,6 +1,20 @@
 <template>
   <div class="app-container documentation-container">
-    <div v-show="ui.gameRoundListVisiable" class="postList">
+    <div class="postList">
+
+      <el-table
+        :key="tableKey"
+        v-loading="listLoading"
+        :data="list"
+        border
+        fit
+        style="width: 100%;"
+      >
+        <el-table-column label="标题" prop="title" />
+
+        <el-table-column label="时间" prop="updated_at" />
+      </el-table>
+
       <table>
         <tr>
           <td>name</td>
@@ -43,22 +57,15 @@ import {
   getPostInfo,
   removePost
 } from '@/api/backend.js'
-import modifyBox from './modifyBox.vue'
 export default {
-  name: 'Authorize',
-  components: {
-    modifyBox
-  },
+  name: 'PostsIndex',
+
   data() {
     return {
       company: {},
       authUrl: '',
       postList: [],
-      gameRoundToModify: {},
-      ui: {
-        modifyBoxVisiable: false,
-        gameRoundListVisiable: true
-      }
+      gameRoundToModify: {}
     }
   },
   watch: {

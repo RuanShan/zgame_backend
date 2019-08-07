@@ -8,7 +8,7 @@
 import Form from './components/form'
 
 export default {
-  name: 'CreateForm',
+  name: 'CreateGameRound',
   components: { Form }
 
 }

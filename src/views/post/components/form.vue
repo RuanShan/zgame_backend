@@ -1,18 +1,34 @@
 <template>
   <div class="addNewBox">
-    <el-form ref="postForm" :model="postForm" :rules="rules" class="form-container">
+    <el-form ref="postForm" :model="postData" :rules="rules" class="form-container">
       <div id="awardUserInfoBox" class="page  input js_show">
         <div class="awardUserInfoForm">
+
+          <el-form-item style="margin-bottom: 40px;" prop="title">
+            <MDinput v-model="postData.title" :maxlength="100" name="name" required>
+              Title
+            </MDinput>
+          </el-form-item>
+
+          <div class="postInfo-container">
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label-width="60px" label="作者">
+                  <el-input v-model="postData.author" />
+                </el-form-item>
+              </el-col>
+
+              <el-col :span="10">
+                <el-form-item label-width="120px" label="发布时间" class="postInfo-container-item">
+                  <el-date-picker v-model="displayTime" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="Select date and time" />
+                </el-form-item>
+              </el-col>
+
+            </el-row>
+          </div>
+
           <div class="weui-cells weui-cells_form">
-            <div class="weui-cell contactInput-ausername contactInput">
-              <div class="weui-cell__hd"><label class="weui-label">title</label></div>
-              <div class="weui-cell__bd">
-                <input id="postTitle" v-model="postData.title" style="margin:0px;border: none;" class="weui-input theInputDecide textInput" propname="postTitle" propkey="postTitle" type="text" placeholder="限15字符">
-              </div>
-              <div class="weui-cell__ft warnIcon hide">
-                <i class="weui-icon-warn" />
-              </div>
-            </div>
+
             <div class="weui-cell contactInput-ausername contactInput">
               <div class="weui-cell__hd"><label class="weui-label">postData名称</label></div>
               <div class="weui-cell__bd">
@@ -69,11 +85,12 @@
 </template>
 
 <script>
-import weui from 'weui.js'
+
 import {
   addPost,
   getTermInfo
-} from '@/api/backend.js'
+} from '@/api/backend'
+import MDinput from '@/components/MDinput'
 import Tinymce from '@/components/Tinymce'
 import {
   Uploader
@@ -81,7 +98,7 @@ import {
 const directUploadUrl = '/api/backend/photos/ztoupiao/create'
 export default {
   components: {
-    Tinymce
+    Tinymce, MDinput
   },
   props: {
     command: {
@@ -89,6 +106,17 @@ export default {
     }
   },
   data() {
+    const validateRequire = (rule, value, callback) => {
+      if (value === '') {
+        this.$message({
+          message: rule.field + '为必传项',
+          type: 'error'
+        })
+        callback(new Error(rule.field + '为必传项'))
+      } else {
+        callback()
+      }
+    }
     return {
       dialogImageUrl: '',
       dialogVisible: false,
@@ -105,26 +133,26 @@ export default {
       uploadData: {
         type: 'cover',
         id: 0
+      },
+      rules: {
+        image_uri: [{ validator: validateRequire }],
+        title: [{ validator: validateRequire }],
+        content: [{ validator: validateRequire }]
       }
     }
   },
-  watch: {
-    command: function(val, oldVal) {
-      // 外部触发游戏开始
-      console.log('watch-command new: %s, old: %s', val, oldVal)
-      if (val === true) {
-        console.log('show');
-        (this.postData = {
-          name: '',
-          desc: ''
-        })
-      } else {
-        console.log('hide')
+  computed: {
+    displayTime: {
+      // set and get is useful when the data
+      // returned by the back end api is different from the front end
+      // back end return => "2013-06-25 06:59:25"
+      // front end need timestamp => 1372114765000
+      get() {
+        return (+new Date(this.postData.display_time))
+      },
+      set(val) {
+        this.postData.display_time = new Date(val)
       }
-    },
-    newUploads: function(val, oldVal) {
-      // 外部触发游戏开始
-      console.log(`watch-newUploads new: %s, old: %s`, val, oldVal)
     }
   },
   created() {
@@ -162,32 +190,12 @@ export default {
     post_msg: async function(e) {
       console.log('========post_msg========')
 
-      weui.form.validate('#form', (error) => {
-        if (!error) {
-          // var loading = weui.loading('提交中...');
-          // setTimeout(function () {
-          //     loading.hide();
-          //     weui.toast('提交成功', 3000);
-          // }, 1500);
-        }
-        // return true; // 当return true时，不会显示错误
-      }, {
-        regexp: {
-          VCODE: /^.{4}$/
-        }
-      })
       var msg_is_ok = true
       var postname = this.postData.name
       var title = this.postData.title
       var desc = this.postData.desc
       var term = this.postData.term
-      if (postname === '') {
-        weui.form.showErrorTips({
-          ele: postname,
-          msg: 'postData名不能为空'
-        })
-        msg_is_ok = false
-      }
+
       if (msg_is_ok) {
         const postData = {
           user_id: 1,

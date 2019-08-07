@@ -79,7 +79,7 @@ export const constantRoutes = [
         path: 'authorize',
         component: () => import('@/views/authorize/index'),
         name: '授权',
-        meta: { title: '授权', icon: 'dashboard', affix: true }
+        meta: { title: '授权', icon: 'lock' }
       }
     ]
   },
@@ -96,20 +96,20 @@ export const constantRoutes = [
       {
         path: 'create',
         component: () => import('@/views/gameround/create'),
-        name: 'create',
+        name: 'CreateGameround',
         meta: { title: '创建活动', icon: 'edit', affix: true }
       },
       {
         path: 'index',
         component: () => import('@/views/gameround/index'),
-        name: 'gameroundList',
+        name: 'GameroundList',
         meta: { title: '管理活动', icon: 'list' }
       },
       {
         path: 'edit/:id(\\d+)',
         component: () => import('@/views/gameround/edit'),
-        name: 'EditArticle',
-        meta: { title: '编辑', noCache: true, activeMenu: '/gameround/list' },
+        name: 'EditGameround',
+        meta: { title: '编辑', noCache: true, activeMenu: '/gamerounds/list' },
         hidden: true
       }
     ]
@@ -118,29 +118,29 @@ export const constantRoutes = [
     path: '/post',
     component: Layout,
     redirect: '/post',
-    name: 'post',
+    name: 'posts',
     meta: {
-      title: 'post',
-      icon: 'dashboard'
+      title: '文章',
+      icon: 'documentation'
     },
     children: [
       {
-        path: 'createpost',
-        component: () => import('@/views/post/addNewBox'),
-        name: 'create',
-        meta: { title: 'create', icon: 'dashboard', affix: true }
+        path: 'create',
+        component: () => import('@/views/post/create'),
+        name: 'CreatePost',
+        meta: { title: '新建文章', icon: 'edit' }
       },
       {
-        path: 'postList',
+        path: 'list',
         component: () => import('@/views/post/index'),
-        name: 'postList',
-        meta: { title: 'postList', icon: 'dashboard', affix: true }
+        name: 'PostList',
+        meta: { title: '文章列表', icon: 'list' }
       },
       {
         path: 'modify=:post_id',
         component: () => import('@/views/post/modifyBox'),
-        name: 'modify',
-        meta: { title: 'modify', icon: 'dashboard', affix: true },
+        name: 'EditPost',
+        meta: { title: '编辑', icon: 'list' },
         hidden: true
       }
     ]
@@ -149,23 +149,23 @@ export const constantRoutes = [
     path: '/term',
     component: Layout,
     redirect: '/term',
-    name: 'term',
+    name: 'terms',
     meta: {
-      title: 'term',
-      icon: 'dashboard'
+      title: '文章分类',
+      icon: 'nested'
     },
     children: [
       {
         path: 'createterm',
         component: () => import('@/views/term/addNewBox'),
         name: 'create',
-        meta: { title: 'create', icon: 'dashboard', affix: true }
+        meta: { title: '新建分类', icon: 'edit' }
       },
       {
         path: 'termList',
         component: () => import('@/views/term/index'),
         name: 'termList',
-        meta: { title: 'termList', icon: 'dashboard', affix: true }
+        meta: { title: '管理分类', icon: 'list' }
       }
     ]
   },
