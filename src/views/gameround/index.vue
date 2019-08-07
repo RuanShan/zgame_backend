@@ -1,6 +1,6 @@
 <template>
   <div class="app-container documentation-container">
-    <div v-show="ui.gameRoundListVisiable" class="gameRoundList">
+    <div class="gameRoundList">
 
       <el-table
         :key="tableKey"
@@ -121,20 +121,7 @@ export default {
       gameRoundList: [],
       gameRoundToModify: {},
       ui: {
-        modifyBoxVisiable: false,
-        gameRoundListVisiable: true
-      }
-    }
-  },
-  watch: {
-    gameRoundListVisiable: function(val, oldVal) {
-      // 外部触发游戏开始
-      console.log('watch-command new: %s, old: %s', val, oldVal)
-      if (val === true) {
-        console.log('show')
-        this.getList()
-      } else {
-        console.log('hide')
+        modifyBoxVisiable: false
       }
     }
   },
@@ -189,12 +176,8 @@ export default {
       this.listLoading = true
       getGameRounds(this.listQuery).then(data => {
         this.list = data.gameRounds
-        this.total = data.pagination.total
-
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
+        this.total = data.total
+        this.listLoading = false
       })
     },
     handleCommand(e) {

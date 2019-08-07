@@ -22,12 +22,12 @@ export const entry = (number, data) => fetch(basePath + '/ztoupiao/' + number + 
 
 export const getAuthorize = (data) => fetch('/api/wxopen/auth', data, 'POST')
 
-export const getPostInfo = (data) => fetch(basePath + '/base/getPostInfo', data, 'POST')
+export const getPosts = (data) => fetch(basePath + '/posts', data)
+export const getPostDetail = (id, data) => fetch(basePath + '/posts/' + id, data)
 export const addPost = (data) => fetch(basePath + '/base/addPost', data, 'POST')
 export const modifyPost = (data) => fetch(basePath + '/base/modifyPost', data, 'POST')
 export const removePost = (data) => fetch(basePath + '/base/removePost', data, 'POST')
 export const removeCover = (data) => fetch(basePath + '/base/removeCover', data, 'POST')
-export const getPostDetail = (data) => fetch(basePath + '/base/getPostDetail', data, 'POST')
 
 export const getTermInfo = (data) => fetch(basePath + '/base/getTermInfo', data, 'POST')
 export const addTerm = (data) => fetch(basePath + '/base/addTerm', data, 'POST')

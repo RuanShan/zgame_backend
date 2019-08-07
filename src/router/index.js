@@ -137,8 +137,8 @@ export const constantRoutes = [
         meta: { title: '文章列表', icon: 'list' }
       },
       {
-        path: 'modify=:post_id',
-        component: () => import('@/views/post/modifyBox'),
+        path: 'edit/:id(\\d+)',
+        component: () => import('@/views/post/edit'),
         name: 'EditPost',
         meta: { title: '编辑', icon: 'list' },
         hidden: true

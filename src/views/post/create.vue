@@ -1,6 +1,6 @@
 <template>
-  <div class="create-post-container">
-    <Form />
+  <div class="form-container">
+    <Form @submit="handleSubmit" />
   </div>
 </template>
 
@@ -45,19 +45,7 @@ export default {
     }
   },
   watch: {
-    command: function(val, oldVal) {
-      // 外部触发游戏开始
-      console.log('watch-command new: %s, old: %s', val, oldVal)
-      if (val === true) {
-        console.log('show');
-        (this.postData = {
-          name: '',
-          desc: ''
-        })
-      } else {
-        console.log('hide')
-      }
-    },
+
     newUploads: function(val, oldVal) {
       // 外部触发游戏开始
       console.log(`watch-newUploads new: %s, old: %s`, val, oldVal)
@@ -95,6 +83,11 @@ export default {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
     },
+    // 用户点击创建文章事件
+    handleSubmit(postData) {
+
+    },
+
     post_msg: async function(e) {
       console.log('========post_msg========')
 
@@ -126,7 +119,7 @@ export default {
 </script>
 
 <style scoped>
-.form-main-container {
+.form-container {
   padding: 40px 45px 20px 50px;
 }
 </style>

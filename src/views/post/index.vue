@@ -3,49 +3,31 @@
     <div class="postList">
 
       <el-table
-        :key="tableKey"
         v-loading="listLoading"
-        :data="list"
+        :data="postList"
         border
         fit
         style="width: 100%;"
       >
         <el-table-column label="标题" prop="title" />
 
-        <el-table-column label="时间" prop="updated_at" />
+        <el-table-column width="180px" align="center" label="时间">
+          <template slot-scope="scope">
+            <span>{{ scope.row.updated_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="Actions" width="120">
+          <template slot-scope="scope">
+            <router-link :to="'/post/edit/'+scope.row.id">
+              <el-button type="primary" size="small" icon="el-icon-edit">
+                编辑
+              </el-button>
+            </router-link>
+          </template>
+        </el-table-column>
       </el-table>
 
-      <table>
-        <tr>
-          <td>name</td>
-          <td>alias</td>
-          <td>desc</td>
-          <td>created_at</td>
-        </tr>
-        <tr v-for="post in postList" :key="post.id">
-          <td>
-            <a>{{ post.name }}</a>
-          </td>
-          <td>
-            <a>{{ post.alias }}</a>
-          </td>
-          <td>
-            <a>{{ post.desc }}</a>
-          </td>
-          <td>
-            <a>{{ post.created_at }}</a>
-          </td>
-          <td>
-            <button type="button" @click="modify(post)">modify</button>
-          </td>
-          <td>
-            <button type="button" @click="remove(post)">remove</button>
-          </td>
-          <!-- <td>
-            <button type="button" @click="entry(post)">entry</button>
-          </td> -->
-        </tr>
-      </table>
     </div>
 
   </div>
@@ -54,7 +36,7 @@
 
 <script>
 import {
-  getPostInfo,
+  getPosts,
   removePost
 } from '@/api/backend.js'
 export default {
@@ -65,15 +47,23 @@ export default {
       company: {},
       authUrl: '',
       postList: [],
+      total: 0,
+      listLoading: true,
+      listQuery: {
+        page: 1,
+        limit: 20
+      },
       gameRoundToModify: {}
     }
   },
   watch: {
   },
   created() {
-    getPostInfo().then(async res => {
+    getPosts().then(async res => {
       console.log('res----:', res)
-      this.postList = res
+      this.postList = res.posts
+      this.total = res.total
+      this.listLoading = false
     })
   },
   methods: {
@@ -83,9 +73,9 @@ export default {
         id: post.id
       }
       removePost(params).then(data => {
-        getPostInfo().then(async res => {
+        getPosts().then(async res => {
           console.log('res----:', res)
-          this.postList = res
+          this.postList = res.posts
         })
       })
     },

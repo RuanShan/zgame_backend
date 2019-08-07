@@ -1,61 +1,46 @@
 <template>
-  <div class="addNewBox">
-    <el-form ref="postForm" :model="postData" :rules="rules" class="form-container">
-      <div id="awardUserInfoBox" class="page  input js_show">
-        <div class="awardUserInfoForm">
+  <div class="post-form-wrap">
+    <el-form ref="postForm" :model="postData" :rules="rules">
+      <div id="awardUserInfoBox">
+        <sticky :z-index="10" :class-name="'sub-navbar '+postData.status">
+          <el-button v-loading="loading" style="margin-left: 10px;" type="success" @click="submitForm">
+            Publish
+          </el-button>
+          <el-button v-loading="loading" type="warning" @click="draftForm">
+            Draft
+          </el-button>
+        </sticky>
 
-          <el-form-item style="margin-bottom: 40px;" prop="title">
-            <MDinput v-model="postData.title" :maxlength="100" name="name" required>
-              Title
-            </MDinput>
-          </el-form-item>
+        <el-form-item style="margin-bottom: 40px;" prop="title">
+          <MDinput v-model="postData.title" :maxlength="100" name="name" required>
+            Title
+          </MDinput>
+        </el-form-item>
 
-          <div class="postInfo-container">
-            <el-row>
-              <el-col :span="12">
-                <el-form-item label-width="60px" label="作者">
-                  <el-input v-model="postData.author" />
-                </el-form-item>
-              </el-col>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label-width="60px" label="作者">
+              <el-input v-model="postData.author" />
+            </el-form-item>
+          </el-col>
 
-              <el-col :span="10">
-                <el-form-item label-width="120px" label="发布时间" class="postInfo-container-item">
-                  <el-date-picker v-model="displayTime" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="Select date and time" />
-                </el-form-item>
-              </el-col>
+          <el-col :span="12">
+            <el-form-item label-width="120px" label="发布时间" class="postInfo-container-item">
+              <el-date-picker v-model="displayTime" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="Select date and time" />
+            </el-form-item>
+          </el-col>
 
-            </el-row>
-          </div>
+        </el-row>
 
-          <div class="weui-cells weui-cells_form">
-
-            <div class="weui-cell contactInput-ausername contactInput">
-              <div class="weui-cell__hd"><label class="weui-label">postData名称</label></div>
-              <div class="weui-cell__bd">
-                <input id="postname" v-model="postData.name" style="margin:0px;border: none;" class="weui-input theInputDecide textInput" propname="postData名称" propkey="postName" type="text" placeholder="限15字符">
-              </div>
-              <div class="weui-cell__ft warnIcon hide">
-                <i class="weui-icon-warn" />
-              </div>
-            </div>
-            <div class="weui-cell contactInput-ausername contactInput">
-              <div class="weui-cell__hd"><label class="weui-label">postData描述</label></div>
-              <div class="weui-cell__bd">
-                <input id="postDesc" v-model="postData.desc" style="margin:0px;border: none;" class="weui-input theInputDecide textInput" propname="postDesc" propkey="postDesc" type="text" placeholder="限15字符">
-              </div>
-              <div class="weui-cell__ft warnIcon hide">
-                <i class="weui-icon-warn" />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="weui-cell__hd">
-          <label for="" class="weui-label">Term</label>
-        </div>
-        <el-select v-model="postData.term" multiple placeholder="请选择">
-          <el-option v-for="term in termList" :key="term.id" :label="term.name" :value="term.id" />
-        </el-select>
-        <div>
+        <el-form-item label="描述">
+          <Tinymce ref="editor" v-model="postData.content" :height="400" />
+        </el-form-item>
+        <el-form-item label="分类">
+          <el-select v-model="postData.term" multiple placeholder="请选择">
+            <el-option v-for="term in termList" :key="term.id" :label="term.name" :value="term.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="图片">
           <el-upload
             ref="upload"
             class="uploads-wrap"
@@ -65,19 +50,20 @@
             :file-list="newUploads"
             :data="uploadData"
             :http-request="handleUpload"
+            :on-change="handleUploadChange"
             :on-success="handleUploadSuccess"
             :auto-upload="false"
+            :show-file-list="false"
             :limit="1"
           >
-            <i class="el-icon-plus" />
-          </el-upload>
-        </div>
+            <el-image
+              v-if="coverImageUrl"
+              :src="coverImageUrl"
+            />
+            <i v-else class="el-icon-plus avatar-uploader-icon" />
 
-        <p class="weui-uploader__title">游戏描述编辑</p>
-        <Tinymce ref="editor" v-model="postData.content" :height="400" />
-        <div class="weui-btn-area">
-          <a id="showTooltips" class="weui-btn weui-btn_primary userSubmitBtn" href="javascript:" @click="post_msg">提交</a>
-        </div>{}
+          </el-upload>
+        </el-form-item>
       </div>
     </el-form>
 
@@ -92,16 +78,18 @@ import {
 } from '@/api/backend'
 import MDinput from '@/components/MDinput'
 import Tinymce from '@/components/Tinymce'
+import Sticky from '@/components/Sticky' // 粘性header组件
 import {
   Uploader
 } from '@/lib/activestorage/uploader'
 const directUploadUrl = '/api/backend/photos/ztoupiao/create'
 export default {
   components: {
-    Tinymce, MDinput
+    Tinymce, MDinput, Sticky
   },
   props: {
-    command: {
+    isEdit: {
+      type: Boolean,
       default: false
     }
   },
@@ -120,7 +108,7 @@ export default {
     return {
       dialogImageUrl: '',
       dialogVisible: false,
-      image: {},
+      coverImageUrl: null,
       postData: {
         name: '',
         desc: '',
@@ -134,11 +122,13 @@ export default {
         type: 'cover',
         id: 0
       },
+
       rules: {
         image_uri: [{ validator: validateRequire }],
         title: [{ validator: validateRequire }],
         content: [{ validator: validateRequire }]
-      }
+      },
+      loading: false // 按钮功能是否处理中
     }
   },
   computed: {
@@ -175,9 +165,13 @@ export default {
       console.log('uploader=', uploader)
       uploader.upload()
     },
-    handleUploadSuccess(response, file, fileList) {
-      console.log('------------------handleUploadSuccess--------------------')
-      console.log(response, file, fileList)
+
+    handleUploadChange(file, fileList) {
+      // 上传之前，设置当前选择的图片
+      // let currentFile
+      const selectedFile = fileList[0]
+      this.coverImageUrl = selectedFile.url
+      console.log(' handleUploadChange = ', selectedFile, this.coverImageUrl)
     },
     handleRemove(file, fileList) {
       console.log(file, fileList)
@@ -187,16 +181,19 @@ export default {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
     },
-    post_msg: async function(e) {
-      console.log('========post_msg========')
+    draftForm() {
 
-      var msg_is_ok = true
+    },
+    submitForm: async function(e) {
+      console.log('========submitForm========')
+
+      var validated = true
       var postname = this.postData.name
       var title = this.postData.title
       var desc = this.postData.desc
       var term = this.postData.term
 
-      if (msg_is_ok) {
+      if (validated) {
         const postData = {
           user_id: 1,
           name: postname,
@@ -206,19 +203,35 @@ export default {
           content: this.postData.content
         }
 
+        // this.$emit('submit', { postData, postImages: this.newUploads })
         addPost(postData).then((res) => {
           console.log('res----:', res)
+          // 设置新创建的post的id,然后上传图片
           this.uploadData.id = res.id
           this.$refs.upload.submit()
+          // 上传成功后，转到编辑页面
         })
       }
+    },
+    handleUploadSuccess(response, file, fileList) {
+      console.log('------------------handleUploadSuccess--------------------')
+      console.log(response, file, fileList)
+    },
+    handleUploadError(err, file, fileList) {
+      console.log(err, file, fileList)
     }
   }
 }
 </script>
 
-<style scoped>
-.form-main-container {
-  padding: 40px 45px 20px 50px;
+<style lang="scss">
+.post-form-wrap {
+
+ .uploads-wrap .el-upload  {
+   width: 200px;
+   height: 120px;
+
+ }
 }
+
 </style>
