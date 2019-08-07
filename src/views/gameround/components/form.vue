@@ -75,33 +75,6 @@
             :default-time="['00:00:00','23:59:59']"
           />
         </el-form-item>
-
-      <div class="weui-cells weui-cells_form">
-        <div class="weui-cell">
-          <div class="weui-cell__bd">
-            <div class="weui-uploader">
-              <div class="weui-uploader__hd">
-                <p class="weui-uploader__title">海报上传</p>
-                <div class="weui-uploader__info">0/2</div>
-              </div>
-              <div class="weui-uploader__bd">
-                <ul id="uploaderFiles" class="weui-uploader__files">
-                  <li
-                    v-for="photo in albumData.Photos"
-                    :key="photo.id"
-                    class="weui-uploader__file"
-                    :style="{backgroundImage:'url(\''+photo.originalUrl+'\')'}"
-                    @click="readyToRemove(photo)"
-                  />
-                </ul>
-                <div class="weui-uploader__input-box">
-                  <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple="" @change="showImg">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <p class="weui-uploader__title">游戏描述编辑</p>
       <Tinymce ref="editor" v-model="postForm.content" :height="400" />
       <div class="weui-btn-area">

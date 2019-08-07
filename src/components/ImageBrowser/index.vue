@@ -102,9 +102,13 @@ export default {
       })
       console.log('uploader=', uploader)
       uploader.upload()
+      this.initData()
+      this.$emit('refresh')
+      console.log('==========refresh===========');
     },
     handleUploadSuccess(response, file, fileList) {
-      console.log(response, file, fileList)
+      console.log('=============handleUploadSuccess============')
+
     },
     handleMenu(key, keyPath) {
       console.log(key, keyPath)

@@ -188,8 +188,9 @@ export default {
     getList() {
       this.listLoading = true
       getGameRounds(this.listQuery).then(data => {
+        console.log('data----:',data);
         this.list = data.gameRounds
-        this.total = data.pagination.total
+        this.total = data.total
 
         // Just to simulate the time of the request
         setTimeout(() => {
