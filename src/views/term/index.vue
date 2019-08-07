@@ -21,9 +21,9 @@
           <td>
             <a>{{ term.created_at }}</a>
           </td>
-          <!-- <td>
+          <td>
             <button type="button" @click="modify(term)">modify</button>
-          </td> -->
+          </td>
           <td>
             <button type="button" @click="remove(term)">remove</button>
           </td>
@@ -81,6 +81,11 @@ export default {
           this.termList = res
         })
       })
+    },
+    modify: function(term) {
+      console.log('modify---:', term.id)
+      const src = '/term/modify=' + term.id
+      this.$router.push(src)
     }
 
   }

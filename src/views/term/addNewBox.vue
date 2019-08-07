@@ -100,7 +100,7 @@ export default {
       termData: {
         name: '',
         slug: '',
-        parent: '',
+        parent: null,
         desc: '',
         term: ''
       },
