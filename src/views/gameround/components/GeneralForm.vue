@@ -31,7 +31,7 @@
                         action=""
                         :multiple="false"
                         :file-list="newUploads"
-                        :data="{ number: gameRound.number, type:'slide' }"
+                        :data="{ number: gameRound.number, type:'slide', id:slide.id }"
                         :http-request="handleDirectUpload"
                         :on-success="handleUploadSuccess"
                       >
@@ -146,6 +146,7 @@ export default {
       })
       console.log('uploader=', uploader)
       uploader.upload()
+      this.deletePhoto(option.data.id)
       this.refresh()
     },
     handleUploadSuccess(response, file, fileList) {
