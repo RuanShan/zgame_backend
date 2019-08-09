@@ -1,6 +1,6 @@
 
 <template>
-  <el-dialog title="我的图片" :visible="computedVisible" id="elx-imgbox" class="elx-imgbox" top="5vh" :before-close="handleCloseDialog"	>
+  <el-dialog title="我的图片" :visible="computedVisible" id="elx-imgbox" class="elx-imgbox" top="5vh" :open="onOpen" :before-close="handleCloseDialog"	>
     <el-tabs v-model="activeTab" tab-position="left">
       <el-tab-pane label="选择图片" name="pick" class="pick-block">
         <div class="img-list-loading" v-if="isLoading">
@@ -76,7 +76,7 @@ import {
       dialogVisible:{
         type: Boolean
       },
-      listUrl:{
+      viewableType:{  // cover, slide
         type: String
       }
     },
@@ -93,6 +93,7 @@ import {
           maxSize: 2          // 最大尺寸（M）
         },
         listQuery: {
+          q: { viewable_type: 'cover' },
           page: 1,
           limit: 20
         },
@@ -303,6 +304,9 @@ import {
       },
       handleCloseDialog() {
         this.$emit('update:dialogVisible', false)
+      },
+      onOpen(){
+        this.listQuery.q.viewable_type = this.viewableType
       }
     },
 
