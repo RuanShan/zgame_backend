@@ -48,7 +48,7 @@
 
       </div>
     </el-form>
-    <PostCoverBrowser :dialog-visible.sync="imageBrowserVisible" @selected="handleImageSelected"> </PostCoverBrowser>
+    <PostCoverBrowser :dialog-visible.sync="imageBrowserVisible" viewable-type="cover" @selected="handleImageSelected"> </PostCoverBrowser>
   </div>
 </template>
 

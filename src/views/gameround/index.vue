@@ -65,14 +65,11 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item :command="{ cmd:'edit', id: scope.row.id }">投票统计</el-dropdown-item>
+                <el-dropdown-item :command="{ cmd:'edit', id: scope.row.id }">活动网址</el-dropdown-item>
                 <el-dropdown-item :command="{ cmd:'edit', id: scope.row.id }" divided>清空数据</el-dropdown-item>
                 <el-dropdown-item :command="{ cmd:'edit', id: scope.row.id }">删除</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-
-            <button type="button" @click="modify(scope.row.id)">modify</button>
-            <button type="button" @click="remove(scope.row.id)">remove</button>
-            <button type="button" @click="entry(scope.row.id)">entry</button>
 
           </template>
         </el-table-column>
