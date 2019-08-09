@@ -46,7 +46,7 @@
         </el-form-item>
       </el-form>
 
-      <ImageBrowser :game-round="gameRound" :dialog-visible.sync="imageBrowserVisible" @refresh="refresh" />
+      <ImageBrowser :dialog-visible.sync="imageBrowserVisible" @selected="handleImageSelected" />
       <ChangeSlideBrowser :slide-to-change="slideToChange" :dialog-visible.sync="ChangeSlideBrowserVisible" @changSlide="changSlide" />
 
     </el-tab-pane>
@@ -64,7 +64,7 @@
 <script>
 import Tinymce from '@/components/Tinymce'
 import { Uploader } from '@/lib/activestorage/uploader'
-import ImageBrowser from '@/components/ImageBrowser'
+import ImageBrowser from '@/components/ImageBrowser/better'
 import { removeSlide, bindPhotoRelationship } from '@/api/backend'
 import ChangeSlideBrowser from '@/components/ImageBrowser/change'
 import {
@@ -194,6 +194,20 @@ export default {
     },
     handlePopoverShow(id) {
       this.hoveringImageId = id
+    },
+    handleImageSelected(e) {
+      // 图片数据结构 [{id, url}]
+      const [image] = [...e.selectedImages]
+      if (image) {
+        const data = {
+          round_id: this.gameRound.id,
+          newImg: image
+        }
+        bindPhotoRelationship(data).then((res) => {
+          this.imageBrowserVisible = false
+          this.refresh()
+        })
+      }
     }
   }
 }
