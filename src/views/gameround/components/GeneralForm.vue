@@ -25,18 +25,8 @@
                   <div v-show="hoveringImageId == slide.id" class="options-wrap">
                     <div class="cover" />
                     <div class="replace-btn">
-                      <div class="delete-btn" @click="deletePhoto(slide.id)">  <el-button type="text" > <i class="el-icon-delete" /></el-button>  </div>
-                      <el-upload
-                        class="uploads-wrap"
-                        action=""
-                        :multiple="false"
-                        :file-list="newUploads"
-                        :data="{ number: gameRound.number, type:'slide', id:slide.id }"
-                        :http-request="handleDirectUpload"
-                        :on-success="handleUploadSuccess"
-                      >
-                        <el-button slot="trigger" type="primary"> 替换图片 </el-button>
-                      </el-upload>
+                      <div class="delete-btn" @click="deletePhoto(slide.id)">  <el-button type="text"> <i class="el-icon-delete" /></el-button>  </div>
+                      <el-button type="text" class="add-btn" @click="handleChangeSlideBrowser(slide)"> 替换图片 </el-button>
                     </div>
                   </div>
                 </div>
@@ -56,7 +46,8 @@
         </el-form-item>
       </el-form>
 
-      <ImageBrowser :game-round="gameRound" :dialog-visible.sync="imageBrowserVisible" @refresh='refresh'/>
+      <ImageBrowser :dialog-visible.sync="imageBrowserVisible" @selected="handleImageSelected" />
+      <ChangeSlideBrowser :slide-to-change="slideToChange" :dialog-visible.sync="ChangeSlideBrowserVisible" @changSlide="changSlide" />
 
     </el-tab-pane>
     <el-tab-pane label="活动介绍" name="third">
@@ -73,8 +64,9 @@
 <script>
 import Tinymce from '@/components/Tinymce'
 import { Uploader } from '@/lib/activestorage/uploader'
-import ImageBrowser from '@/components/ImageBrowser'
-import{ removeSlide } from '@/api/backend'
+import ImageBrowser from '@/components/ImageBrowser/better'
+import { removeSlide, bindPhotoRelationship } from '@/api/backend'
+import ChangeSlideBrowser from '@/components/ImageBrowser/change'
 import {
   buildImageUrlByStyle
 } from '@/utils/oss'
@@ -86,7 +78,8 @@ export default {
   name: 'GameRoundGeneralForm',
   components: {
     Tinymce,
-    ImageBrowser
+    ImageBrowser,
+    ChangeSlideBrowser
   },
   props: {
     gameRound: {
@@ -100,17 +93,19 @@ export default {
       tinyMenubar: '',
       tinyToolbar: tiny.toolbar,
       imageBrowserVisible: false,
+      ChangeSlideBrowserVisible: false,
       activeName: 'first',
       postersData: [],
       formData: {},
       hoveringImageId: 0,
       dialogImageUrl: null,
-      dialogVisible: false
+      dialogVisible: false,
+      slideToChange: {}
     }
   },
   computed: {
     slides() {
-      console.log('this.gameRound-----:',this.gameRound);
+      console.log('this.gameRound-----:', this.gameRound)
       if (this.gameRound.Slides) {
         return this.gameRound.Slides.map((slide) => {
           return {
@@ -131,7 +126,19 @@ export default {
   created() {},
   mounted() {},
   methods: {
-    refresh(){
+    changSlide(img) {
+      console.log('slideToChange', this.slideToChange)
+      console.log('new Slide---:', img)
+      const data = {
+        round_id: this.gameRound.id,
+        newImg: img
+      }
+      bindPhotoRelationship(data).then((res) => {
+        this.deletePhoto(this.slideToChange.id)
+        this.ChangeSlideBrowserVisible = false
+      })
+    },
+    refresh() {
       this.$emit('refresh')
     },
     handleDirectUpload(option) {
@@ -152,13 +159,13 @@ export default {
     handleUploadSuccess(response, file, fileList) {
       console.log(response, file, fileList)
     },
-    deletePhoto(id){
-      console.log('deletePhoto-----:',id);
+    deletePhoto(id) {
+      console.log('deletePhoto-----:', id)
       const data = {
         photo_id: id,
-        round_id:this.gameRound.id
+        round_id: this.gameRound.id
       }
-      removeSlide(data).then((res)=>{
+      removeSlide(data).then((res) => {
         this.refresh()
       })
     },
@@ -181,8 +188,26 @@ export default {
     handleOpenImageBrowser() {
       this.imageBrowserVisible = true
     },
+    handleChangeSlideBrowser(slide) {
+      this.slideToChange = slide
+      this.ChangeSlideBrowserVisible = true
+    },
     handlePopoverShow(id) {
       this.hoveringImageId = id
+    },
+    handleImageSelected(e) {
+      // 图片数据结构 [{id, url}]
+      const [image] = [...e.selectedImages]
+      if (image) {
+        const data = {
+          round_id: this.gameRound.id,
+          newImg: image
+        }
+        bindPhotoRelationship(data).then((res) => {
+          this.imageBrowserVisible = false
+          this.refresh()
+        })
+      }
     }
   }
 }
