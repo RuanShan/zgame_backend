@@ -25,7 +25,7 @@
           </el-col>
 
           <el-col :span="12">
-            <el-form-item  label="发布时间" class="postInfo-container-item">
+            <el-form-item label="发布时间" class="postInfo-container-item">
               <el-date-picker v-model="displayTime" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="Select date and time" />
             </el-form-item>
           </el-col>
@@ -40,15 +40,15 @@
             <el-option v-for="term in termList" :key="term.id" :label="term.name" :value="term.id" />
           </el-select>
         </el-form-item>
-      <el-form-item label="新闻图">
-        <HoverableImage :url="coverImage.url" >
-            <el-button  type="text" class="add-btn" @click="handleOpenImageBrowser" > 添加图片 </el-button>
-        </HoverableImage>
-      </el-form-item>
+        <el-form-item label="新闻图">
+          <HoverableImage :url="coverImage.url">
+            <el-button type="text" class="add-btn" @click="handleOpenImageBrowser"> 添加图片 </el-button>
+          </HoverableImage>
+        </el-form-item>
 
       </div>
     </el-form>
-    <PostCoverBrowser :dialog-visible.sync="imageBrowserVisible" @selected="handleImageSelected"> </PostCoverBrowser>
+    <PostCoverBrowser :viewable-type="viewableType" :dialog-visible.sync="imageBrowserVisible" @selected="handleImageSelected" />
   </div>
 </template>
 
@@ -91,11 +91,12 @@ export default {
       }
     }
     return {
+      viewableType: 'cover',
       imageBrowserVisible: false,
       dialogImageUrl: '',
       dialogVisible: false,
-      coverImage:{ id: null,
-          url: null,
+      coverImage: { id: null,
+        url: null
       },
       postData: {
         name: '',
@@ -185,7 +186,7 @@ export default {
           desc: desc,
           content: this.postData.content
         }
-        let params = { post: postData, photo_id: this.coverImage.id, terms }
+        const params = { post: postData, photo_id: this.coverImage.id, terms }
         // this.$emit('submit', { postData, postImages: this.newUploads })
         addPost(params).then((res) => {
           console.log('res----:', res)
@@ -203,16 +204,15 @@ export default {
     handleUploadError(err, file, fileList) {
       console.log(err, file, fileList)
     },
-    handleOpenImageBrowser(){
+    handleOpenImageBrowser() {
       this.imageBrowserVisible = true
     },
-    handleImageSelected( e ){
-      //图片数据结构 [{id, url}]
-      let [image] = [...e.selectedImages]
-      if( image ){
+    handleImageSelected(e) {
+      // 图片数据结构 [{id, url}]
+      const [image] = [...e.selectedImages]
+      if (image) {
         this.coverImage = image
       }
-
     }
   }
 }
