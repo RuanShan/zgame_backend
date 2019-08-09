@@ -1,6 +1,6 @@
 
 <template>
-  <el-dialog id="elx-imgbox" title="我的图片" :visible="computedVisible" class="elx-imgbox" top="5vh" :before-close="handleCloseDialog">
+  <el-dialog id="elx-imgbox" title="我的图片" :visible="computedVisible" :open="onOpen" class="elx-imgbox" top="5vh" :before-close="handleCloseDialog">
     <el-tabs v-model="activeTab" tab-position="left">
       <el-tab-pane label="选择图片" name="pick" class="pick-block">
         <div v-if="isLoading" class="img-list-loading">
@@ -77,6 +77,9 @@ export default {
     },
     listUrl: {
       type: String
+    },
+    viewableType: { // cover, slide
+      type: String
     }
   },
 
@@ -106,7 +109,7 @@ export default {
         total: 0
       },
       uploadData: {
-        viewable_type: 'cover'
+        viewable_type: 'silde'
       }
     }
   },
@@ -122,6 +125,10 @@ export default {
   },
 
   methods: {
+    onOpen() {
+      console.log('this.viewableType---:', this.viewableType)
+      this.listQuery.q.viewable_type = this.viewableType
+    },
 
     /**
        * 点击图片时选中或取消选中图片

@@ -46,8 +46,8 @@
         </el-form-item>
       </el-form>
 
-      <ImageBrowser :dialog-visible.sync="imageBrowserVisible" @selected="handleImageSelected" />
-      <ChangeSlideBrowser :slide-to-change="slideToChange" :dialog-visible.sync="ChangeSlideBrowserVisible" @changSlide="changSlide" />
+      <ImageBrowser :viewable-type="viewableType" :dialog-visible.sync="imageBrowserVisible" @selected="handleImageSelected" />
+      <ChangeSlideBrowser :viewable-type="viewableType" :slide-to-change="slideToChange" :dialog-visible.sync="ChangeSlideBrowserVisible" @changSlide="changSlide" />
 
     </el-tab-pane>
     <el-tab-pane label="活动介绍" name="third">
@@ -89,6 +89,7 @@ export default {
   },
   data() {
     return {
+      viewableType: 'slide',
       newUploads: [],
       tinyMenubar: '',
       tinyToolbar: tiny.toolbar,
