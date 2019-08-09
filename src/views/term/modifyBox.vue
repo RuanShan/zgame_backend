@@ -79,7 +79,7 @@
 import weui from 'weui.js'
 import queryString from 'query-string'
 import $ from 'jquery'
-import { getTermDetail, modifyTerm, getTermInfo, removeCover } from '@/api/backend.js'
+import { getTermDetail, modifyTerm, getTermInfo } from '@/api/backend.js'
 import Tinymce from '@/components/Tinymce'
 import { Uploader } from '@/lib/activestorage/uploader'
 const directUploadUrl = '/api/backend/photos/ztoupiao/create'

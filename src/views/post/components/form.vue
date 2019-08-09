@@ -64,9 +64,15 @@
 
           </el-upload>
         </el-form-item>
+      <el-form-item label="添加新闻图">
+        <HoverableImage :url="coverImageUrl" >
+            <el-button  type="text" class="add-btn" @click="handleOpenImageBrowser" > 添加图片2 </el-button>
+        </HoverableImage>
+      </el-form-item>
+
       </div>
     </el-form>
-
+    <PostCoverBrowser :dialog-visible.sync="imageBrowserVisible"> </PostCoverBrowser>
   </div>
 </template>
 
@@ -79,13 +85,16 @@ import {
 import MDinput from '@/components/MDinput'
 import Tinymce from '@/components/Tinymce'
 import Sticky from '@/components/Sticky' // 粘性header组件
+import PostCoverBrowser from '@/components/ImageBrowser/better'
+import HoverableImage from './HoverableImage'
+
 import {
   Uploader
 } from '@/lib/activestorage/uploader'
 const directUploadUrl = '/api/backend/photos/ztoupiao/create'
 export default {
   components: {
-    Tinymce, MDinput, Sticky
+    Tinymce, MDinput, Sticky, PostCoverBrowser, HoverableImage
   },
   props: {
     isEdit: {
@@ -106,6 +115,7 @@ export default {
       }
     }
     return {
+      imageBrowserVisible: false,
       dialogImageUrl: '',
       dialogVisible: false,
       coverImageUrl: null,
@@ -119,10 +129,8 @@ export default {
       termList: [],
       newUploads: [],
       uploadData: {
-        type: 'cover',
-        id: 0
+        post_id: 0
       },
-
       rules: {
         image_uri: [{ validator: validateRequire }],
         title: [{ validator: validateRequire }],
@@ -207,7 +215,7 @@ export default {
         addPost(postData).then((res) => {
           console.log('res----:', res)
           // 设置新创建的post的id,然后上传图片
-          this.uploadData.id = res.id
+          this.uploadData.post_id = res.id
           this.$refs.upload.submit()
           // 上传成功后，转到编辑页面
         })
@@ -219,6 +227,9 @@ export default {
     },
     handleUploadError(err, file, fileList) {
       console.log(err, file, fileList)
+    },
+    handleOpenImageBrowser(){
+      this.imageBrowserVisible = true
     }
   }
 }

@@ -122,8 +122,8 @@ export default {
       postData: {},
       newUploads: [],
       uploadData: {
-        type: 'cover',
-        id: 0
+        viewable_type: 'cover',
+        viewable_id: 0
       },
       termssss: []
     }
@@ -149,20 +149,17 @@ export default {
 
         console.log('res---:', res)
         this.postData = res.post
-        const terms = res.term
+        const terms = res.terms
         const valueList = []
         for (let i = 0; i < terms.length; i++) {
           valueList.push(terms[i].value)
         }
         this.termssss = valueList
 
-        for (let i = 0; i < res.post.Covers.length; i++) {
-          console.log('Covers=====', res.post.Covers[i])
-          const cover = {
-            name: res.post.Covers[i].file_name,
-            url: res.post.Covers[i].originalUrl
-          }
-          this.newUploads.push(cover)
+
+        if( res.cover ){
+          this.newUploads.push( {   name: res.cover.file_name,
+            url: res.cover.originalUrl})
         }
       })
     },
@@ -213,7 +210,7 @@ export default {
         console.log('data------:', data)
         modifyPost(data).then((res) => {
           console.log('res----:', res)
-          this.uploadData.id = res.id
+          this.uploadData.viewable_id = res.id
           this.$refs.upload.submit()
         })
       }

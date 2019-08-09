@@ -37,6 +37,9 @@ Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size
 })
 
+import Imgbox from './plugins/imgbox'
+Vue.use(Imgbox) // $imgbox(this.opts);
+
 // register global utility filters
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])

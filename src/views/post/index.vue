@@ -28,6 +28,8 @@
         </el-table-column>
       </el-table>
 
+      <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="postList" />
+
     </div>
 
   </div>
@@ -39,9 +41,14 @@ import {
   getPosts,
   removePost
 } from '@/api/backend.js'
+
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+
 export default {
   name: 'PostsIndex',
-
+  components: {
+    Pagination
+  },
   data() {
     return {
       company: {},
@@ -52,21 +59,21 @@ export default {
       listQuery: {
         page: 1,
         limit: 20
-      },
-      gameRoundToModify: {}
+      }
     }
   },
-  watch: {
-  },
   created() {
-    getPosts().then(async res => {
-      console.log('res----:', res)
-      this.postList = res.posts
-      this.total = res.total
-      this.listLoading = false
-    })
+    this.initData()
   },
   methods: {
+    initData(  ){
+      getPosts( this.listQuery ).then(async res => {
+        console.log('res----:', res)
+        this.postList = res.posts
+        this.total = res.total
+        this.listLoading = false
+      })
+    },
     remove: function(post) {
       console.log('entry---:', post.id)
       const params = {

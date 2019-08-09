@@ -38,10 +38,7 @@ export default {
       },
       termList: [],
       newUploads: [],
-      uploadData: {
-        type: 'cover',
-        id: 0
-      }
+
     }
   },
   watch: {
@@ -86,34 +83,8 @@ export default {
     // 用户点击创建文章事件
     handleSubmit(postData) {
 
-    },
-
-    post_msg: async function(e) {
-      console.log('========post_msg========')
-
-      var msg_is_ok = true
-      var postname = this.postData.name
-      var title = this.postData.title
-      var desc = this.postData.desc
-      var term = this.postData.term
-
-      if (msg_is_ok) {
-        const postData = {
-          user_id: 1,
-          name: postname,
-          title: title,
-          desc: desc,
-          term: term,
-          content: this.postData.content
-        }
-
-        addPost(postData).then((res) => {
-          console.log('res----:', res)
-          this.uploadData.id = res.id
-          this.$refs.upload.submit()
-        })
-      }
     }
+
   }
 }
 </script>
