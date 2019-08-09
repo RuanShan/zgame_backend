@@ -1,6 +1,7 @@
 <template>
-  <Form />
-
+  <div class="form-container">
+  <Form  />
+  </div>
 </template>
 
 <script>
@@ -14,3 +15,8 @@ export default {
 }
 
 </script>
+<style scoped>
+.form-container {
+  padding: 40px 45px 20px 50px;
+}
+</style>

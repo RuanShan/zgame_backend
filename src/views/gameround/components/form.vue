@@ -1,64 +1,7 @@
-<!-- <template>
-  <div class="addNewBox">
-    <el-form ref="postForm" :model="postForm" :rules="rules" class="form-container">
-      <div class="form-main-container">
-
-        <el-form-item label="活动名称">
-          <el-input v-model="game.name" />
-        </el-form-item>
-        <el-form-item label="投票时间">
-
-          <el-date-picker
-            v-model="game.startandend"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :default-time="['00:00:00','23:59:59']"
-          />
-        </el-form-item>
-
-        <div class="weui-cells weui-cells_form">
-          <div class="weui-cell">
-            <div class="weui-cell__bd">
-              <div class="weui-uploader">
-                <div class="weui-uploader__hd">
-                  <p class="weui-uploader__title">海报上传</p>
-                  <div class="weui-uploader__info">0/2</div>
-                </div>
-                <div class="weui-uploader__bd">
-                  <ul id="uploaderFiles" class="weui-uploader__files">
-                    <li
-                      v-for="photo in postersData"
-                      :key="photo.id"
-                      class="weui-uploader__file"
-                      :style="{backgroundImage:'url(\''+photo.originalUrl+'\')'}"
-                      @click="readyToRemove(photo)"
-                    />
-                  </ul>
-                  <div class="weui-uploader__input-box">
-                    <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple="" @change="showImg">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <p class="weui-uploader__title">游戏描述编辑</p>
-        <Tinymce ref="editor" v-model="game.desc" :height="400" />
-        <div class="weui-btn-area">
-          <a id="showTooltips" class="weui-btn weui-btn_primary userSubmitBtn" href="javascript:" @click="readyToModify">提交</a>
-        </div>
-      </div>
-    </el-form>
-
-  </div>
-
-</template> -->
 
 <template>
   <div class="addNewBox">
-    <el-form ref="postForm" :model="postForm" class="form-container">
+    <el-form ref="postForm" :model="postForm" label-width="80px" >
       <div class="form-main-container">
 
         <el-form-item label="活动名称">
@@ -75,11 +18,12 @@
             :default-time="['00:00:00','23:59:59']"
           />
         </el-form-item>
-      <p class="weui-uploader__title">游戏描述编辑</p>
-      <Tinymce ref="editor" v-model="postForm.content" :height="400" />
-      <div class="weui-btn-area">
-        <a id="showTooltips" class="weui-btn weui-btn_primary userSubmitBtn" href="javascript:" @click="post_msg">提交</a>
-      </div>
+        <el-form-item label="活动说明">
+          <Tinymce ref="editor" v-model="postForm.content" :height="400" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">立即创建</el-button>
+        </el-form-item>
     </div>
   </el-form>
     </div>
@@ -145,8 +89,8 @@ export default {
   },
   created() {},
   methods: {
-    post_msg: async function(e) {
-      console.log('========post_msg========')
+    onSubmit: async function(e) {
+      console.log('========onSubmit========')
 
       weui.form.validate('#form', (error) => {
         if (!error) {
@@ -326,3 +270,6 @@ export default {
 }
 
 </script>
+<style scoped>
+
+</style>
