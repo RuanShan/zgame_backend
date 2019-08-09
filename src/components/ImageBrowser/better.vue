@@ -39,6 +39,7 @@
             :auto-upload="false"
             :multiple="options.multiple"
             :limit="options.limit"
+            :data="uploadData"
             :http-request="handleUpload"
             :before-upload="beforeUpload"
             :on-progress="handleOnProgress"
@@ -63,6 +64,10 @@
 <script type="text/babel">
 import { searchPhotos } from '@/api/backend.js'
 import { directUploadUrl } from '@/config/env'
+import {
+  Uploader
+} from '@/lib/activestorage/uploader'
+
 
   export default {
     name: 'BetterImgbox',
@@ -81,7 +86,7 @@ import { directUploadUrl } from '@/config/env'
         options: {
           uploadUrl: '',      // 图片上传URL
           listUrl: '',        // 图片列表数据URL
-          multiple: true,     // 是否支持选取多个图片
+          multiple: false,     // 是否支持选取多个图片
           limit: 10,          // 一批次最多可上传图片数
           onSelect: null,     // 选择后回调函数
           enableUpload: true, // 是否启用图片上传
@@ -91,7 +96,6 @@ import { directUploadUrl } from '@/config/env'
           page: 1,
           limit: 20
         },
-        visible: true,
         isLoading: true,
         activeTab: 'pick',
         uploadSuccessCount: 0,
@@ -100,6 +104,9 @@ import { directUploadUrl } from '@/config/env'
         imgRes: {
           list: [],
           total: 0,
+        },
+        uploadData: {
+          viewable_type: 'cover'
         }
       };
     },
@@ -152,7 +159,7 @@ import { directUploadUrl } from '@/config/env'
 
           // photo{ file_name, content_type, file_size, previewUrl, originalUrl }
           res.photos.forEach((photo)=>{
-            let img = { name: photo.file_name, thumb: photo.previewUrl, label: 'lable', selected: false  }
+            let img = { id: photo.id, url: photo.previewUrl, name: photo.file_name, thumb: photo.previewUrl, label: 'lable', selected: false  }
             // 图片选中状态
             imgs.push(img);
           })
@@ -186,23 +193,13 @@ import { directUploadUrl } from '@/config/env'
        * @returns {boolean}
        */
       handleConfirmSelect () {
-        if(typeof this.options.onSelect !== 'function') {
-          ELEMENT.Message.error('请先设置回调函数');
-          return false;
-        }
+        let selectedImages = this.imgRes.list.filter((img)=>img.selected)
 
-        const cb = $.Callbacks();
-        cb.add(this.options.onSelect);
-
-        // 单选返回一个图片
-        // for(const i in this.selectedImgs) {
-        //   const img = this.selectedImgs[i];
-        //   cb.fire(img);
-        // }
+        // selectedImages { id: photo.id, url: photo.previewUrl }
+        this.$emit( "selected", { selectedImages } )
 
         // 隐藏，取消已选
-        this.$emit('update:visible', false)
-        this.reset();
+        this.handleCloseDialog();
       },
 
       /**
@@ -233,12 +230,12 @@ import { directUploadUrl } from '@/config/env'
         const isSize = file.size / (1024*1024) < this.options.maxSize;
 
         if (!isJPG && !isPNG &&!isGif) {
-          ELEMENT.Message.error('仅支持 JPG/PNG/GIF 3种格式');
+          this.$alert('仅支持 JPG/PNG/GIF 3种格式');
           return false;
         }
 
         if (!isSize) {
-          ELEMENT.Message.error('上传图片大小不能超过 ' + this.options.maxSize + 'M');
+          this.$alert('上传图片大小不能超过 ' + this.options.maxSize + 'M');
           return false;
         }
 
@@ -252,7 +249,7 @@ import { directUploadUrl } from '@/config/env'
        * @param fileList
        */
       handleUploadError (err, file, fileList) {
-        ELEMENT.Message.info('服务器打了个盹^_^');
+        this.$prompt('服务器打了个盹^_^');
         console.log(err)
       },
 
@@ -264,19 +261,10 @@ import { directUploadUrl } from '@/config/env'
        * @returns {boolean}
        */
       handleUploadSuccess (response, file, fileList) {
-        if(typeof this.options.onSelect !== 'function') {
-          ELEMENT.Message.error('请先设置回调函数');
-          return false;
-        }
-
-        const cb = $.Callbacks();
-        cb.add(this.options.onSelect);
-        cb.fire(response.uploadfile_response);
 
         this.uploadSuccessCount ++;
 
         if(fileList.length === this.uploadSuccessCount) {
-          this.visible = false;
           this.reset();
         }
       },
@@ -285,7 +273,7 @@ import { directUploadUrl } from '@/config/env'
        * 选择上传文件超过限制文件个数提示
        */
       onExceedTip () {
-        ELEMENT.Message.warning('最多只能选择' + this.options.limit + '张图片');
+        this.$alert('最多只能选择' + this.options.limit + '张图片');
       },
 
       handleUpload(option) {
@@ -310,7 +298,8 @@ import { directUploadUrl } from '@/config/env'
         }
 
         this.uploadSuccessCount = 0;
-        this.handleCancelAll();
+        this.handlePageChange(1)
+        this.activeTab = 'pick'
       },
       handleCloseDialog() {
         this.$emit('update:dialogVisible', false)
@@ -318,7 +307,7 @@ import { directUploadUrl } from '@/config/env'
     },
 
     mounted(){
-      this.loadImgList();
+      this.loadImgList()
     },
 
     computed: {
@@ -504,7 +493,7 @@ import { directUploadUrl } from '@/config/env'
           height: 90px;
           line-height: 98px;
           background-size: cover;
-          background-position: 50% 50%;          
+          background-position: 50% 50%;
         }
       }
 

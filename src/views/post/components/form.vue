@@ -1,6 +1,6 @@
 <template>
   <div class="post-form-wrap">
-    <el-form ref="postForm" :model="postData" :rules="rules">
+    <el-form ref="postForm" :model="postData" :rules="rules" label-width="80px">
       <div id="awardUserInfoBox">
         <sticky :z-index="10" :class-name="'sub-navbar '+postData.status">
           <el-button v-loading="loading" style="margin-left: 10px;" type="success" @click="submitForm">
@@ -19,13 +19,13 @@
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label-width="60px" label="作者">
+            <el-form-item label="作者">
               <el-input v-model="postData.author" />
             </el-form-item>
           </el-col>
 
           <el-col :span="12">
-            <el-form-item label-width="120px" label="发布时间" class="postInfo-container-item">
+            <el-form-item  label="发布时间" class="postInfo-container-item">
               <el-date-picker v-model="displayTime" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="Select date and time" />
             </el-form-item>
           </el-col>
@@ -36,43 +36,19 @@
           <Tinymce ref="editor" v-model="postData.content" :height="400" />
         </el-form-item>
         <el-form-item label="分类">
-          <el-select v-model="postData.term" multiple placeholder="请选择">
+          <el-select v-model="postData.terms" multiple placeholder="请选择">
             <el-option v-for="term in termList" :key="term.id" :label="term.name" :value="term.id" />
           </el-select>
         </el-form-item>
-        <el-form-item label="图片">
-          <el-upload
-            ref="upload"
-            class="uploads-wrap"
-            action=""
-            :multiple="false"
-            list-type="picture-card"
-            :file-list="newUploads"
-            :data="uploadData"
-            :http-request="handleUpload"
-            :on-change="handleUploadChange"
-            :on-success="handleUploadSuccess"
-            :auto-upload="false"
-            :show-file-list="false"
-            :limit="1"
-          >
-            <el-image
-              v-if="coverImageUrl"
-              :src="coverImageUrl"
-            />
-            <i v-else class="el-icon-plus avatar-uploader-icon" />
-
-          </el-upload>
-        </el-form-item>
-      <el-form-item label="添加新闻图">
-        <HoverableImage :url="coverImageUrl" >
-            <el-button  type="text" class="add-btn" @click="handleOpenImageBrowser" > 添加图片2 </el-button>
+      <el-form-item label="新闻图">
+        <HoverableImage :url="coverImage.url" >
+            <el-button  type="text" class="add-btn" @click="handleOpenImageBrowser" > 添加图片 </el-button>
         </HoverableImage>
       </el-form-item>
 
       </div>
     </el-form>
-    <PostCoverBrowser :dialog-visible.sync="imageBrowserVisible"> </PostCoverBrowser>
+    <PostCoverBrowser :dialog-visible.sync="imageBrowserVisible" @selected="handleImageSelected"> </PostCoverBrowser>
   </div>
 </template>
 
@@ -118,13 +94,15 @@ export default {
       imageBrowserVisible: false,
       dialogImageUrl: '',
       dialogVisible: false,
-      coverImageUrl: null,
+      coverImage:{ id: null,
+          url: null,
+      },
       postData: {
         name: '',
         desc: '',
         content: '',
         title: '',
-        term: ''
+        terms: []
       },
       termList: [],
       newUploads: [],
@@ -177,9 +155,7 @@ export default {
     handleUploadChange(file, fileList) {
       // 上传之前，设置当前选择的图片
       // let currentFile
-      const selectedFile = fileList[0]
-      this.coverImageUrl = selectedFile.url
-      console.log(' handleUploadChange = ', selectedFile, this.coverImageUrl)
+
     },
     handleRemove(file, fileList) {
       console.log(file, fileList)
@@ -199,7 +175,7 @@ export default {
       var postname = this.postData.name
       var title = this.postData.title
       var desc = this.postData.desc
-      var term = this.postData.term
+      var terms = this.postData.terms // array of term_id
 
       if (validated) {
         const postData = {
@@ -207,12 +183,11 @@ export default {
           name: postname,
           title: title,
           desc: desc,
-          term: term,
           content: this.postData.content
         }
-
+        let params = { post: postData, photo_id: this.coverImage.id, terms }
         // this.$emit('submit', { postData, postImages: this.newUploads })
-        addPost(postData).then((res) => {
+        addPost(params).then((res) => {
           console.log('res----:', res)
           // 设置新创建的post的id,然后上传图片
           this.uploadData.post_id = res.id
@@ -230,6 +205,14 @@ export default {
     },
     handleOpenImageBrowser(){
       this.imageBrowserVisible = true
+    },
+    handleImageSelected( e ){
+      //图片数据结构 [{id, url}]
+      let [image] = [...e.selectedImages]
+      if( image ){
+        this.coverImage = image
+      }
+
     }
   }
 }
