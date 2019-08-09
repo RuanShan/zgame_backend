@@ -175,6 +175,7 @@ export default {
     getList() {
       this.listLoading = true
       getGameRounds(this.listQuery).then(data => {
+        console.log('data----:',data);
         this.list = data.gameRounds
         this.total = data.total
         this.listLoading = false

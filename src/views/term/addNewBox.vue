@@ -23,11 +23,11 @@
             </div>
           </div>
           <div class="weui-cell contactInput-ausername contactInput">
-            <div class="weui-cell__hd"><label class="weui-label">alias</label></div>
+            <div class="weui-cell__hd"><label class="weui-label">slug</label></div>
             <div class="weui-cell__bd">
               <input
                 id="termTitle"
-                v-model="termData.alias"
+                v-model="termData.slug"
                 style="margin:0px;border: none;"
                 class="weui-input theInputDecide textInput"
                 propname="termTitle"
@@ -60,21 +60,9 @@
           </div>
           <div class="weui-cell contactInput-ausername contactInput">
             <div class="weui-cell__hd"><label class="weui-label">termData  Parent</label></div>
-            <div class="weui-cell__bd">
-              <input
-                id="termParent"
-                v-model="termData.parent"
-                style="margin:0px;border: none;"
-                class="weui-input theInputDecide textInput"
-                propname="termParent"
-                propkey="termParent"
-                type="text"
-                placeholder="限15字符"
-              >
-            </div>
-            <div class="weui-cell__ft warnIcon hide">
-              <i class="weui-icon-warn" />
-            </div>
+            <el-select v-model="termData.term" placeholder="请选择">
+              <el-option v-for="term in termList" :key="term.id" :label="term.name" :value="term.id" />
+            </el-select>
           </div>
         </div>
       </div>
@@ -91,7 +79,7 @@
 import weui from 'weui.js'
 import $ from 'jquery'
 import queryString from 'query-string'
-import { addTerm } from '@/api/backend.js'
+import { addTerm, getTermInfo } from '@/api/backend.js'
 import Tinymce from '@/components/Tinymce'
 export default {
   components: { Tinymce },
@@ -111,10 +99,12 @@ export default {
       fileToDelete: [],
       termData: {
         name: '',
-        alias: '',
-        parent: '',
-        desc: ''
+        slug: '',
+        parent: null,
+        desc: '',
+        term: ''
       },
+      termList: [],
       account: '',
       password: ''
 
@@ -135,7 +125,12 @@ export default {
       }
     }
   },
-  created() {},
+  created() {
+    getTermInfo().then(async res => {
+      console.log('res----:', res)
+      this.termList = res
+    })
+  },
   methods: {
     post_msg: async function(e) {
       console.log('========post_msg========')
@@ -156,9 +151,9 @@ export default {
       })
       var msg_is_ok = true
       var termname = this.termData.name
-      var alias = this.termData.alias
+      var slug = this.termData.slug
       var desc = this.termData.desc
-      var parent = this.termData.parent
+      var parent = this.termData.term
       if (termname === '') {
         weui.form.showErrorTips({
           ele: termname,
@@ -169,7 +164,7 @@ export default {
       if (msg_is_ok) {
         const termData = {
           name: termname,
-          alias: alias,
+          slug: slug,
           desc: desc,
           parent: parent
         }

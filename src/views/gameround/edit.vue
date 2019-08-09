@@ -17,7 +17,7 @@
 
       <div class="setup-wrap">
         <RoundForm v-show="activeStep==1" :game-round="gameRound" />
-        <GeneralForm v-show="activeStep==2" :game-round="gameRound" />
+        <GeneralForm v-show="activeStep==2" :game-round="gameRound" @refresh="refresh"/>
       </div>
     </div>
 
@@ -74,6 +74,10 @@ export default {
     this.initData()
   },
   methods: {
+    refresh(){
+      console.log('edit refresh');
+      this.initData()
+    },
     async initData() {
       this.gameRound = await getGameRound(this.$route.params.id)
       Object.assign(this.formData, this.gameRound)

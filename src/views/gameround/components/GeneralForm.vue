@@ -24,15 +24,14 @@
                   <el-image style="width: 295px; height: 100%" :src="slide.url" fit="contain" />
                   <div v-show="hoveringImageId == slide.id" class="options-wrap">
                     <div class="cover" />
-                    <div class="delete-btn" @click="deletePhoto(slide.id)">  <el-button type="text" > <i class="el-icon-delete" /></el-button>  </div>
-                    <div class="replace-btn" @click="changePhoto(slide.id)">
-                      <!-- <el-link type="text" :underline="false"> 替换图片 </el-link> -->
+                    <div class="replace-btn">
+                      <div class="delete-btn" @click="deletePhoto(slide.id)">  <el-button type="text" > <i class="el-icon-delete" /></el-button>  </div>
                       <el-upload
                         class="uploads-wrap"
                         action=""
                         :multiple="false"
                         :file-list="newUploads"
-                        :data="{ number: gameRound.number, type:'slide' }"
+                        :data="{ number: gameRound.number, type:'slide', id:slide.id }"
                         :http-request="handleDirectUpload"
                         :on-success="handleUploadSuccess"
                       >
@@ -57,7 +56,7 @@
         </el-form-item>
       </el-form>
 
-      <ImageBrowser :game-round="gameRound" :dialog-visible.sync="imageBrowserVisible" />
+      <ImageBrowser :game-round="gameRound" :dialog-visible.sync="imageBrowserVisible" @refresh='refresh'/>
 
     </el-tab-pane>
     <el-tab-pane label="活动介绍" name="third">
@@ -75,6 +74,7 @@
 import Tinymce from '@/components/Tinymce'
 import { Uploader } from '@/lib/activestorage/uploader'
 import ImageBrowser from '@/components/ImageBrowser'
+import{ removeSlide } from '@/api/backend'
 import {
   buildImageUrlByStyle
 } from '@/utils/oss'
@@ -131,6 +131,9 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    refresh(){
+      this.$emit('refresh')
+    },
     handleDirectUpload(option) {
       const file = option.file
       const url = directUploadUrl + '?token=' + this.$store.getters.token
@@ -143,15 +146,21 @@ export default {
       })
       console.log('uploader=', uploader)
       uploader.upload()
+      this.deletePhoto(option.data.id)
+      this.refresh()
     },
     handleUploadSuccess(response, file, fileList) {
       console.log(response, file, fileList)
     },
     deletePhoto(id){
       console.log('deletePhoto-----:',id);
-    },
-    changePhoto(id){
-      console.log('changePhoto-----:',id);
+      const data = {
+        photo_id: id,
+        round_id:this.gameRound.id
+      }
+      removeSlide(data).then((res)=>{
+        this.refresh()
+      })
     },
     initData() {
       Object.assign(this.formData, this.gameRound)

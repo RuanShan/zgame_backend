@@ -166,6 +166,13 @@ export const constantRoutes = [
         component: () => import('@/views/term/index'),
         name: 'termList',
         meta: { title: '管理分类', icon: 'list' }
+      },
+      {
+        path: 'modify=:term_id',
+        component: () => import('@/views/term/modifyBox'),
+        name: 'Editterm',
+        meta: { title: '编辑', icon: 'list' },
+        hidden: true
       }
     ]
   },

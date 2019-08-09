@@ -90,7 +90,7 @@ export default {
       console.log('this.gameRound---:',this.gameRound);
       // Object.assign(this.formData, this.gameRound)
     },
-    handleDirectUpload(option) {
+    async handleDirectUpload(option) {
       const file = option.file
       const url = directUploadUrl + '?token=' + this.$store.getters.token
       console.log('handleDirectUpload option= ', option, url)
@@ -101,10 +101,25 @@ export default {
         // })
       })
       console.log('uploader=', uploader)
-      uploader.upload()
+      let promise = new Promise(async (resolve, reject) => {
+        let key = await uploader.upload()
+        console.log('key=========:',key);
+        if(key){
+          resolve()
+        }
+
+      })
+
+      await promise.then(data => {
+        this.initData()
+        this.$emit('refresh')
+        console.log('==========refresh===========');
+      })
+
     },
     handleUploadSuccess(response, file, fileList) {
-      console.log(response, file, fileList)
+      console.log('=============handleUploadSuccess============')
+
     },
     handleMenu(key, keyPath) {
       console.log(key, keyPath)
