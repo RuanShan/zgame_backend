@@ -70,15 +70,6 @@ export default {
         }
       })
     },
-    handleRemove(file, fileList) {
-      console.log('----------handleRemove---------')
-      console.log('file', file)
-      const data = {
-        photo_id: this.postData.Covers[0].id,
-        post_id: this.postData.id
-      }
-      removeCover(data)
-    },
     handleUpload(option) {
       const file = option.file
       const url = directUploadUrl + '?token=' + this.$store.getters.token
@@ -101,18 +92,16 @@ export default {
       var data = post
       console.log('data------:', data)
       data.post.id = this.postData.id
-      modifyPost(data).then((res) => {
-        console.log('res----:', res)
-        const data = {
-          photo_id: this.postData.Covers[0].id,
-          post_id: this.postData.id
-        }
-        removeCover(data).then((res) => {
+      const param = {
+        post_id: this.postData.id
+      }
+      removeCover(param).then((res) => {
+        modifyPost(data).then((res) => {
+          console.log('res----:', res)
           this.$router.push('/post/list')
+          // this.uploadData.viewable_id = res.id
+          // this.$refs.upload.submit()
         })
-
-        // this.uploadData.viewable_id = res.id
-        // this.$refs.upload.submit()
       })
     }
   }
