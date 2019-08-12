@@ -65,7 +65,7 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item :command="{ cmd:'edit', id: scope.row.id }">投票统计</el-dropdown-item>
-                <el-dropdown-item :command="{ cmd:'edit', id: scope.row.id }">活动网址</el-dropdown-item>
+                <el-dropdown-item :command="{ cmd:'showurl', id: scope.row.id }">活动网址</el-dropdown-item>
                 <el-dropdown-item :command="{ cmd:'edit', id: scope.row.id }" divided>清空数据</el-dropdown-item>
                 <el-dropdown-item :command="{ cmd:'remove', id: scope.row.id }">删除</el-dropdown-item>
               </el-dropdown-menu>
@@ -172,7 +172,7 @@ export default {
     getList() {
       this.listLoading = true
       getGameRounds(this.listQuery).then(data => {
-        console.log('data----:',data);
+        console.log('data----:', data)
         this.list = data.gameRounds
         this.total = data.total
         this.listLoading = false
@@ -181,13 +181,16 @@ export default {
     handleCommand(e) {
       if (e.cmd === 'edit') {
         this.$router.push('/gameround/edit/' + e.id)
-      }else if (e.cmd === 'remove') {
+      } else if (e.cmd === 'remove') {
         const params = {
           round_id: e.id
         }
         removeGameRound(params).then(data => {
           this.getList()
         })
+      } else if (e.cmd === 'showurl') {
+        console.log('e.id---:', e.id)
+        this.$router.push('/gameround/showurl/' + e.id)
       }
     }
 

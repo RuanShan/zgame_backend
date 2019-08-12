@@ -111,6 +111,13 @@ export const constantRoutes = [
         name: 'EditGameround',
         meta: { title: '编辑', noCache: true, activeMenu: '/gamerounds/list' },
         hidden: true
+      },
+      {
+        path: 'showurl/:id(\\d+)',
+        component: () => import('@/views/gameround/showurl'),
+        name: 'showurl',
+        meta: { title: '活动网址' },
+        hidden: true
       }
     ]
   },
@@ -173,7 +180,7 @@ export const constantRoutes = [
             hidden: true
           }
         ]
-      },
+      }
     ]
   },
 
