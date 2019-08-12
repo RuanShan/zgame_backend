@@ -36,7 +36,7 @@
           <Tinymce ref="editor" v-model="postData.content" :height="400" />
         </el-form-item>
         <el-form-item label="分类">
-          <el-select v-model="postData.terms" multiple placeholder="请选择">
+          <el-select v-model="selectedTerms" multiple placeholder="请选择">
             <el-option v-for="term in termList" :key="term.id" :label="term.name" :value="term.id" />
           </el-select>
         </el-form-item>
@@ -48,7 +48,7 @@
 
       </div>
     </el-form>
-    <PostCoverBrowser :dialog-visible.sync="imageBrowserVisible" viewable-type="cover" @selected="handleImageSelected"> </PostCoverBrowser>
+    <PostCoverBrowser :dialog-visible.sync="imageBrowserVisible" viewable-type="cover" @selected="handleImageSelected" />
   </div>
 </template>
 
@@ -73,6 +73,10 @@ export default {
     Tinymce, MDinput, Sticky, PostCoverBrowser, HoverableImage
   },
   props: {
+    post: {
+      type: Object,
+      default: null
+    },
     isEdit: {
       type: Boolean,
       default: false
@@ -105,6 +109,7 @@ export default {
         title: '',
         terms: []
       },
+      selectedTerms: [],
       termList: [],
       newUploads: [],
       uploadData: {
@@ -130,6 +135,20 @@ export default {
       set(val) {
         this.postData.display_time = new Date(val)
       }
+    }
+  },
+  watch: {
+    post: function(val, oldVal) {
+      // 外部触发游戏开始
+
+      this.postData = val
+      const terms = []
+      for (var i = 0; i < val.Terms.length; i++) {
+        terms.push(val.Terms[i].id)
+      }
+      this.selectedTerms = terms
+      this.coverImage.url = val.Covers[0].originalUrl
+      console.log('this.postData!!!!!', this.postData)
     }
   },
   created() {
@@ -176,25 +195,19 @@ export default {
       var postname = this.postData.name
       var title = this.postData.title
       var desc = this.postData.desc
-      var terms = this.postData.terms // array of term_id
-
+      var terms = this.selectedTerms // array of term_id
+      var author = this.postData.author
       if (validated) {
         const postData = {
           user_id: 1,
+          author: author,
           name: postname,
           title: title,
           desc: desc,
           content: this.postData.content
         }
         const params = { post: postData, photo_id: this.coverImage.id, terms }
-        // this.$emit('submit', { postData, postImages: this.newUploads })
-        addPost(params).then((res) => {
-          console.log('res----:', res)
-          // 设置新创建的post的id,然后上传图片
-          this.uploadData.post_id = res.id
-          this.$refs.upload.submit()
-          // 上传成功后，转到编辑页面
-        })
+        this.$emit('submit', params)
       }
     },
     handleUploadSuccess(response, file, fileList) {

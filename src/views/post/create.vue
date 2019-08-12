@@ -37,7 +37,7 @@ export default {
         term: ''
       },
       termList: [],
-      newUploads: [],
+      newUploads: []
 
     }
   },
@@ -82,7 +82,15 @@ export default {
     },
     // 用户点击创建文章事件
     handleSubmit(postData) {
-
+      console.log('============handleSubmit=============')
+      console.log('postData=====:', postData)
+      addPost(postData).then((res) => {
+        console.log('res----:', res)
+        const post_id = res.id
+        this.$router.push('/post/edit/' + post_id)
+        // 设置新创建的post的id,然后上传图片
+        // 上传成功后，转到编辑页面
+      })
     }
 
   }
