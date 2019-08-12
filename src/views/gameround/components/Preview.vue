@@ -1,6 +1,10 @@
 <template>
   <div class="iframe-wrap">
-    <iframe :src="previewUrl" />
+    <iframe id="iframe" ref="iframe" :src="previewUrl" />
+
+    <div>
+      <el-button @click="handleRefresh"> 刷新 </el-button>
+    </div>
   </div>
 </template>
 
@@ -9,6 +13,9 @@ import { basePreviewUrl } from '@/config/env'
 export default {
   name: 'GameRoundPreviewForm',
   props: {
+    command:{
+      type: String
+    },
     gameRound: {
       type: Object,
       default: () => {}
@@ -30,15 +37,28 @@ export default {
   },
   watch: {
     // 当gameRound数据改变，重新初始化数据
-    'gameRound': 'initData'
+    gameRound: 'initData',
+    command: function(val, oldVal) {
+      if(　val === 'refresh'){
+        this.handleRefresh()
+      }
+
+    }
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.$
+  },
   methods: {
     initData() {
       if (this.gameRound) {
         Object.assign(this.formData, this.gameRound)
       }
+    },
+    handleRefresh(){
+      console.log( "this.$refs.iframe=",this.$refs.iframe)
+      this.$refs.iframe.src = this.previewUrl
+      this.$emit('update:commnad', 'void')
     }
   }
 }

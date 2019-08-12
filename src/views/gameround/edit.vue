@@ -12,12 +12,12 @@
 
     <div class="content">
       <div class="preview-wrap">
-        <Preview :game-round="gameRound" />
+        <Preview :game-round="gameRound" :command.sync="previewCommnad" />
       </div>
 
       <div class="setup-wrap">
         <RoundForm v-show="activeStep==1" :game-round="gameRound" />
-        <GeneralForm v-show="activeStep==2" :game-round="gameRound" @refresh="refresh"/>
+        <GeneralForm v-show="activeStep==2" :game-round="gameRound" @changed="onChanged" />
       </div>
     </div>
 
@@ -60,7 +60,8 @@ export default {
       formData: {
         name: '',
         desc: ''
-      }
+      },
+      previewCommnad: 'void'
 
     }
   },
@@ -258,6 +259,10 @@ export default {
     handleStepClick(i) {
       console.log('this.activeStep =  ', this.activeStep)
       this.activeStep = i
+    },
+    onChanged(){
+      // gameRound changed refresh preview
+      this.previewCommnad = 'refresh'
     }
   }
 }

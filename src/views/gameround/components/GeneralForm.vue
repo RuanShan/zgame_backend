@@ -1,6 +1,23 @@
 <template>
   <el-tabs v-model="activeName" type="card" class="round-general-wrap" @tab-click="handleClick">
-    <el-tab-pane label="页面设置" name="first">页面设置</el-tab-pane>
+    <el-tab-pane label="页面设置" name="first">
+      <div>
+        <el-form ref="form" :model="pageFormData" label-width="80px">
+          <el-form-item label="配色方案">
+            <el-radio-group v-model="radio1">
+              <el-radio-button > 上海 </el-radio-button>
+              <el-radio-button >北京</el-radio-button>
+              <el-radio-button >广州</el-radio-button>
+              <el-radio-button >深圳</el-radio-button>
+            </el-radio-group>
+            <el-color-picker :value="pageFormData.color" change="onChange"> 自定义</el-color-picker>
+          </el-form-item>
+
+
+        </el-form>
+
+      </div>
+    </el-tab-pane>
     <el-tab-pane label="轮播图设置" name="second">
       <el-form ref="form" :model="formData" label-width="80px">
         <el-form-item label="海报图片">
@@ -98,6 +115,9 @@ export default {
       activeName: 'first',
       postersData: [],
       formData: {},
+      pageFormData:{
+        color1: '#409EFF'
+      },
       hoveringImageId: 0,
       dialogImageUrl: null,
       dialogVisible: false,
@@ -140,7 +160,7 @@ export default {
       })
     },
     refresh() {
-      this.$emit('refresh')
+      this.$emit('changed')
     },
     handleDirectUpload(option) {
       const file = option.file
@@ -209,6 +229,9 @@ export default {
           this.refresh()
         })
       }
+    },
+    onChange( newColor ){
+      console.log( "newColor", newColor)
     }
   }
 }
