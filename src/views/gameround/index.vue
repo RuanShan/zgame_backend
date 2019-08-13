@@ -65,7 +65,7 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item :command="{ cmd:'edit', id: scope.row.id }">投票统计</el-dropdown-item>
-                <el-dropdown-item :command="{ cmd:'showurl', id: scope.row.id }">活动网址</el-dropdown-item>
+                <el-dropdown-item :command="{ cmd:'showurl', id: scope.row.id, number: scope.row.number }">活动网址</el-dropdown-item>
                 <el-dropdown-item :command="{ cmd:'edit', id: scope.row.id }" divided>清空数据</el-dropdown-item>
                 <el-dropdown-item :command="{ cmd:'remove', id: scope.row.id }">删除</el-dropdown-item>
               </el-dropdown-menu>
@@ -76,7 +76,12 @@
       </el-table>
 
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-      <showurl :command="ui.showurl" :game-round-id="roundToShowUrl" @closeUrl="closeUrl" />
+
+        <el-dialog title="活动地址" :visible.sync="dialogUrlVisible">
+         <p>{{ gameUrl }} </p>
+         <img id="share-qrcode-img" style="margin: 0 auto;" :src="gameQrcodeSrc">
+        </el-dialog>
+
     </div>
 
   </div>
@@ -90,11 +95,11 @@ import {
   removeGameRound
 } from '@/api/backend.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import showurl from './showurl.vue'
+import QRCode from 'qrcode'
+
 export default {
   name: 'Authorize',
   components: {
-    showurl,
     Pagination
   },
   data() {
@@ -116,9 +121,9 @@ export default {
       roundToShowUrl: 0,
       gameRoundList: [],
       gameRoundToModify: {},
-      ui: {
-        showurl: false
-      }
+      gameUrl:null,
+      gameQrcodeSrc: null,
+      dialogUrlVisible: false
     }
   },
   created() {
@@ -182,16 +187,20 @@ export default {
           this.getList()
         })
       } else if (e.cmd === 'showurl') {
-        this.roundToShowUrl = e.id
-
-        console.log('e.id---:', e.id)
-
-        this.ui.showurl = true
-        // this.$router.push('/gameround/showurl/' + e.id)
+        this.showUrlDialog( e.number )
       }
     },
-    closeUrl(event) {
-      this.ui.showurl = false
+    showUrlDialog( number ){
+      console.log( " showUrlDialog ", number)
+      this.gameUrl = 'http://testwx.natapp4.cc/game/ztoupiao/' + number + '/entry'
+
+      QRCode.toDataURL(this.gameUrl, { type: 'image/png' }, (error, gameurl)=> {
+        if (error) {
+          console.error(error)
+        }
+        this.gameQrcodeSrc = gameurl
+        this.dialogUrlVisible = true
+      })
     }
 
   }
