@@ -1,6 +1,6 @@
 
 <template>
-  <el-dialog id="elx-imgbox" title="我的图片" :visible="computedVisible" class="elx-imgbox" top="5vh" :open="onOpen" :before-close="handleCloseDialog">
+  <el-dialog id="elx-imgbox" title="我的图片" :visible="computedVisible" class="elx-imgbox" top="5vh" :before-close="handleCloseDialog" @open="onOpen">
     <el-tabs v-model="activeTab" tab-position="left">
       <el-tab-pane label="选择图片" name="pick" class="pick-block">
         <div v-if="isLoading" class="img-list-loading">
@@ -158,6 +158,7 @@ export default {
     loadImgList() {
       this.isLoading = true
       this.handleCancelAll()
+      console.log('this.listQuery=====', this.listQuery)
 
       searchPhotos(this.listQuery).then((res) => {
         const imgs = []
@@ -310,6 +311,8 @@ export default {
     onOpen() {
       console.log('this.viewableType---:', this.viewableType)
       this.listQuery.q.viewable_type = this.viewableType
+      this.uploadData.viewable_type = this.viewableType
+      this.loadImgList()
     }
   }
 }

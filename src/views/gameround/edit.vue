@@ -75,8 +75,8 @@ export default {
     this.initData()
   },
   methods: {
-    refresh(){
-      console.log('edit refresh');
+    refresh() {
+      console.log('edit refresh')
       this.initData()
     },
     async initData() {
@@ -260,9 +260,10 @@ export default {
       console.log('this.activeStep =  ', this.activeStep)
       this.activeStep = i
     },
-    onChanged( gameRound ){
-      console.log( "onChanged ", gameRound)
+    onChanged(gameRound) {
+      console.log('onChanged ', gameRound)
       // gameRound changed refresh preview
+      this.initData()
       this.previewCommnad = 'refresh'
     }
   }

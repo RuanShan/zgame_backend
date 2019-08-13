@@ -7,12 +7,11 @@
           <el-form-item label="配色方案">
             <ul class="color-ul">
               <li v-for="color in predefineColors" class="cursor" :style="{backgroundColor: color}" @click="onColorChanged(color)">
-                <i class="el-icon-check" v-show="color==formData.color"></i>
+                <i v-show="color==formData.color" class="el-icon-check" />
               </li>
             </ul>
 
-
-              <CustomColorPicker class="custom-color-picker" :value="formData.color" @change="onColorChanged"> </CustomColorPicker>
+            <CustomColorPicker class="custom-color-picker" :value="formData.color" @change="onColorChanged" />
 
           </el-form-item>
 
@@ -64,16 +63,19 @@
       </el-form>
 
       <ImageBrowser :viewable-type="viewableType" :dialog-visible.sync="imageBrowserVisible" @selected="handleImageSelected" />
-      <ChangeSlideBrowser :viewable-type="viewableType" :slide-to-change="slideToChange" :dialog-visible.sync="ChangeSlideBrowserVisible"
-                          @changSlide="changSlide" />
+      <ChangeSlideBrowser
+        :viewable-type="viewableType"
+        :slide-to-change="slideToChange"
+        :dialog-visible.sync="ChangeSlideBrowserVisible"
+        @changSlide="changSlide"
+      />
 
     </el-tab-pane>
     <el-tab-pane label="活动介绍" name="third">
       <el-form :model="formData" label-width="80px">
         <Tinymce ref="editor" v-model="formData.desc" :height="400" :menubar="tinyMenubar" :toolbar="tinyToolbar" />
-
       </el-form>
-
+      <el-button type="primary" @click="onSubmit">保存</el-button>
     </el-tab-pane>
     <el-tab-pane label="活动动态" name="fourth">活动动态</el-tab-pane>
   </el-tabs>
@@ -82,189 +84,198 @@
 
 <script>
 
-  import Tinymce from '@/components/Tinymce'
-  import { Uploader } from '@/lib/activestorage/uploader'
-  import ImageBrowser from '@/components/ImageBrowser/better'
-  import { removeSlide, bindPhotoRelationship, updateGameRound } from '@/api/backend'
-  import ChangeSlideBrowser from '@/components/ImageBrowser/change'
-  import CustomColorPicker from './CustomColorPicker'
-  import { buildImageUrlByStyle } from '@/utils/oss'
-  import { tiny } from '@/config/env'
-  const directUploadUrl = '/api/backend/photos/ztoupiao/create'
-  export default {
-    name: 'GameRoundGeneralForm',
-    components: {
-      Tinymce,
-      ImageBrowser,
-      ChangeSlideBrowser,
-      CustomColorPicker
-    },
-    props: {
-      gameRound: {
-        type: Object,
-        default: () => {}
-      }
-    },
-    data() {
-      return {
-        viewableType: 'slide',
-        newUploads: [],
-        tinyMenubar: '',
-        tinyToolbar: tiny.toolbar,
-        imageBrowserVisible: false,
-        ChangeSlideBrowserVisible: false,
-        activeName: 'first',
-        postersData: [],
-        formData: {
-          color: '#409EFF'
-        },
-        predefineColors: [
-          '#F44336',
-          '#E91E63',
-          '#9C27B0',
-          '#673AB7',
-          '#3F51B5',
-          '#2196F3',
-          '#03A9F4',
-          '#00BCD4',
-          '#009688',
-          '#4CAF50',
-          '#8BC34A',
-          '#CDDC39',
-          '#FFEB3B',
-          '#FFC107',
-          '#FF9800',
-          '#FF5722',
-          '#795548',
-          '#9E9E9E',
-          '#607D8B'
-        ],
-        hoveringImageId: 0,
-        dialogImageUrl: null,
-        dialogVisible: false,
-        slideToChange: {}
-      }
-    },
-    computed: {
-      slides() {
-        console.log('this.gameRound-----:', this.gameRound)
-        if (this.gameRound.Slides) {
-          return this.gameRound.Slides.map(slide => {
-            return {
-              id: slide.id,
-              url: buildImageUrlByStyle(slide.originalUrl),
-              file_name: slide.file_name
-            }
-          })
-        } else {
-          return []
-        }
-      }
-    },
-    watch: {
-      // 当gameRound数据改变，重新初始化数据
-      gameRound: 'initData'
-    },
-    created() {},
-    mounted() {},
-    methods: {
-      changSlide(img) {
-        console.log('slideToChange', this.slideToChange)
-        console.log('new Slide---:', img)
-        const data = {
-          round_id: this.gameRound.id,
-          newImg: img
-        }
-        bindPhotoRelationship(data).then(res => {
-          this.deletePhoto(this.slideToChange.id)
-          this.ChangeSlideBrowserVisible = false
-        })
+import Tinymce from '@/components/Tinymce'
+import { Uploader } from '@/lib/activestorage/uploader'
+import ImageBrowser from '@/components/ImageBrowser/better'
+import { removeSlide, bindPhotoRelationship, updateGameRound } from '@/api/backend'
+import ChangeSlideBrowser from '@/components/ImageBrowser/change'
+import CustomColorPicker from './CustomColorPicker'
+import { buildImageUrlByStyle } from '@/utils/oss'
+import { tiny } from '@/config/env'
+const directUploadUrl = '/api/backend/photos/ztoupiao/create'
+export default {
+  name: 'GameRoundGeneralForm',
+  components: {
+    Tinymce,
+    ImageBrowser,
+    ChangeSlideBrowser,
+    CustomColorPicker
+  },
+  props: {
+    gameRound: {
+      type: Object,
+      default: () => {}
+    }
+  },
+  data() {
+    return {
+      viewableType: 'slide',
+      newUploads: [],
+      tinyMenubar: '',
+      tinyToolbar: tiny.toolbar,
+      imageBrowserVisible: false,
+      ChangeSlideBrowserVisible: false,
+      activeName: 'first',
+      postersData: [],
+      formData: {
+        color: '#409EFF'
       },
-      refresh() {
-        this.$emit('changed')
-      },
-      handleDirectUpload(option) {
-        const file = option.file
-        const url = directUploadUrl + '?token=' + this.$store.getters.token
-        console.log('handleDirectUpload option= ', option, url)
-        const uploader = new Uploader(file, url, option, blob => {
-          // 上传成功后，应通知服务器，图片上传成功
-          // createGroupImageForDirectUpload( id,  { image:{ attachment: blob.signed_id }} ).then((res)=>{
-          // option.onSuccess(null, option.file)
-          // })
-        })
-        console.log('uploader=', uploader)
-        uploader.upload()
-        this.deletePhoto(option.data.id)
-        this.refresh()
-      },
-      handleUploadSuccess(response, file, fileList) {
-        console.log(response, file, fileList)
-      },
-      deletePhoto(id) {
-        console.log('deletePhoto-----:', id)
-        const data = {
-          photo_id: id,
-          round_id: this.gameRound.id
-        }
-        removeSlide(data).then(res => {
-          this.refresh()
-        })
-      },
-      initData() {
-        Object.assign(this.formData, this.gameRound)
-      },
-      handleClick(tab, event) {
-        console.log(tab, event)
-      },
-      handleRemove(file) {
-        console.log(file)
-      },
-      handlePictureCardPreview(file) {
-        this.dialogImageUrl = file.url
-        this.dialogVisible = true
-      },
-      handleDownload(file) {
-        console.log(file)
-      },
-      handleOpenImageBrowser() {
-        this.imageBrowserVisible = true
-      },
-      handleChangeSlideBrowser(slide) {
-        this.slideToChange = slide
-        this.ChangeSlideBrowserVisible = true
-      },
-      handlePopoverShow(id) {
-        this.hoveringImageId = id
-      },
-      handleImageSelected(e) {
-        // 图片数据结构 [{id, url}]
-        const [image] = [...e.selectedImages]
-        if (image) {
-          const data = {
-            round_id: this.gameRound.id,
-            newImg: image
+      predefineColors: [
+        '#F44336',
+        '#E91E63',
+        '#9C27B0',
+        '#673AB7',
+        '#3F51B5',
+        '#2196F3',
+        '#03A9F4',
+        '#00BCD4',
+        '#009688',
+        '#4CAF50',
+        '#8BC34A',
+        '#CDDC39',
+        '#FFEB3B',
+        '#FFC107',
+        '#FF9800',
+        '#FF5722',
+        '#795548',
+        '#9E9E9E',
+        '#607D8B'
+      ],
+      hoveringImageId: 0,
+      dialogImageUrl: null,
+      dialogVisible: false,
+      slideToChange: {}
+    }
+  },
+  computed: {
+    slides() {
+      console.log('this.gameRound-----:', this.gameRound)
+      if (this.gameRound.Slides) {
+        return this.gameRound.Slides.map(slide => {
+          return {
+            id: slide.id,
+            url: buildImageUrlByStyle(slide.originalUrl),
+            file_name: slide.file_name
           }
-          bindPhotoRelationship(data).then(res => {
-            this.imageBrowserVisible = false
-            this.refresh()
-          })
-        }
-      },
-      onColorChanged(newColor) {
-        console.log('newColor', newColor)
-
-        updateGameRound(this.gameRound.id, {
-          gameRound: {
-            color: newColor
-          }
-        }).then(res => {
-          this.formData.color = newColor
-          this.$emit('changed', res)
         })
+      } else {
+        return []
       }
     }
+  },
+  watch: {
+    // 当gameRound数据改变，重新初始化数据
+    gameRound: 'initData'
+  },
+  created() {},
+  mounted() {},
+  methods: {
+    onSubmit() {
+      updateGameRound(this.gameRound.id, {
+        gameRound: {
+          desc: this.formData.desc
+        }
+      }).then(res => {
+        this.$emit('changed', res)
+      })
+    },
+    changSlide(img) {
+      console.log('slideToChange', this.slideToChange)
+      console.log('new Slide---:', img)
+      const data = {
+        round_id: this.gameRound.id,
+        newImg: img
+      }
+      bindPhotoRelationship(data).then(res => {
+        this.deletePhoto(this.slideToChange.id)
+        this.ChangeSlideBrowserVisible = false
+      })
+    },
+    refresh() {
+      this.$emit('changed')
+    },
+    handleDirectUpload(option) {
+      const file = option.file
+      const url = directUploadUrl + '?token=' + this.$store.getters.token
+      console.log('handleDirectUpload option= ', option, url)
+      const uploader = new Uploader(file, url, option, blob => {
+        // 上传成功后，应通知服务器，图片上传成功
+        // createGroupImageForDirectUpload( id,  { image:{ attachment: blob.signed_id }} ).then((res)=>{
+        // option.onSuccess(null, option.file)
+        // })
+      })
+      console.log('uploader=', uploader)
+      uploader.upload()
+      this.deletePhoto(option.data.id)
+      this.refresh()
+    },
+    handleUploadSuccess(response, file, fileList) {
+      console.log(response, file, fileList)
+    },
+    deletePhoto(id) {
+      console.log('deletePhoto-----:', id)
+      const data = {
+        photo_id: id,
+        round_id: this.gameRound.id
+      }
+      removeSlide(data).then(res => {
+        this.refresh()
+      })
+    },
+    initData() {
+      Object.assign(this.formData, this.gameRound)
+    },
+    handleClick(tab, event) {
+      console.log(tab, event)
+    },
+    handleRemove(file) {
+      console.log(file)
+    },
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
+    },
+    handleDownload(file) {
+      console.log(file)
+    },
+    handleOpenImageBrowser() {
+      this.imageBrowserVisible = true
+    },
+    handleChangeSlideBrowser(slide) {
+      this.slideToChange = slide
+      this.ChangeSlideBrowserVisible = true
+    },
+    handlePopoverShow(id) {
+      this.hoveringImageId = id
+    },
+    handleImageSelected(e) {
+      // 图片数据结构 [{id, url}]
+      const [image] = [...e.selectedImages]
+      if (image) {
+        const data = {
+          round_id: this.gameRound.id,
+          newImg: image
+        }
+        bindPhotoRelationship(data).then(res => {
+          this.imageBrowserVisible = false
+          this.refresh()
+        })
+      }
+    },
+    onColorChanged(newColor) {
+      console.log('newColor', newColor)
+
+      updateGameRound(this.gameRound.id, {
+        gameRound: {
+          color: newColor
+        }
+      }).then(res => {
+        this.formData.color = newColor
+        this.$emit('changed', res)
+      })
+    }
   }
+}
 
 </script>
 
