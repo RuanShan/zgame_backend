@@ -76,10 +76,8 @@
       </el-table>
 
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-
+      <showurl :command="ui.showurl" :game-round-id="roundToShowUrl" @closeUrl="closeUrl" />
     </div>
-
-    <modifyBox :command="ui.modifyBoxVisiable" :game-round="gameRoundToModify" @modify_over="modify_over" />
 
   </div>
 
@@ -92,11 +90,11 @@ import {
   removeGameRound
 } from '@/api/backend.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import modifyBox from './modifyBox.vue'
+import showurl from './showurl.vue'
 export default {
   name: 'Authorize',
   components: {
-    modifyBox,
+    showurl,
     Pagination
   },
   data() {
@@ -115,10 +113,11 @@ export default {
       },
       company: {},
       authUrl: '',
+      roundToShowUrl: 0,
       gameRoundList: [],
       gameRoundToModify: {},
       ui: {
-        modifyBoxVisiable: false
+        showurl: false
       }
     }
   },
@@ -153,12 +152,6 @@ export default {
       }
       entry(number, params)
     },
-    modify: function(gameRound) {
-      console.log('================modify==============')
-      console.log('gameRound===:', gameRound)
-      this.gameRoundToModify = gameRound
-      this.ui.modifyBoxVisiable = true
-    },
     remove: function(gameRound) {
       console.log('entry---:', gameRound.number)
       const params = {
@@ -178,7 +171,7 @@ export default {
         this.listLoading = false
       })
     },
-    handleCommand(e) {
+    async handleCommand(e) {
       if (e.cmd === 'edit') {
         this.$router.push('/gameround/edit/' + e.id)
       } else if (e.cmd === 'remove') {
@@ -189,9 +182,16 @@ export default {
           this.getList()
         })
       } else if (e.cmd === 'showurl') {
+        this.roundToShowUrl = e.id
+
         console.log('e.id---:', e.id)
-        this.$router.push('/gameround/showurl/' + e.id)
+
+        this.ui.showurl = true
+        // this.$router.push('/gameround/showurl/' + e.id)
       }
+    },
+    closeUrl(event) {
+      this.ui.showurl = false
     }
 
   }

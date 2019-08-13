@@ -147,7 +147,10 @@ export default {
         terms.push(val.Terms[i].id)
       }
       this.selectedTerms = terms
-      this.coverImage.url = val.Covers[0].originalUrl
+      if (val.Covers[0]) {
+        this.coverImage.url = val.Covers[0].originalUrl
+      }
+
       console.log('this.postData!!!!!', this.postData)
     }
   },

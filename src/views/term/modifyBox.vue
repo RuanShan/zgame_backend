@@ -1,75 +1,26 @@
 <template>
   <div class="addNewBox">
-    <div class="weui-toptips weui-toptips_warn js_tooltips" />
-    <div id="awardUserInfoBox" class="page  input js_show">
-      <div class="awardUserInfoForm">
-        <div class="weui-cells weui-cells_form">
-          <div class="weui-cell contactInput-ausername contactInput">
-            <div class="weui-cell__hd"><label class="weui-label">termData名称</label></div>
-            <div class="weui-cell__bd">
-              <input
-                id="termname"
-                v-model="termData.name"
-                style="margin:0px;border: none;"
-                class="weui-input theInputDecide textInput"
-                propname="termData名称"
-                propkey="termName"
-                type="text"
-                placeholder="限15字符"
-              >
-            </div>
-            <div class="weui-cell__ft warnIcon hide">
-              <i class="weui-icon-warn" />
-            </div>
-          </div>
-          <div class="weui-cell contactInput-ausername contactInput">
-            <div class="weui-cell__hd"><label class="weui-label">slug</label></div>
-            <div class="weui-cell__bd">
-              <input
-                id="termTitle"
-                v-model="termData.slug"
-                style="margin:0px;border: none;"
-                class="weui-input theInputDecide textInput"
-                propname="termTitle"
-                propkey="termTitle"
-                type="text"
-                placeholder="限15字符"
-              >
-            </div>
-            <div class="weui-cell__ft warnIcon hide">
-              <i class="weui-icon-warn" />
-            </div>
-          </div>
-          <div class="weui-cell contactInput-ausername contactInput">
-            <div class="weui-cell__hd"><label class="weui-label">termData描述</label></div>
-            <div class="weui-cell__bd">
-              <input
-                id="termDesc"
-                v-model="termData.desc"
-                style="margin:0px;border: none;"
-                class="weui-input theInputDecide textInput"
-                propname="termDesc"
-                propkey="termDesc"
-                type="text"
-                placeholder="限15字符"
-              >
-            </div>
-            <div class="weui-cell__ft warnIcon hide">
-              <i class="weui-icon-warn" />
-            </div>
-          </div>
-          <div class="weui-cell contactInput-ausername contactInput">
-            <div class="weui-cell__hd"><label class="weui-label">termData  Parent</label></div>
-            <el-select v-model="termssss" placeholder="请选择">
-              <el-option v-for="term in termList" :key="term.id" :label="term.name" :value="term.id" />
-            </el-select>
-          </div>
-        </div>
-      </div>
-      <div class="weui-btn-area">
-        <a id="showTooltips" class="weui-btn weui-btn_primary userSubmitBtn" href="javascript:" @click="post_msg">提交</a>
-      </div>
-    </div>
+    <el-form v-show="command" ref="form" :model="termData" label-width="80px">
+      <el-form-item label="分类名称">
+        <el-input v-model="termData.name" />
+      </el-form-item>
+      <el-form-item label="分类slug">
+        <el-input v-model="termData.slug" />
+      </el-form-item>
+      <el-form-item label="分类描述">
+        <el-input v-model="termData.desc" type="textarea" />
+      </el-form-item>
+      <el-form-item label="分类">
+        <el-select v-model="termData.term" placeholder="请选择分类">
+          <el-option v-for="term in termList" :key="term.id" :label="term.name" :value="term.id" />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="post_msg">保存</el-button>
+        <el-button>取消</el-button>
+      </el-form-item>
+    </el-form>
+
   </div>
 
 </template>
@@ -88,7 +39,8 @@ export default {
   props: {
     command: {
       default: false
-    }
+    },
+    modifyTerm: 0
   },
   data() {
     return {
@@ -108,32 +60,37 @@ export default {
     }
   },
   watch: {
-    command: function(val, oldVal) {
-      // 外部触发游戏开始
-      console.log('watch-command new: %s, old: %s', val, oldVal)
-      if (val === true) {
-        this.ui.addNewBoxVisiable = true
-        this.showAlbum()
-        console.log('show')
-      } else {
-        this.ui.addNewBoxVisiable = false
-      }
+    modifyTerm: function(val, oldVal) {
+      getTermInfo().then((res) => {
+        console.log('res----:', res)
+        this.termList = res
+        if (val > 0) {
+          const param = {
+            id: val
+          }
+          getTermDetail(param).then((res) => {
+            console.log('res---:', res)
+            this.termData = res
+            this.termssss = this.termData.parent
+          })
+        }
+      })
     }
   },
   created() {
     getTermInfo().then((res) => {
       console.log('res----:', res)
       this.termList = res
-      const parsed = JSON.parse(JSON.stringify(queryString.parse(location.hash)).replace(/\//g, ''))
-      console.log('id--:', parsed.termmodify)
-      const param = {
-        id: parsed.termmodify
+      if (modifyTerm > 0) {
+        const param = {
+          id: this.modifyTerm
+        }
+        getTermDetail(param).then((res) => {
+          console.log('res---:', res)
+          this.termData = res
+          this.termssss = this.termData.parent
+        })
       }
-      getTermDetail(param).then((res) => {
-        console.log('res---:', res)
-        this.termData = res
-        this.termssss = this.termData.parent
-      })
     })
   },
   methods: {
@@ -157,6 +114,11 @@ export default {
         console.log('data------:', data)
         modifyTerm(data).then((res) => {
           console.log('res----:', res)
+          this.$emit('modify_over')
+          getTermInfo().then(async res => {
+            console.log('res----:', res)
+            this.termList = res
+          })
         })
       }
     }

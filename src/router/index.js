@@ -111,13 +111,6 @@ export const constantRoutes = [
         name: 'EditGameround',
         meta: { title: '编辑', noCache: true, activeMenu: '/gamerounds/list' },
         hidden: true
-      },
-      {
-        path: 'showurl/:id(\\d+)',
-        component: () => import('@/views/gameround/showurl'),
-        name: 'showurl',
-        meta: { title: '活动网址' },
-        hidden: true
       }
     ]
   },
@@ -164,7 +157,8 @@ export const constantRoutes = [
             path: 'createterm',
             component: () => import('@/views/term/addNewBox'),
             name: 'create',
-            meta: { title: '新建分类', icon: 'edit' }
+            meta: { title: '新建分类', icon: 'edit' },
+            hidden: true
           },
           {
             path: 'termList',
