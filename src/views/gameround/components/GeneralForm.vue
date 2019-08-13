@@ -10,7 +10,7 @@
               <el-radio-button >广州</el-radio-button>
               <el-radio-button >深圳</el-radio-button>
             </el-radio-group>
-            <el-color-picker :value="pageFormData.color" change="onChange"> 自定义</el-color-picker>
+            <el-color-picker :value="pageFormData.color" @change="onColorChanged"> 自定义</el-color-picker>
           </el-form-item>
 
 
@@ -82,7 +82,7 @@
 import Tinymce from '@/components/Tinymce'
 import { Uploader } from '@/lib/activestorage/uploader'
 import ImageBrowser from '@/components/ImageBrowser/better'
-import { removeSlide, bindPhotoRelationship } from '@/api/backend'
+import { removeSlide, bindPhotoRelationship, updateGameRound } from '@/api/backend'
 import ChangeSlideBrowser from '@/components/ImageBrowser/change'
 import {
   buildImageUrlByStyle
@@ -230,8 +230,12 @@ export default {
         })
       }
     },
-    onChange( newColor ){
+    onColorChanged( newColor ){
       console.log( "newColor", newColor)
+
+      updateGameRound(this.gameRound.id, {gameRound:{ color: newColor }}).then( (res)=>{
+        this.$emit( 'changed', res )
+      })
     }
   }
 }
