@@ -39,6 +39,7 @@ export default {
     // 当gameRound数据改变，重新初始化数据
     gameRound: 'initData',
     command: function(val, oldVal) {
+      console.log( "val, oldVal=", val, oldVal)
       if(　val === 'refresh'){
         this.handleRefresh()
       }
@@ -47,7 +48,6 @@ export default {
   },
   created() {},
   mounted() {
-    this.$
   },
   methods: {
     initData() {
@@ -58,7 +58,7 @@ export default {
     handleRefresh(){
       console.log( "this.$refs.iframe=",this.$refs.iframe)
       this.$refs.iframe.src = this.previewUrl
-      this.$emit('update:commnad', 'void')
+      this.$emit('update:command', 'void')
     }
   }
 }
