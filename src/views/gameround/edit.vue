@@ -260,7 +260,8 @@ export default {
       console.log('this.activeStep =  ', this.activeStep)
       this.activeStep = i
     },
-    onChanged(){
+    onChanged( gameRound ){
+      console.log( "onChanged ", gameRound)
       // gameRound changed refresh preview
       this.previewCommnad = 'refresh'
     }
