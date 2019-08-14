@@ -272,7 +272,7 @@ export default {
 </script>
 <style  lang="scss" >
   .edit-wrap{
-    padding: 40px 45px 20px 50px;
+    padding: 20px 45px 20px 50px;
     .el-step.is-simple .el-step__arrow::before {
       transform:none;
       height:0;

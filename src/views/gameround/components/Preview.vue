@@ -1,10 +1,11 @@
 <template>
-  <div class="iframe-wrap">
-    <iframe id="iframe" ref="iframe" :src="previewUrl" />
-
-    <div>
+  <div class="preview-wrap">
+    <div class="iframe-wrap">
+      <iframe id="iframe" ref="iframe" :src="previewUrl" />
+    </div>
+    <div class="actions">
       <el-button @click="handleRefresh"> 刷新 </el-button>
-      <el-button @click="showUrlDialog"> showUrl </el-button>
+      <el-button @click="showUrlDialog"> 手机预览 </el-button>
     </div>
     <el-dialog title="活动地址" :visible.sync="dialogUrlVisible">
       <p>{{ gameUrl }} </p>
@@ -90,5 +91,9 @@ export default {
     width: 100%;
     box-shadow: 0 0 5px 0 rgba(51,51,51,.2);
 
+  }
+  .preview-wrap .actions{
+    text-align: center;
+    margin: 10px 0;
   }
 </style>
