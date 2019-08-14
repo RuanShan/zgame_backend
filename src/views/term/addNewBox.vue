@@ -1,16 +1,22 @@
 <template>
   <div v-show="command" class="addNewBox" style="padding: 10px;">
     <el-form ref="form" :model="termData" label-width="80px">
-      <el-form-item label="分类名称">
+      <el-form-item label="名称">
         <el-input v-model="termData.name" />
       </el-form-item>
-      <el-form-item label="分类slug">
-        <el-input v-model="termData.slug" />
+      <el-form-item  >
+        <label slot="label">别名
+          <el-tooltip class="item" effect="light" content="“别名”是在URL中使用的别称，它可以令URL更美观。通常使用小写，只能包含字母，数字和连字符（-）。" placement="bottom">
+           <i class="el-icon-question"></i>
+         </el-tooltip>
+         </label>
+        <el-input v-model="termData.slug"  placeholder="URL中使用的别称"/>
+
       </el-form-item>
-      <el-form-item label="分类描述">
+      <el-form-item label="描述">
         <el-input v-model="termData.desc" type="textarea" />
       </el-form-item>
-      <el-form-item label="分类">
+      <el-form-item label="上级分类">
         <el-select v-model="termData.term" placeholder="请选择分类">
           <el-option v-for="term in termList" :key="term.id" :label="term.name" :value="term.id" />
         </el-select>
