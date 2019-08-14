@@ -73,7 +73,7 @@
     </el-tab-pane>
     <el-tab-pane label="活动介绍" name="third">
       <el-form :model="formData" label-width="80px">
-        <Tinymce ref="editor" v-model="formData.desc" :height="400" :menubar="tinyMenubar" :toolbar="tinyToolbar" />
+        <Tinymce ref="editor" v-model="formData.desc" :height="400" :game-round="gameRound" :menubar="tinyMenubar" :toolbar="tinyToolbar" />
       </el-form>
       <el-button type="primary" @click="onSubmit">保存</el-button>
     </el-tab-pane>

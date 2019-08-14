@@ -44,6 +44,9 @@ export default {
     color: {
       type: String,
       default: '#1890ff'
+    },
+    gameRound: {
+      type: Object
     }
   },
   data() {
@@ -109,7 +112,7 @@ export default {
         }
         photo.checksum = checksum
         console.log('photo----:', photo)
-        var number = '0819f0751ad8b84acbf35ae1ee6506e2'
+        var number = this.gameRound.number
         var data = {
           code: 'ztoupiao',
           photo: photo
