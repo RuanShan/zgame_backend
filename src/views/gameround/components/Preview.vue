@@ -4,16 +4,22 @@
 
     <div>
       <el-button @click="handleRefresh"> 刷新 </el-button>
+      <el-button @click="showUrlDialog"> showUrl </el-button>
     </div>
+    <el-dialog title="活动地址" :visible.sync="dialogUrlVisible">
+      <p>{{ gameUrl }} </p>
+      <img id="share-qrcode-img" style="margin: 0 auto;" :src="gameQrcodeSrc">
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { basePreviewUrl } from '@/config/env'
+import QRCode from 'qrcode'
 export default {
   name: 'GameRoundPreviewForm',
   props: {
-    command:{
+    command: {
       type: String
     },
     gameRound: {
@@ -23,7 +29,10 @@ export default {
   },
   data() {
     return {
-      formData: {}
+      dialogUrlVisible: false,
+      gameUrl: null,
+      formData: {},
+      gameQrcodeSrc: null
     }
   },
   computed: {
@@ -39,11 +48,10 @@ export default {
     // 当gameRound数据改变，重新初始化数据
     gameRound: 'initData',
     command: function(val, oldVal) {
-      console.log( "val, oldVal=", val, oldVal)
-      if(　val === 'refresh'){
+      console.log('val, oldVal=', val, oldVal)
+      if (val === 'refresh') {
         this.handleRefresh()
       }
-
     }
   },
   created() {},
@@ -55,10 +63,22 @@ export default {
         Object.assign(this.formData, this.gameRound)
       }
     },
-    handleRefresh(){
-      console.log( "this.$refs.iframe=",this.$refs.iframe)
+    handleRefresh() {
+      console.log('this.$refs.iframe=', this.$refs.iframe)
       this.$refs.iframe.src = this.previewUrl
       this.$emit('update:command', 'void')
+    },
+    showUrlDialog() {
+      const number = this.gameRound.number
+      this.gameUrl = 'http://testwx.natapp4.cc/game/ztoupiao/' + number + '/entry'
+
+      QRCode.toDataURL(this.gameUrl, { type: 'image/png' }, (error, gameurl) => {
+        if (error) {
+          console.error(error)
+        }
+        this.gameQrcodeSrc = gameurl
+        this.dialogUrlVisible = true
+      })
     }
   }
 }
