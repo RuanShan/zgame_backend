@@ -84,7 +84,7 @@
 
 <script>
 
-import Tinymce from '@/components/Tinymce'
+import Tinymce from '@/components/Tinymce/better.vue'
 import { Uploader } from '@/lib/activestorage/uploader'
 import ImageBrowser from '@/components/ImageBrowser/better'
 import { removeSlide, bindPhotoRelationship, updateGameRound } from '@/api/backend'
