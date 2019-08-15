@@ -3,7 +3,7 @@
     <el-button :style="{background:color,borderColor:color}" icon="el-icon-upload" size="mini" type="primary" @click=" dialogVisible=true">
       upload
     </el-button>
-    <ImgUpload :viewableType="viewableType" :dialog-visible.sync="dialogVisible" @selected="handleImageSelected"></ImgUpload>
+    <ImgUpload :viewable-type="viewableType" :dialog-visible.sync="dialogVisible" @selected="handleImageSelected" />
   </div>
 </template>
 
@@ -16,11 +16,11 @@ import {
 } from '@/api/albums.js'
 import { FileChecksum } from '@/lib/activestorage/file_checksum'
 import { BlobUpload } from '@/lib/activestorage/blob_upload'
-import {  bindPhotoRelationship } from '@/api/backend'
+import { bindPhotoRelationship } from '@/api/backend'
 
 export default {
   name: 'EditorSlideUpload',
-  components:{
+  components: {
     ImgUpload
   },
   props: {
@@ -37,7 +37,7 @@ export default {
       dialogVisible: false,
       listObj: {},
       fileList: [],
-      viewableType:'desc'
+      viewableType: 'desc'
     }
   },
   methods: {
@@ -53,7 +53,6 @@ export default {
           this.imageBrowserVisible = false
           this.$emit('successCBK', image)
         })
-
       }
     },
     checkAllSuccess() {

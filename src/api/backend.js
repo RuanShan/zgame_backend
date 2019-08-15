@@ -15,6 +15,11 @@ export const getGameRound = (id, data) => fetch(basePath + '/game_rounds/' + id,
 export const searchPhotos = (data) => fetch(basePath + '/photos/search', data, 'POST')
 export const updateGameRound = (id, data) => fetch(basePath + '/game_rounds/' + id, data, 'PUT')
 
+export const createAlbum = (data) => fetch(basePath + '/base/createAlbum', data, 'POST')
+export const getAlbums = (data) => fetch(basePath + '/base/getAlbums', data, 'POST')
+export const removeAlbum = (data) => fetch(basePath + '/base/removeAlbum', data, 'POST')
+
+
 
 export const addGameRound = (data) => fetch(basePath + '/base/addGameRound', data, 'POST')
 export const modifyGameRound = (data) => fetch(basePath + '/base/modifyGameRound', data, 'PUT')

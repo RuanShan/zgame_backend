@@ -201,7 +201,7 @@ export default {
       window.tinymce.get(this.tinymceId).getContent()
     },
     imageSuccessCBK(arr) {
-      console.log('arr-----:',arr);
+      console.log('arr-----:', arr)
       const _this = this
       window.tinymce.get(_this.tinymceId).insertContent(`<img class="wscnph" src="${arr.url}" >`)
     }
