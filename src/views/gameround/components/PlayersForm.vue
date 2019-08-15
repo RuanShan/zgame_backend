@@ -1,29 +1,45 @@
 <template>
   <div>
-    <el-form ref="form" :model="formData" label-width="80px">
-      <el-form-item label="活动名称">
-        <el-input v-model="formData.name" />
-      </el-form-item>
-      <el-form-item label="投票时间">
-        <el-date-picker
-          v-model="formData.time"
-          type="daterange"
-          :unlink-panels="unlink"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="['00:00:00','23:59:59']"
-        />
-      </el-form-item>
-      <el-button type="primary" @click="onSubmit">保存</el-button>
-    </el-form>
+
+    <el-tabs v-model="activeName" type="card" class="round-general-wrap" @tab-click="handleClick">
+      <el-tab-pane label="分组列表" name="first">
+        <div>
+          选手是否需要分组？
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="选手列表" name="fourth">
+        <div>
+          选手列表
+
+          <el-table
+            :key="tableKey"
+            v-loading="listLoading"
+            :data="list"
+            border
+            fit
+            highlight-current-row
+            style="width: 100%;"
+            @sort-change="sortChange"
+          >
+
+            <el-table-column label="Author" width="110px" align="center">
+              <template slot-scope="scope">
+                <span>{{ scope.row.author }}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
+
   </div>
 </template>
 
 <script>
 import { updateGameRound } from '@/api/backend.js'
 export default {
-  name: 'RoundForm',
+  name: 'PlayersForm',
+  activeName: 'first',
   props: {
     gameRound: {
       type: Object,
@@ -67,7 +83,10 @@ export default {
       }).then(res => {
         console.log('res====:', res)
       })
-    }
+    },
+    handleClick(tab, event) {
+      console.log(tab, event)
+    },
   }
 
 }

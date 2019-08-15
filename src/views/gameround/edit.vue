@@ -18,6 +18,7 @@
       <div class="setup-wrap">
         <RoundForm v-show="activeStep==1" :game-round="gameRound" />
         <GeneralForm v-show="activeStep==2" :game-round="gameRound" @changed="onChanged" />
+        <PlayersForm v-show="activeStep==3" :game-round="gameRound" />
       </div>
     </div>
 
@@ -36,9 +37,10 @@ import { getPoster, modifyPoster } from '@/api/albums.js'
 import GeneralForm from './components/GeneralForm'
 import RoundForm from './components/RoundForm'
 import Preview from './components/Preview'
+import PlayersForm from './components/PlayersForm'
 
 export default {
-  components: { Preview, GeneralForm, RoundForm },
+  components: { Preview, GeneralForm, RoundForm, PlayersForm },
   props: {
   },
   data() {
