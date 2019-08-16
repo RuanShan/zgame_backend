@@ -1,13 +1,13 @@
 
 <template>
   <div class="addNewBox">
-    <el-form ref="albumForm" :model="albumForm" label-width="80px" >
+    <el-form ref="albumForm" :model="albumForm" label-width="80px">
       <div class="form-main-container">
         <el-form-item label="作品名称">
           <el-input v-model="albumForm.name" />
         </el-form-item>
         <el-form-item label="作品说明">
-          <el-input type="textarea" v-model="albumForm.desc" />
+          <el-input v-model="albumForm.desc" type="textarea" />
         </el-form-item>
         <el-form-item>
           <el-upload
@@ -44,7 +44,7 @@ import {
   Uploader
 } from '@/lib/activestorage/uploader'
 import { directUploadUrl } from '@/config/env'
-import {createAlbum} from '@/api/backend.js'
+import { createAlbum } from '@/api/backend.js'
 export default {
   components: {
   },
@@ -76,7 +76,7 @@ export default {
         q: { viewable_type: 'slide' },
         page: 1,
         limit: 20
-      },
+      }
     }
   },
   watch: {
@@ -84,13 +84,13 @@ export default {
       // 外部触发游戏开始
       console.log('watch-command new: %s, old: %s', val, oldVal)
       if (val === true) {
-        console.log('show');
+        console.log('show')
       } else {
         console.log('hide')
       }
     },
     gameRound: function(val, oldVal) {
-      this.albumForm={}
+      this.albumForm = {}
       this.$refs.upload.clearFiles()
     }
   },
@@ -98,32 +98,31 @@ export default {
   methods: {
     onSubmit: async function(e) {
       console.log('========onSubmit========')
-      console.log('albumForm---:',this.albumForm);
-      let data = {
-        code:this.gameRound.code,
-        player:{
-          openid:'Super Admin',
-          game_round_id:this.gameRound.id,
-          nickname:'admin',
-          avatar:'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
+      console.log('albumForm---:', this.albumForm)
+      const data = {
+        code: this.gameRound.code,
+        player: {
+          openid: 'Super Admin',
+          game_round_id: this.gameRound.id,
+          nickname: 'admin',
+          avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
         },
-        album:{
-          name:this.albumForm.name,
-          desc:this.albumForm.desc,
-          game_round_id:this.gameRound.id,
-          type:'backend'
+        album: {
+          name: this.albumForm.name,
+          desc: this.albumForm.desc,
+          game_round_id: this.gameRound.id,
+          type: 'backend'
         }
       }
-      createAlbum(data).then((res)=>{
-        console.log('res--:',res);
-        let album_id = res.id
+      createAlbum(data).then((res) => {
+        console.log('res--:', res)
+        const album_id = res.id
         this.uploadData.album_id = album_id
         this.$refs.upload.submit()
       })
-
     },
     handleUpload(option) {
-      console.log('option---:',option);
+      console.log('option---:', option)
       const file = option.file
       const url = directUploadUrl + '?token=' + this.$store.getters.token
       console.log('handleDirectUpload option= ', option, url)
@@ -166,13 +165,13 @@ export default {
 
     },
     handleUploadSuccess(response, file, fileList) {
-      console.log('===========================handleUploadSuccess===========================');
+      console.log('===========================handleUploadSuccess===========================')
       this.uploadSuccessCount++
       this.$emit('onchange')
       if (fileList.length === this.uploadSuccessCount) {
         this.reset()
       }
-    },
+    }
   }
 }
 
