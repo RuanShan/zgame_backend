@@ -66,7 +66,7 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item :command="{ cmd:'edit', id: scope.row.id }">投票统计</el-dropdown-item>
                 <el-dropdown-item :command="{ cmd:'showurl', id: scope.row.id, number: scope.row.number }">活动网址</el-dropdown-item>
-                <el-dropdown-item :command="{ cmd:'edit', id: scope.row.id }" divided>清空数据</el-dropdown-item>
+                <el-dropdown-item :command="{ cmd:'clearData', id: scope.row.id }" divided>清空数据</el-dropdown-item>
                 <el-dropdown-item :command="{ cmd:'remove', id: scope.row.id }">删除</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -77,10 +77,10 @@
 
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-        <el-dialog title="活动地址" :visible.sync="dialogUrlVisible">
-         <p>{{ gameUrl }} </p>
-         <img id="share-qrcode-img" style="margin: 0 auto;" :src="gameQrcodeSrc">
-        </el-dialog>
+      <el-dialog title="活动地址" :visible.sync="dialogUrlVisible">
+        <p>{{ gameUrl }} </p>
+        <img id="share-qrcode-img" style="margin: 0 auto;" :src="gameQrcodeSrc">
+      </el-dialog>
 
     </div>
 
@@ -92,7 +92,8 @@
 import {
   getGameRounds,
   entry,
-  removeGameRound
+  removeGameRound,
+  clearData
 } from '@/api/backend.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import QRCode from 'qrcode'
@@ -121,7 +122,7 @@ export default {
       roundToShowUrl: 0,
       gameRoundList: [],
       gameRoundToModify: {},
-      gameUrl:null,
+      gameUrl: null,
       gameQrcodeSrc: null,
       dialogUrlVisible: false
     }
@@ -187,14 +188,36 @@ export default {
           this.getList()
         })
       } else if (e.cmd === 'showurl') {
-        this.showUrlDialog( e.number )
+        this.showUrlDialog(e.number)
+      } else if (e.cmd === 'clearData') {
+        this.$confirm('此操作将清空数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const data = {
+            code: 'ztoupiao',
+            gameRoundId: e.id
+          }
+          clearData(data).then((res) => {
+            this.$message({
+              type: 'success',
+              message: '清空成功!'
+            })
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消清空'
+          })
+        })
       }
     },
-    showUrlDialog( number ){
-      console.log( " showUrlDialog ", number)
+    showUrlDialog(number) {
+      console.log(' showUrlDialog ', number)
       this.gameUrl = 'http://testwx.natapp4.cc/game/ztoupiao/' + number + '/entry'
 
-      QRCode.toDataURL(this.gameUrl, { type: 'image/png' }, (error, gameurl)=> {
+      QRCode.toDataURL(this.gameUrl, { type: 'image/png' }, (error, gameurl) => {
         if (error) {
           console.error(error)
         }

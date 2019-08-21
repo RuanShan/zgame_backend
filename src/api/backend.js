@@ -10,9 +10,10 @@ var basePath = '/api/backend'
 export const login = (data) => fetch('/api/sessions', data, 'POST')
 export const getUserInfo = (data) => fetch(basePath + '/users/show', data)
 export const getGameRounds = (data) => fetch(basePath + '/game_rounds', data)
-export const getGameRound = (id, data) => fetch(basePath + '/game_rouDELETEnds/' + id, data)
+export const getGameRound = (id, data) => fetch(basePath + '/game_rounds/' + id, data)
 
 export const searchPhotos = (data) => fetch(basePath + '/photos/search', data, 'POST')
+export const removePhoto = (data) => fetch(basePath + '/photos/removePhoto', data, 'DELETE')
 export const updateGameRound = (id, data) => fetch(basePath + '/game_rounds/' + id, data, 'PUT')
 
 export const createAlbum = (data) => fetch(basePath + '/albums/createAlbum', data, 'POST')
@@ -26,6 +27,8 @@ export const modifyDesc = (data) => fetch(basePath + '/game_rounds/modifyDesc', 
 export const removeGameRound = (data) => fetch(basePath + '/game_rounds/removeGameRound', data, 'DELETE')
 export const getWxMpUsers = (data) => fetch(basePath + '/users/getWxMpUsers', data, 'GET')
 export const bindPhotoRelationship = (data) => fetch(basePath + '/photos/bindPhotoRelationship', data, 'POST')
+
+export const clearData = (data) => fetch(basePath + '/game_rounds/clearData', data, 'DELETE')
 
 export const entry = (number, data) => fetch(basePath + '/ztoupiao/' + number + '/entry', data, 'GET')
 
