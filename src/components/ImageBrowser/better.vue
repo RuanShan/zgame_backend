@@ -195,6 +195,7 @@ export default {
       for (const i in this.imgRes.list) {
         this.imgRes.list[i].selected = false
       }
+      this.selectedImgCount = 0
     },
 
     /**
@@ -221,8 +222,10 @@ export default {
       removePhoto(data).then((res) => {
         console.log('res------:', res)
       })
+      this.handleCancelAll()
+      this.loadImgList()
       // 隐藏，取消已选
-      this.handleCloseDialog()
+      // this.handleCloseDialog()
     },
 
     /**

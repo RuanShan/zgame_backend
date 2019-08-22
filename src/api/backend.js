@@ -12,6 +12,9 @@ export const getUserInfo = (data) => fetch(basePath + '/users/show', data)
 export const getGameRounds = (data) => fetch(basePath + '/game_rounds', data)
 export const getGameRound = (id, data) => fetch(basePath + '/game_rounds/' + id, data)
 
+export const getVoteStyle = (id, data) => fetch(basePath + '/game_rounds/getVoteStyle/' + id, data, 'GET')
+export const setVoteStyle = (data) => fetch(basePath + '/game_rounds/setVoteStyle', data, 'POST')
+
 export const searchPhotos = (data) => fetch(basePath + '/photos/search', data, 'POST')
 export const removePhoto = (data) => fetch(basePath + '/photos/removePhoto', data, 'DELETE')
 export const updateGameRound = (id, data) => fetch(basePath + '/game_rounds/' + id, data, 'PUT')
