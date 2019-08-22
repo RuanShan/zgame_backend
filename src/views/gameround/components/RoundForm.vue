@@ -15,6 +15,14 @@
           :default-time="['00:00:00','23:59:59']"
         />
       </el-form-item>
+      <el-switch
+        v-model="gameState"
+        style="display: block"
+        active-color="#13ce66"
+        inactive-color="#ff4949"
+        active-text="开启"
+        inactive-text="关闭"
+      />
       <el-button type="primary" @click="onSubmit">保存</el-button>
     </el-form>
   </div>
@@ -32,6 +40,7 @@ export default {
   },
   data() {
     return {
+      gameState: false,
       unlink: true,
       formData: {
         name: '',
@@ -57,12 +66,19 @@ export default {
     },
     onSubmit() {
       console.log('formData.time---:', this.formData.time)
+      let state = 'created'
+      if (this.gameState == true) {
+        state = 'open'
+      } else {
+        state = 'disabled'
+      }
 
       updateGameRound(this.gameRound.id, {
         gameRound: {
           name: this.formData.name,
           start_at: this.formData.time[0],
-          end_at: this.formData.time[1]
+          end_at: this.formData.time[1],
+          state: state
         }
       }).then(res => {
         console.log('res====:', res)
