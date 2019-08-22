@@ -27,7 +27,7 @@ export const removeSlide = (data) => fetch(basePath + '/base/removeSlide', data,
 export const modifyDesc = (data) => fetch(basePath + '/base/modifyDesc', data, 'PUT')
 export const removeGameRound = (data) => fetch(basePath + '/base/removeGameRound', data, 'POST')
 export const getWxMpUsers = (data) => fetch(basePath + '/base/getWxMpUsers', data, 'GET')
-export const bindPhotoRelationship = (data) => fetch(basePath + '/base/bindPhotoRelationship', data, 'POST')
+export const bindPhotoRelationship = (data) => fetch(basePath + '/photos/bindPhotoRelationship', data, 'POST')
 
 export const entry = (number, data) => fetch(basePath + '/ztoupiao/' + number + '/entry', data, 'GET')
 
