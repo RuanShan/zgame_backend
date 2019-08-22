@@ -36,9 +36,9 @@ export class BlobRecord {
   create(callback) {
     this.callback = callback
     console.log('this.uploadExtrData---:', this.uploadExtrData)
-    const { viewable_type ,album_id } = this.uploadExtrData
+    const { viewable_type, album_id } = this.uploadExtrData
 
-    this.xhr.send(JSON.stringify({ photo: this.attributes, viewable_type ,album_id}))
+    this.xhr.send(JSON.stringify({ photo: this.attributes, viewable_type, album_id }))
   }
 
   requestDidLoad(event) {

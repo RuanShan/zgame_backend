@@ -20,9 +20,12 @@
 
         <div class="elx-foot">
           <el-badge :value="selectedImgCount" class="item">
-            <el-button type="primary" size="medium" :disabled="selectedImgCount == 0" @click="handleConfirmSelect">确定选择</el-button>
+            <el-button type="primary" size="medium" :disabled="selectedImgCount == 0" @click="removePhoto">删除图片</el-button>
           </el-badge>
           <el-button v-if="options.enableUpload" type="primary" size="medium" plain @click="activeTab='upload'">上传图片</el-button>
+          <el-badge style="float:right" :value="selectedImgCount" class="item">
+            <el-button type="primary" size="medium" :disabled="selectedImgCount == 0" @click="handleConfirmSelect">确定选择</el-button>
+          </el-badge>
           <el-button v-if="options.multiple" type="text" @click="handleCancelAll">取消已选</el-button>
         </div>
       </el-tab-pane>
@@ -62,7 +65,7 @@
 </template>
 
 <script type="text/babel">
-import { searchPhotos } from '@/api/backend.js'
+import { searchPhotos, removePhoto } from '@/api/backend.js'
 import { directUploadUrl } from '@/config/env'
 import {
   Uploader
@@ -204,6 +207,20 @@ export default {
       // selectedImages { id: photo.id, url: photo.previewUrl }
       this.$emit('selected', { selectedImages })
 
+      // 隐藏，取消已选
+      this.handleCloseDialog()
+    },
+
+    removePhoto() {
+      console.log('===========removePhoto==========')
+      const selectedImages = this.imgRes.list.filter((img) => img.selected)
+      console.log('selectedImages=====:', selectedImages)
+      const data = {
+        selectedImages: selectedImages
+      }
+      removePhoto(data).then((res) => {
+        console.log('res------:', res)
+      })
       // 隐藏，取消已选
       this.handleCloseDialog()
     },

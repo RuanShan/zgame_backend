@@ -18,7 +18,7 @@
       <div class="setup-wrap">
         <RoundForm v-show="activeStep==1" :game-round="gameRound" />
         <GeneralForm v-show="activeStep==2" :game-round="gameRound" @changed="onChanged" />
-        <PlayersForm v-show="activeStep==3" :game-round="gameRound" @changed="onChanged"/>
+        <PlayersForm v-show="activeStep==3" :game-round="gameRound" @changed="onChanged" />
       </div>
     </div>
 

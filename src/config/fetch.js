@@ -38,7 +38,7 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
     requestConfig.headers['Authorization'] = 'Bearer ' + getToken()
   }
 
-  if (type === 'POST' || type === 'PUT') {
+  if (type === 'POST' || type === 'PUT' || type === 'DELETE') {
     Object.defineProperty(requestConfig, 'body', {
       value: JSON.stringify(data)
     })

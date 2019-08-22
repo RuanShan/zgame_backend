@@ -1,7 +1,7 @@
 
 <template>
   <div class="addNewBox">
-    <el-form ref="postForm" :model="postForm" label-width="80px" >
+    <el-form ref="postForm" :model="postForm" label-width="80px">
       <div class="form-main-container">
 
         <el-form-item label="活动名称">
@@ -24,9 +24,9 @@
         <el-form-item>
           <el-button type="primary" @click="onSubmit">立即创建</el-button>
         </el-form-item>
-    </div>
-  </el-form>
-    </div>
+      </div>
+    </el-form>
+  </div>
   </div>
 
 </template>
