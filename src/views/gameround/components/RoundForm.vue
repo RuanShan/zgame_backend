@@ -58,6 +58,9 @@ export default {
   methods: {
     initData() {
       if (this.gameRound != null) {
+        if (this.gameRound.state != 'disabled') {
+          this.gameState = true
+        }
         Object.assign(this.formData, this.gameRound)
         if (this.gameRound.start_at && this.gameRound.end_at) {
           this.formData.time = [this.gameRound.start_at, this.gameRound.end_at]
@@ -68,7 +71,14 @@ export default {
       console.log('formData.time---:', this.formData.time)
       let state = 'created'
       if (this.gameState == true) {
-        state = 'open'
+        const now = new Date()
+        if (now < this.gameRound.start_at) {
+          state = 'created'
+        } else if (now > this.gameRound.end_at) {
+          state = 'completed'
+        } else {
+          state = 'started'
+        }
       } else {
         state = 'disabled'
       }
