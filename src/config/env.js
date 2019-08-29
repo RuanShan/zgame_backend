@@ -7,7 +7,7 @@
  *
  */
 const basePreviewUrl = process.env.VUE_APP_PREVIEW_URL
-const baseUrl = ''
+const baseUrl = process.env.VUE_APP_API_URL
 const baseImageUrl = ''
 
 const directUploadUrl = '/api/backend/photos/ztoupiao/create'
