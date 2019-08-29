@@ -46,7 +46,7 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
 
   try {
     console.log('url---------:', url)
-    const response = await fetch(url, requestConfig)
+    let response = await fetch(url, requestConfig)
 
     if (response.status >= 400) {
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
@@ -68,8 +68,7 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
         throw new Error('Bad response from server')
       }
     }
-
-    const responseJson = await response.json()
+    let responseJson = await response.json()
 
     return responseJson
   } catch (error) {
