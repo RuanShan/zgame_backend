@@ -5,7 +5,7 @@ import store from '@/store'
 import { getToken } from '@/utils/auth'
 
 export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
-  console.log(process.env.VUE_APP_API_URL)
+  console.log("VUE_APP_API_URL",process.env.VUE_APP_API_URL, baseUrl)
 
   type = type.toUpperCase()
   url = baseUrl + url
