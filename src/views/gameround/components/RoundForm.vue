@@ -15,15 +15,15 @@
           :default-time="['00:00:00','23:59:59']"
         />
       </el-form-item>
+      <el-form-item label="关闭活动">
+
       <el-switch
-        v-model="gameState"
-        style="display: block"
-        active-color="#13ce66"
-        inactive-color="#ff4949"
-        active-text="开启"
-        inactive-text="关闭"
+        v-model="gameStateDisabled"        
       />
+    </el-form-item>
+    <el-form-item >
       <el-button type="primary" @click="onSubmit">保存</el-button>
+    </el-form-item>
     </el-form>
   </div>
 </template>
@@ -40,7 +40,7 @@ export default {
   },
   data() {
     return {
-      gameState: false,
+      gameStateDisabled: false,
       unlink: true,
       formData: {
         name: '',
@@ -58,8 +58,8 @@ export default {
   methods: {
     initData() {
       if (this.gameRound != null) {
-        if (this.gameRound.state != 'disabled') {
-          this.gameState = true
+        if (this.gameRound.state == 'disabled') {
+          this.gameStateDisabled = true
         }
         Object.assign(this.formData, this.gameRound)
         if (this.gameRound.start_at && this.gameRound.end_at) {
@@ -70,7 +70,7 @@ export default {
     onSubmit() {
       console.log('formData.time---:', this.formData.time)
       let state = 'created'
-      if (this.gameState == true) {
+      if (this.gameStateDisabled == false) {
         const now = new Date()
         if (now < this.gameRound.start_at) {
           state = 'created'
