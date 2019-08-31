@@ -28,17 +28,17 @@ import '@/styles/app.css'
  * Currently MockJs will be used in the production environment,
  * please remove it before going online! ! !
  */
-import { mockXHR } from '../mock'
+// import { mockXHR } from '../mock'
 if (process.env.NODE_ENV === 'production') {
-  mockXHR()
+//  mockXHR()
 }
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size
 })
 
-//import Imgbox from './plugins/imgbox'
-//Vue.use(Imgbox) // $imgbox(this.opts);
+// import Imgbox from './plugins/imgbox'
+// Vue.use(Imgbox) // $imgbox(this.opts);
 
 // register global utility filters
 Object.keys(filters).forEach(key => {
