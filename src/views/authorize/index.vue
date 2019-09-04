@@ -28,9 +28,8 @@
 </template>
 
 <script>
-import {
-  getAuthorize
-} from '@/api/backend.js'
+import { baseGameUrl } from '@/config/env'
+
 import QRCode from 'qrcode'
 
 export default {
@@ -52,15 +51,16 @@ export default {
     }
   },
   created() {
+    this.authUrl = `${baseGameUrl}/api/wxopen/auth`
     this.getAuthorize()
   },
   methods: {
     getAuthorize: function() {
-      const params = {}
-      getAuthorize(params).then(data => {
-        console.log(data)
-        this.authUrl = data.url
-      })
+      // const params = {}
+      // getAuthorize(params).then(data => {
+      //   console.log(data)
+      //   this.authUrl = data.url
+      // })
     },
     showUrlDialog() {
       QRCode.toDataURL(this.authUrl, { type: 'image/png' }, (error, gameurl) => {
