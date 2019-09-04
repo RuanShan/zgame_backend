@@ -15,14 +15,11 @@
 </template>
 
 <script>
-import { basePreviewUrl } from '@/config/env'
+import { baseGameUrl } from '@/config/env'
 import QRCode from 'qrcode'
 export default {
   name: 'GameRoundPreviewForm',
   props: {
-    command: {
-      type: String
-    },
     gameRound: {
       type: Object,
       default: () => {}
@@ -37,9 +34,10 @@ export default {
     }
   },
   computed: {
+
     previewUrl() {
       if (this.gameRound.number && this.gameRound.code) {
-        return `${basePreviewUrl}/${this.gameRound.code}.html?number=${this.gameRound.number}&preview=yes`
+        return `${baseGameUrl}/${this.gameRound.code}.html?number=${this.gameRound.number}&preview=yes`
       } else {
         return ''
       }
@@ -71,7 +69,7 @@ export default {
     },
     showUrlDialog() {
       const number = this.gameRound.number
-      this.gameUrl = 'http://testwx.natapp4.cc/game/ztoupiao/' + number + '/entry'
+      this.gameUrl = `${baseGameUrl}/game/ztoupiao/${number}/entry`
 
       QRCode.toDataURL(this.gameUrl, { type: 'image/png' }, (error, gameurl) => {
         if (error) {

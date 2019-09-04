@@ -6,7 +6,8 @@
  * baseImgPath: 图片存放地址
  *
  */
-const basePreviewUrl = process.env.VUE_APP_PREVIEW_URL
+const basePreviewUrl = process.env.VUE_APP_GAME_URL
+const baseGameUrl = process.env.VUE_APP_GAME_URL
 const baseUrl = process.env.VUE_APP_API_URL
 const baseImageUrl = ''
 
@@ -16,6 +17,7 @@ module.exports = {
   baseUrl,
   baseImageUrl,
   basePreviewUrl,
+  baseGameUrl,
   directUploadUrl,
   tiny: {
     toolbar: ['undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat ']

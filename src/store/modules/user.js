@@ -9,7 +9,8 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  roles: []
+  roles: [],
+  mpuser: { appid: '', nick_name: '', head_img: '' }
 }
 
 const mutations = {
@@ -30,6 +31,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_MPUSER: (state, mpUser) => {
+    state.mpuser = mpUser
   }
 }
 
@@ -43,7 +47,7 @@ const actions = {
 
   // get user info
   getInfo({ commit, state }, data) {
-    const { roles, name, avatar, introduction } = data
+    const { roles, name, avatar, introduction, mpuser } = data
     // roles must be a non-empty array
     if (!roles || roles.length <= 0) {
       throw new Error('getInfo: roles must be a non-null array!')
@@ -53,6 +57,7 @@ const actions = {
     commit('SET_NAME', name)
     commit('SET_AVATAR', avatar)
     commit('SET_INTRODUCTION', introduction)
+    commit('SET_MPUSER', mpuser)
   },
 
   // user logout

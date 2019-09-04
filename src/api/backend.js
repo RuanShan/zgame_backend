@@ -35,7 +35,7 @@ export const clearData = (data) => fetch(basePath + '/game_rounds/clearData', da
 
 export const entry = (number, data) => fetch(basePath + '/ztoupiao/' + number + '/entry', data, 'GET')
 
-export const getAuthorize = (data) => fetch('/api/wxopen/auth', data, 'GET')
+export const getAuthorize = (data) => fetch('/api/backend/wxopen/getAuthUrl', data, 'GET')
 
 export const getPosts = (data) => fetch(basePath + '/posts', data)
 export const getPostDetail = (id, data) => fetch(basePath + '/posts/' + id, data)

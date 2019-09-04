@@ -1,65 +1,58 @@
 <template>
   <div class="app-container documentation-container">
-    <table>
-      <tr>
-        <td>
-          headimg
-        </td>
-        <td>
-          appid
-        </td>
-        <td>
-          name
-        </td>
-        <td>
-          alias
-        </td>
-      </tr>
-      <tr v-for="oauth in oauthList" :key="oauth.id">
-        <td>
-          <img id="headimg" :src="oauth.head_img">
-        </td>
-        <td>
-          {{ oauth.appid }}
-        </td>
-        <td>
-          {{ oauth.nick_name }}
-        </td>
-        <td>
-          {{ oauth.alias }}
-        </td>
-      </tr>
-    </table>
-    <div class="home">
-      <a :href="authUrl">点击授权</a>
-    </div>
+
+    <el-card class="box-card">
+      <div slot="header" class="clearfix">
+        <span>授权公众号</span>
+      </div>
+      <el-row>
+        <div style="margin-bottom:50px;">
+          <el-col :span="4" class="text-center">
+            <img id="headimg" :src="computedMpuser.head_img">
+            {{ computedMpuser.nick_name }}
+
+          </el-col>
+
+        </div>
+        <el-button @click="showUrlDialog"> 点击授权 </el-button>
+
+      </el-row>
+    </el-card>
+
+    <el-dialog title="微信公众号授权" :visible.sync="dialogUrlVisible">
+      <p>{{ authUrl }} </p>
+      <img id="share-qrcode-img" style="margin: 0 auto;" :src="gameQrcodeSrc">
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import {
-  getAuthorize,
-  getWxMpUsers
+  getAuthorize
 } from '@/api/backend.js'
+import QRCode from 'qrcode'
 
 export default {
   name: 'Authorize',
   data() {
     return {
-      company: {},
       authUrl: '',
-      oauthList: []
+      dialogUrlVisible: false,
+      gameQrcodeSrc: ''
+    }
+  },
+  computed: {
+    computedMpuser() {
+      // mpuser 为空提供缺省值
+      if (this.mpuser) {
+        return this.mpuser
+      }
+      return { appid: '', nick_name: '', head_img: '' }
     }
   },
   created() {
     this.getAuthorize()
-    const params = {
-      user_id: 1
-    }
-    getWxMpUsers(params).then(data => {
-      console.log('getWxMpUsers---:', data)
-      this.oauthList = data
-    })
   },
   methods: {
     getAuthorize: function() {
@@ -67,6 +60,15 @@ export default {
       getAuthorize(params).then(data => {
         console.log(data)
         this.authUrl = data.url
+      })
+    },
+    showUrlDialog() {
+      QRCode.toDataURL(this.authUrl, { type: 'image/png' }, (error, gameurl) => {
+        if (error) {
+          console.error(error)
+        }
+        this.gameQrcodeSrc = gameurl
+        this.dialogUrlVisible = true
       })
     }
   }

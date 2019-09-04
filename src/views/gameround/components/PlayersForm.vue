@@ -1,7 +1,3 @@
-<style lang="scss" scoped>
-
-</style>
-
 <template>
 
   <div>
@@ -13,25 +9,74 @@
         </div>
       </el-tab-pane>
       <el-tab-pane label="选手列表" name="second">
-        <div>
-          <el-table :data="albumList" border fit highlight-current-row style="width: 100%;">
-            <el-table-column label="thumb" width="110px" align="center">
+        <div class="albums">
+          <el-table :data="albumList" fit highlight-current-row style="width: 100%;" @selection-change="handleSelectionChange">
+            <el-table-column
+              type="selection"
+              width="55"
+              align="center"
+            />
+            <el-table-column label="操作" width="110px" align="left">
+              <template slot="header">
+                <el-dropdown size="small" trigger="click">
+                  <span class="el-dropdown-link">
+                    操作<i class="el-icon-arrow-down el-icon--right" />
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item>显示</el-dropdown-item>
+                    <el-dropdown-item>隐藏</el-dropdown-item>
+                    <el-dropdown-item>删除</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
               <template slot-scope="scope">
                 <el-image :src="scope.row.Photos[0].thumbUrl" fit="contain" />
               </template>
             </el-table-column>
-            <el-table-column label="name" width="110px" align="center">
+            <el-table-column label="选手" align="left">
               <template slot-scope="scope">
-                <span>{{ scope.row.name }}</span>
+                <p>{{ scope.row.position }}. {{ scope.row.name }}</p>
+                <p class="desc">{{ scope.row.desc }}</p>
               </template>
             </el-table-column>
-            <el-table-column label="type" width="110px" align="center">
+            <el-table-column label="来源" width="90px" align="center">
               <template slot-scope="scope">
                 <span>{{ scope.row.type }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="action" width="110px" align="center">
+            <el-table-column label="" width="90" align="center">
               <template slot-scope="scope">
+                <p>{{ scope.row.id }}</p>
+                <p>票数</p>
+              </template>
+            </el-table-column>
+            <el-table-column label="" width="90" align="center">
+              <template slot-scope="scope">
+                <p>{{ scope.row.id }}</p>
+                <p>票数</p>
+              </template>
+            </el-table-column>
+            <el-table-column label="" width="90" align="center">
+              <template slot-scope="scope">
+                <p>{{ scope.row.id }}</p>
+                <p>评论数</p>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="110px" align="center">
+              <template slot-scope="scope">
+
+                <el-dropdown>
+                  <span class="el-dropdown-link">
+                    <i class="el-icon-more " />
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item>编辑</el-dropdown-item>
+                    <el-dropdown-item>修改票数</el-dropdown-item>
+                    <el-dropdown-item>投票日志</el-dropdown-item>
+                    <el-dropdown-item>删除</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+
                 <el-button type="primary" @click="deleteAlbum(scope.row)">删除</el-button>
               </template>
             </el-table-column>
@@ -80,7 +125,9 @@ export default {
         page: 1,
         limit: 20
       },
-      albumList: []
+      albumList: [],
+      multipleSelection: []
+
     }
   },
   watch: {
@@ -114,9 +161,36 @@ export default {
         this.onchange()
         console.log('res===:', res)
       })
+    },
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row)
+        })
+      } else {
+        this.$refs.multipleTable.clearSelection()
+      }
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val
     }
   }
 
 }
 
 </script>
+
+<sytle lang="css">
+  .el-dropdown-link {
+  cursor: pointer;
+  color: #409EFF;
+}
+.el-icon-arrow-down {
+  font-size: 12px;
+}
+
+.albums .desc{
+  color: #909399;
+  font-size: 85%;
+}
+</sytle>
