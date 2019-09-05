@@ -9,19 +9,19 @@
         <div style="margin-bottom:50px;">
           <el-col :span="4" class="text-center">
             <img id="headimg" :src="computedMpuser.head_img">
-            {{ computedMpuser.nick_name }}
-
+            <p> {{ computedMpuser.nick_name }}</p>
+            <div> <el-button @click="showUrlDialog"> 点击授权 </el-button> </div>
           </el-col>
-
         </div>
-        <el-button @click="showUrlDialog"> 点击授权 </el-button>
 
       </el-row>
     </el-card>
 
-    <el-dialog title="微信公众号授权" :visible.sync="dialogUrlVisible">
+    <el-dialog ref="dialog" title="微信公众号授权" :visible.sync="dialogUrlVisible" top="5vh" width="800px" @open="onDialogOpen">
       <p>{{ authUrl }} </p>
-      <img id="share-qrcode-img" style="margin: 0 auto;" :src="gameQrcodeSrc">
+      <div class="iframe-wrap">
+        <iframe ref="iframe" class="iframe" frameborder="0" scrolling="no" />
+      </div>
     </el-dialog>
 
   </div>
@@ -30,12 +30,15 @@
 <script>
 import { baseGameUrl } from '@/config/env'
 
-import QRCode from 'qrcode'
-
+// import QRCode from 'qrcode'
+// https://www.cnblogs.com/wong-do/p/10413867.html
+// vue 和 iframe 通讯
 export default {
   name: 'Authorize',
   data() {
     return {
+      iframeCallback: 'vue_authorize_completed',
+      iframeSrc: '',
       authUrl: '',
       dialogUrlVisible: false,
       gameQrcodeSrc: ''
@@ -44,17 +47,25 @@ export default {
   computed: {
     computedMpuser() {
       // mpuser 为空提供缺省值
-      if (this.mpuser) {
-        return this.mpuser
+      if (this.$store.getters.mpuser) {
+        return this.$store.getters.mpuser
       }
       return { appid: '', nick_name: '', head_img: '' }
     }
   },
   created() {
-    this.authUrl = `${baseGameUrl}/api/wxopen/auth`
-    this.getAuthorize()
+    const self = this
+    this.authUrl = `${baseGameUrl}/api/backend/wxopen/auth?token=${this.$store.getters.token}`
+    // 在iframe中调用， window.parent["vue_authorize_completed"]()
+    window[this.iframeCallback] = () => {
+      self.handleAuthorizeCompleted()
+    }
   },
   methods: {
+    handleAuthorizeCompleted() {
+      // 重新载入当前用户信息,取得新创建的mpuser
+      console.log('handleAuthorizeCompleted')
+    },
     getAuthorize: function() {
       // const params = {}
       // getAuthorize(params).then(data => {
@@ -63,12 +74,20 @@ export default {
       // })
     },
     showUrlDialog() {
-      QRCode.toDataURL(this.authUrl, { type: 'image/png' }, (error, gameurl) => {
-        if (error) {
-          console.error(error)
-        }
-        this.gameQrcodeSrc = gameurl
-        this.dialogUrlVisible = true
+      // QRCode.toDataURL(this.authUrl, { type: 'image/png' }, (error, gameurl) => {
+      //   if (error) {
+      //     console.error(error)
+      //   }
+      //   this.gameQrcodeSrc = gameurl
+      //   this.dialogUrlVisible = true
+      // })
+      this.dialogUrlVisible = true
+    },
+    onDialogOpen() {
+      // 这时才有iframe 元素
+      this.$nextTick(() => {
+        console.log('this.$refs= ', this.$refs)
+        this.$refs.iframe.src = this.authUrl
       })
     }
   }
@@ -91,5 +110,13 @@ export default {
     font-size: 20px;
     text-align: center;
   }
+}
+.iframe-wrap{
+  height: 65vh;
+  min-height: 650px;
+}
+.iframe-wrap iframe{
+  width: 100%;
+  height: 100%;
 }
 </style>
