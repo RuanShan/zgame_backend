@@ -28,17 +28,17 @@
         </el-table-column>
         <el-table-column label="总票数">
           <template slot-scope="scope">
-            <span>{{ scope.row.id }}</span>
+            <span>{{ scope.row.result_count }}</span>
           </template>
         </el-table-column>
         <el-table-column label="选手数量">
           <template slot-scope="scope">
-            <span>{{ scope.row.id }}</span>
+            <span>{{ scope.row.player_count }}</span>
           </template>
         </el-table-column>
         <el-table-column label="访问量">
           <template slot-scope="scope">
-            <span>{{ scope.row.id }}</span>
+            <span>{{ scope.row.visit_count }}</span>
           </template>
         </el-table-column>
         <el-table-column label="待审核选手">

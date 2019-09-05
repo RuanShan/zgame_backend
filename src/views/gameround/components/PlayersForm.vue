@@ -17,7 +17,7 @@
               align="center"
             />
             <el-table-column label="操作" width="110px" align="left">
-              <template slot="header">
+              <template slot-scope="scope">
                 <el-dropdown size="small" trigger="click">
                   <span class="el-dropdown-link">
                     操作<i class="el-icon-arrow-down el-icon--right" />
@@ -46,13 +46,13 @@
             </el-table-column>
             <el-table-column label="" width="90" align="center">
               <template slot-scope="scope">
-                <p>{{ scope.row.id }}</p>
+                <p>{{ scope.row.score }}</p>
                 <p>票数</p>
               </template>
             </el-table-column>
             <el-table-column label="" width="90" align="center">
               <template slot-scope="scope">
-                <p>{{ scope.row.id }}</p>
+                <p>{{ scope.row.score }}</p>
                 <p>票数</p>
               </template>
             </el-table-column>
@@ -65,7 +65,7 @@
             <el-table-column label="操作" width="110px" align="center">
               <template slot-scope="scope">
 
-                <el-dropdown>
+                <el-dropdown @command="handleCommand">
                   <span class="el-dropdown-link">
                     <i class="el-icon-more " />
                   </span>
@@ -73,11 +73,9 @@
                     <el-dropdown-item>编辑</el-dropdown-item>
                     <el-dropdown-item>修改票数</el-dropdown-item>
                     <el-dropdown-item>投票日志</el-dropdown-item>
-                    <el-dropdown-item>删除</el-dropdown-item>
+                    <el-dropdown-item :command="{cmd:'del', album: scope.row}">删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
-
-                <el-button type="primary" @click="deleteAlbum(scope.row)">删除</el-button>
               </template>
             </el-table-column>
 
@@ -115,6 +113,7 @@ export default {
   },
   data() {
     return {
+      isbutton: true,
       unlink: true,
       formData: {
         name: '',
@@ -137,6 +136,27 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    handleCommand(command) {
+      console.log('command---:', command)
+      if (command.cmd == 'del') {
+        this.$confirm('此操作将删除选手, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.deleteAlbum(command.album)
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+      }
+    },
     onchange() {
       this.$emit('changed')
     },
@@ -153,6 +173,7 @@ export default {
       }
     },
     deleteAlbum(album) {
+      console.log('==============deleteAlbum==============')
       const param = {
         code: this.gameRound.code,
         album: album

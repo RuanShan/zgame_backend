@@ -7,8 +7,7 @@
       <el-form-item label="投票时间">
         <el-date-picker
           v-model="formData.time"
-          type="daterange"
-          :unlink-panels="unlink"
+          type="datetimerange"
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
@@ -17,13 +16,13 @@
       </el-form-item>
       <el-form-item label="关闭活动">
 
-      <el-switch
-        v-model="gameStateDisabled"        
-      />
-    </el-form-item>
-    <el-form-item >
-      <el-button type="primary" @click="onSubmit">保存</el-button>
-    </el-form-item>
+        <el-switch
+          v-model="gameStateDisabled"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="onSubmit">保存</el-button>
+      </el-form-item>
     </el-form>
   </div>
 </template>
