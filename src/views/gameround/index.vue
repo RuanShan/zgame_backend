@@ -97,6 +97,7 @@ import {
 } from '@/api/backend.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import QRCode from 'qrcode'
+import config from '@/config/env.js'
 
 export default {
   name: 'Authorize',
@@ -215,7 +216,7 @@ export default {
     },
     showUrlDialog(number) {
       console.log(' showUrlDialog ', number)
-      this.gameUrl = 'http://testwx.natapp4.cc/game/ztoupiao/' + number + '/entry'
+      this.gameUrl = config.baseGameUrl + '/game/ztoupiao/' + number + '/entry'
 
       QRCode.toDataURL(this.gameUrl, { type: 'image/png' }, (error, gameurl) => {
         if (error) {
