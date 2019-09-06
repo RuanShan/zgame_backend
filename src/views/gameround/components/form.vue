@@ -19,7 +19,7 @@
           />
         </el-form-item>
         <el-form-item label="活动说明">
-          <Tinymce ref="editor" v-model="postForm.content" :height="400" />
+          <Tinymce ref="editor" v-model="postForm.content"  :height="400" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">立即创建</el-button>
@@ -40,6 +40,7 @@ import Tinymce from '@/components/Tinymce'
 import { FileChecksum } from '@/lib/activestorage/file_checksum'
 import { BlobUpload } from '@/lib/activestorage/blob_upload'
 import { modifyDesc } from '@/api/backend'
+import { template } from './a.js'
 export default {
   components: { Tinymce },
   props: {
@@ -49,7 +50,9 @@ export default {
   },
   data() {
     return {
-      postForm: {},
+      postForm: {
+        content:template
+      },
       albumData: {
         name: '',
         desc: '',
@@ -83,7 +86,8 @@ export default {
       }
     }
   },
-  created() {},
+  created() {
+  },
   methods: {
     onSubmit: async function(e) {
       console.log('========onSubmit========')

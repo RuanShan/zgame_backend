@@ -82,6 +82,7 @@ export default {
   },
   watch: {
     value(val) {
+      console.log('value---:',val);
       if (!this.hasChange && this.hasInit) {
         this.$nextTick(() =>
           window.tinymce.get(this.tinymceId).setContent(val || ''))

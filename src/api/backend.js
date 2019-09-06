@@ -26,7 +26,7 @@ export const removeAlbum = (data) => fetch(basePath + '/albums/removeAlbum', dat
 export const addGameRound = (data) => fetch(basePath + '/game_rounds/addGameRound', data, 'POST')
 export const modifyGameRound = (data) => fetch(basePath + '/game_rounds/modifyGameRound', data, 'PUT')
 export const removeSlide = (data) => fetch(basePath + '/slides/removeSlide', data, 'DELETE')
-export const modifyDesc = (data) => fetch(basePath + '/game_rounds/modifyDesc', data, 'PUT')
+export const modifyDesc = (data) => fetch(basePath + '/game_rounds/modifyDesc', data, 'POST')
 export const removeGameRound = (data) => fetch(basePath + '/game_rounds/removeGameRound', data, 'DELETE')
 export const getWxMpUsers = (data) => fetch(basePath + '/users/getWxMpUsers', data, 'GET')
 export const bindPhotoRelationship = (data) => fetch(basePath + '/photos/bindPhotoRelationship', data, 'POST')
