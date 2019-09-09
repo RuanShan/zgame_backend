@@ -8,13 +8,13 @@
           <el-input v-model="game.name" />
         </el-form-item>
         <el-form-item label="投票时间">
-
           <el-date-picker
             v-model="game.startandend"
-            type="daterange"
+            type="datetimerange"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            format="yyyy-MM-DD HH:mm"
             :default-time="['00:00:00','23:59:59']"
           />
         </el-form-item>
@@ -40,7 +40,7 @@ import Tinymce from '@/components/Tinymce'
 import { FileChecksum } from '@/lib/activestorage/file_checksum'
 import { BlobUpload } from '@/lib/activestorage/blob_upload'
 import { modifyDesc } from '@/api/backend'
-import { template } from './template.js'
+import { desc } from './template.js'
 export default {
   components: { Tinymce },
   props: {
@@ -51,7 +51,7 @@ export default {
   data() {
     return {
       postForm: {
-        content: template
+        content: desc
       },
       albumData: {
         name: '',
@@ -113,8 +113,8 @@ export default {
           }
           modifyDesc(param).then((res) => {
             console.log('res----:', res)
+            this.$router.push('/gameround/edit/' + res.id)
           })
-          this.$emit('addNew_over')
         })
       }
     }
