@@ -9,12 +9,12 @@
         </el-form-item>
         <el-form-item label="投票时间">
           <el-date-picker
-            v-model="game.startandend"
+            v-model="game.time"
             type="datetimerange"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            format="yyyy-MM-DD HH:mm"
+            format="yyyy-MM-dd HH:mm"
             :default-time="['00:00:00','23:59:59']"
           />
         </el-form-item>
@@ -63,7 +63,8 @@ export default {
       game: {
         name: '',
         desc: '',
-        duration: ''
+        duration: '',
+        time: []
       },
       account: '',
       password: ''
@@ -94,10 +95,13 @@ export default {
       var msg_is_ok = true
       var gamename = this.game.name
       var gameduration = this.game.duration
+      console.log('game.time----:', this.game.time)
       if (msg_is_ok) {
         const game = {
           user_id: 1,
           name: gamename,
+          start_at: this.game.time[0],
+          end_at: this.game.time[1],
           code: 'ztoupiao',
           duration: 30
         }
