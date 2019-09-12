@@ -18,7 +18,6 @@
     </el-card>
 
     <el-dialog ref="dialog" title="微信公众号授权" :visible.sync="dialogUrlVisible" top="5vh" width="800px" @open="onDialogOpen">
-      <p>{{ authUrl }} </p>
       <div class="iframe-wrap">
         <iframe ref="iframe" class="iframe" frameborder="0" scrolling="no" />
       </div>
