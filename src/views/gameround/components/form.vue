@@ -98,7 +98,6 @@ export default {
       console.log('game.time----:', this.game.time)
       if (msg_is_ok) {
         const game = {
-          user_id: 1,
           name: gamename,
           start_at: this.game.time[0],
           end_at: this.game.time[1],
