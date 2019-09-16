@@ -29,7 +29,7 @@
 
 <script>
 import { baseGameUrl } from '@/config/env'
-import { removeWxMpUsers } from '@/api/backend'
+import { removeWxMpUsers, getWxMpUsers } from '@/api/backend'
 
 // import QRCode from 'qrcode'
 // https://www.cnblogs.com/wong-do/p/10413867.html
@@ -65,7 +65,11 @@ export default {
   methods: {
     handleAuthorizeCompleted() {
       // 重新载入当前用户信息,取得新创建的mpuser
-      console.log('handleAuthorizeCompleted')
+      const param = {}
+      getWxMpUsers(param).then(res => {
+        this.$store._mutations['user/SET_MPUSER'][0](res)
+        console.log('handleAuthorizeCompleted')
+      })
     },
     getAuthorize: function() {
       // const params = {}
