@@ -11,6 +11,7 @@
             <img id="headimg" :src="computedMpuser.head_img">
             <p> {{ computedMpuser.nick_name }}</p>
             <div> <el-button @click="showUrlDialog"> 点击授权 </el-button> </div>
+            <div> <el-button @click="removeWxMpUsers"> 取消授权 </el-button> </div>
           </el-col>
         </div>
 
@@ -28,6 +29,7 @@
 
 <script>
 import { baseGameUrl } from '@/config/env'
+import { removeWxMpUsers } from '@/api/backend'
 
 // import QRCode from 'qrcode'
 // https://www.cnblogs.com/wong-do/p/10413867.html
@@ -81,6 +83,22 @@ export default {
       //   this.dialogUrlVisible = true
       // })
       this.dialogUrlVisible = true
+    },
+    removeWxMpUsers() {
+      this.$confirm('此操作将取消授权, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const param = {}
+
+        removeWxMpUsers(param)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
     },
     onDialogOpen() {
       // 这时才有iframe 元素
