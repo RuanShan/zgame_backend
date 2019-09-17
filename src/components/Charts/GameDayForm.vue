@@ -216,10 +216,8 @@ export default {
         start_at: this.start_at,
         end_at: this.end_at
       }
-      console.log('param----:', param)
 
       getGameDayInfo(param).then(res => {
-        console.log('getGameDayInfo res--:', res)
         this.gameDays = res
         this.initChart()
       })

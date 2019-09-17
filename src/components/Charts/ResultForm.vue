@@ -215,10 +215,8 @@ export default {
         game_round_id: this.$route.params.id,
         time: this.time
       }
-      console.log('param----:', param)
 
       getResultInfo(param).then(res => {
-        console.log('getResultInfo res--:', res)
         this.gameResults = res
         this.initChart()
       })
