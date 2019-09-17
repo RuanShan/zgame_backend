@@ -64,8 +64,9 @@
                 操作<i class="el-icon-arrow-down el-icon--right" />
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :command="{ cmd:'edit', id: scope.row.id }">投票统计</el-dropdown-item>
                 <el-dropdown-item :command="{ cmd:'showurl', id: scope.row.id, number: scope.row.number }">活动网址</el-dropdown-item>
+                <el-dropdown-item :command="{ cmd:'resultInfo', id: scope.row.id }" divided>投票统计</el-dropdown-item>
+                <el-dropdown-item :command="{ cmd:'gameDayInfo', id: scope.row.id }">流量统计</el-dropdown-item>
                 <el-dropdown-item :command="{ cmd:'clearData', id: scope.row.id }" divided>清空数据</el-dropdown-item>
                 <el-dropdown-item :command="{ cmd:'remove', id: scope.row.id }">删除</el-dropdown-item>
               </el-dropdown-menu>
@@ -212,6 +213,10 @@ export default {
             message: '已取消清空'
           })
         })
+      } else if (e.cmd === 'resultInfo') {
+        this.$router.push('/gameround/resultInfo/' + e.id)
+      } else if (e.cmd === 'gameDayInfo') {
+        this.$router.push('/gameround/gameDayInfo/' + e.id)
       }
     },
     showUrlDialog(number) {

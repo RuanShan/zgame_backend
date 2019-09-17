@@ -111,6 +111,20 @@ export const constantRoutes = [
         name: 'EditGameround',
         meta: { title: '编辑', noCache: true, activeMenu: '/gamerounds/list' },
         hidden: true
+      },
+      {
+        path: 'resultInfo/:id(\\d+)',
+        component: () => import('@/views/gameround/components/ResultInfo'),
+        name: 'GetResultInfo',
+        meta: { title: '投票统计', noCache: true, activeMenu: '/gamerounds/list' },
+        hidden: true
+      },
+      {
+        path: 'gameDayInfo/:id(\\d+)',
+        component: () => import('@/views/gameround/components/GameDayInfo'),
+        name: 'GetGameDayInfo',
+        meta: { title: '流量统计', noCache: true, activeMenu: '/gamerounds/list' },
+        hidden: true
       }
     ]
   },

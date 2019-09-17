@@ -50,3 +50,6 @@ export const addTerm = (data) => fetch(basePath + '/terms/addTerm', data, 'POST'
 export const modifyTerm = (data) => fetch(basePath + '/terms/modifyTerm', data, 'PUT')
 export const removeTerm = (data) => fetch(basePath + '/terms/removeTerm', data, 'DELETE')
 export const getTermDetail = (data) => fetch(basePath + '/terms/getTermDetail', data, 'GET')
+
+export const getResultInfo = (data) => fetch(basePath + '/game_results/getResultInfo', data, 'POST')
+export const getGameDayInfo = (data) => fetch(basePath + '/game_days/getGameDayInfo', data, 'POST')
