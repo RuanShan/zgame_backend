@@ -2,14 +2,14 @@
   <div class="chart-container">
     <el-form ref="postForm" :model="postForm" label-width="80px">
       <el-form-item label="投票时间">
-        <el-date-picker
-          v-model="time"
-          type="datetimerange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          format="yyyy-MM-dd"
-        />
+        <div class="block">
+          <span class="demonstration">默认</span>
+          <el-date-picker
+            v-model="time"
+            type="date"
+            placeholder="选择日期"
+          />
+        </div>
         <el-button type="primary" @click="onSubmit">commit</el-button>
       </el-form-item>
     </el-form>
@@ -20,7 +20,9 @@
 <script>
 import echarts from 'echarts'
 import resize from './mixins/resize'
-import { getResultInfo } from '@/api/backend.js'
+import {
+  getResultInfo
+} from '@/api/backend.js'
 
 export default {
   mixins: [resize],
@@ -47,7 +49,7 @@ export default {
       chart: null,
       start_at: '',
       end_at: '',
-      time: [],
+      time: '',
       postForm: {},
       gameResults: []
     }
@@ -169,7 +171,8 @@ export default {
 
           },
           textStyle: {
-            color: '#fff' },
+            color: '#fff'
+          },
           borderColor: '#90979c'
 
         }, {
@@ -199,22 +202,18 @@ export default {
             }
           },
           data: visit_counts
-        }
-        ]
+        }]
       })
     },
     onSubmit() {
       console.log('==========onSubmit==========')
-      this.start_at = this.time[0]
-      this.end_at = this.time[1]
       this.getInfo()
     },
 
     getInfo() {
       const param = {
         game_round_id: this.$route.params.id,
-        start_at: this.start_at,
-        end_at: this.end_at
+        time: this.time
       }
       console.log('param----:', param)
 
@@ -230,7 +229,7 @@ export default {
 </script>
 
 <style scoped>
-.chart-container{
+.chart-container {
   position: relative;
   width: 100%;
   height: calc(100vh - 84px);
