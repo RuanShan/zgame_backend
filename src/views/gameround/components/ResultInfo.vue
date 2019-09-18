@@ -1,15 +1,18 @@
 <template>
   <div class="chart-container">
-    <Form height="90%" width="100%" />
+    <ResultForm id="ResultForm" height="90%" width="100%" class-name="ResultForm" />
+    <DayForm id="DayForm" height="90%" width="100%" class-name="DayForm" />
+
   </div>
 </template>
 
 <script>
-import Form from '@/components/Charts/ResultForm'
+import ResultForm from '@/components/Charts/ResultForm'
+import DayForm from '@/components/Charts/GameDayForm'
 
 export default {
   name: 'MixChart',
-  components: { Form }
+  components: { ResultForm, DayForm }
 }
 </script>
 
@@ -17,6 +20,6 @@ export default {
 .chart-container{
   position: relative;
   width: 100%;
-  height: calc(100vh - 84px);
+  height: calc(50vh - 84px);
 }
 </style>

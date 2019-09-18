@@ -1,16 +1,15 @@
-0<template>
+<template>
   <div class="chart-container">
     <el-form ref="postForm" :model="postForm" label-width="80px">
       <el-form-item label="投票时间">
         <div class="block">
-          <span class="demonstration">默认</span>
           <el-date-picker
             v-model="time"
             type="date"
             placeholder="选择日期"
           />
+          <el-button type="primary" @click="onSubmit">commit</el-button>
         </div>
-        <el-button type="primary" @click="onSubmit">commit</el-button>
       </el-form-item>
     </el-form>
     <div :id="id" :class="className" :style="{height:height,width:width}" />
@@ -74,7 +73,7 @@ export default {
       this.chart.setOption({
         backgroundColor: '#344b58',
         title: {
-          text: 'statistics',
+          text: '投票统计',
           x: '20',
           top: '20',
           textStyle: {

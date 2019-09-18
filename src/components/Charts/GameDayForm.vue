@@ -1,7 +1,7 @@
 <template>
   <div class="chart-container">
     <el-form ref="postForm" :model="postForm" label-width="80px">
-      <el-form-item label="投票时间">
+      <el-form-item label="流量时间">
         <el-date-picker
           v-model="time"
           type="datetimerange"
@@ -72,7 +72,7 @@ export default {
       this.chart.setOption({
         backgroundColor: '#344b58',
         title: {
-          text: 'statistics',
+          text: '流量统计',
           x: '20',
           top: '20',
           textStyle: {
@@ -231,6 +231,7 @@ export default {
 .chart-container{
   position: relative;
   width: 100%;
-  height: calc(100vh - 84px);
+  height: calc(60vh );
+  margin-top:70px
 }
 </style>
