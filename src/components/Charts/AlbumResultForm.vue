@@ -1,13 +1,14 @@
 <template>
   <div class="chart-container">
     <el-form ref="postForm" :model="postForm" label-width="80px">
-      <el-form-item label="投票时间">
+      <el-form-item label="投票选手">
         <div class="block">
           <el-date-picker
             v-model="time"
             type="date"
             placeholder="选择日期"
           />
+          <el-input v-model="gamePlayerId" placeholder="请输入选手编号" style="width:20vw;"></el-input>
           <el-button type="primary" @click="onSubmit">commit</el-button>
         </div>
       </el-form-item>
@@ -20,7 +21,7 @@
 import echarts from 'echarts'
 import resize from './mixins/resize'
 import {
-  getResultInfo
+  getAlbumResultInfo
 } from '@/api/backend.js'
 
 export default {
@@ -48,7 +49,8 @@ export default {
       chart: null,
       start_at: '',
       end_at: '',
-      time: '',
+      time:'',
+      gamePlayerId: '',
       postForm: {},
       gameResults: []
     }
@@ -212,10 +214,11 @@ export default {
     getInfo() {
       const param = {
         game_round_id: this.$route.params.id,
-        time: this.time
+        gamePlayerId: this.gamePlayerId,
+        time:this.time
       }
 
-      getResultInfo(param).then(res => {
+      getAlbumResultInfo(param).then(res => {
         this.gameResults = res
         this.initChart()
       })
@@ -226,10 +229,9 @@ export default {
 </script>
 
 <style scoped>
-.chart-container{
+.chart-container {
   position: relative;
   width: 100%;
-  height: calc(60vh );
-  margin-top:70px
+  height: calc(100vh - 84px);
 }
 </style>

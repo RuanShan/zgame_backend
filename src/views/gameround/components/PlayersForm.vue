@@ -87,7 +87,7 @@
       </el-tab-pane>
       <el-dialog title="修改选手" :visible.sync="showModifyAlbumForm" @opened="onOpen" @closed="onClosed">
         修改选手
-        <ModifyAlbumForm :game-round="gameRound" :modify-album="modifyAlbum" :command="showModifyAlbumForm" @modifyOver="modifyOver" />
+        <ModifyAlbumForm :game-round="gameRound" @modifyOver="modifyOver" :modifyAlbum="modifyAlbum" :command="showModifyAlbumForm"/>
       </el-dialog>
 
     </el-tabs>
@@ -133,9 +133,9 @@ export default {
       },
       albumList: [],
       multipleSelection: [],
-      modifyAlbum: {},
-      selectedAlbum: {},
-      showModifyAlbumForm: false
+      modifyAlbum:{},
+      selectedAlbum:{},
+      showModifyAlbumForm:false
 
     }
   },
@@ -145,19 +145,20 @@ export default {
     showModifyAlbumForm: function(val, oldVal) {
       // 外部触发游戏开始
       console.log('watch-showModifyAlbumForm new: %s, old: %s', val, oldVal)
-    }
+
+    },
   },
   created() {},
   mounted() {},
   methods: {
-    onOpen() {
-      console.debug('onOpened called ')
+    onOpen(){
+      console.debug( "onOpened called ")
       this.modifyAlbum = this.selectedAlbum
     },
-    onClosed() {
-      console.debug('onOpened called ')
+    onClosed(){
+      console.debug( "onOpened called ")
       this.modifyAlbum = {
-        Photos: []
+        photos:[]
       }
     },
     handleCommand(command) {
@@ -179,7 +180,7 @@ export default {
             message: '已取消删除'
           })
         })
-      } else if (command.cmd == 'modify') {
+      }else if (command.cmd == 'modify') {
         this.selectedAlbum = command.album
         this.showModifyAlbumForm = true
       }
@@ -187,8 +188,8 @@ export default {
     onchange() {
       this.$emit('changed')
     },
-    modifyOver() {
-      console.log('----modifyOver----')
+    modifyOver(){
+      console.log('----modifyOver----');
       this.$emit('changed')
       this.showModifyAlbumForm = false
     },
