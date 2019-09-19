@@ -23,6 +23,7 @@ import resize from './mixins/resize'
 import {
   getAlbumResultInfo
 } from '@/api/backend.js'
+const moment = require('moment')
 
 export default {
   mixins: [resize],
@@ -56,7 +57,11 @@ export default {
     }
   },
   mounted() {
-    this.initChart()
+    if (this.$route.query.albumId) {
+      this.gamePlayerId = this.$route.query.albumId
+    }
+    this.time = moment()
+    this.getInfo()
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -73,17 +78,17 @@ export default {
       xData = Object.keys(this.gameResults)
       visit_counts = Object.values(this.gameResults)
       this.chart.setOption({
-        backgroundColor: '#344b58',
+        // background//color: '',
         title: {
           text: '投票统计',
           x: '20',
-          top: '20',
+          top: '0',
           textStyle: {
-            color: '#fff',
+            // //color: '',
             fontSize: '22'
           },
           subtextStyle: {
-            color: '#90979c',
+            // color: '',
             fontSize: '16'
           }
         },
@@ -91,7 +96,7 @@ export default {
           trigger: 'axis',
           axisPointer: {
             textStyle: {
-              color: '#fff'
+              // color: ''
             }
           }
         },
@@ -99,17 +104,17 @@ export default {
           left: '5%',
           right: '5%',
           borderWidth: 0,
-          top: 150,
-          bottom: 95,
+          top: 50,
+          bottom: 20,
           textStyle: {
-            color: '#fff'
+            // color: ''
           }
         },
         legend: {
           x: '5%',
           top: '10%',
           textStyle: {
-            color: '#90979c'
+            // color: ''
           },
           data: ['average']
         },
@@ -118,7 +123,7 @@ export default {
           type: 'category',
           axisLine: {
             lineStyle: {
-              color: '#90979c'
+              // color: ''
             }
           },
           splitLine: {
@@ -143,7 +148,7 @@ export default {
           },
           axisLine: {
             lineStyle: {
-              color: '#90979c'
+              // color: ''
             }
           },
           axisTick: {
@@ -157,29 +162,29 @@ export default {
           }
         }],
         dataZoom: [{
-          show: true,
+          show: false,
           height: 30,
           xAxisIndex: [
             0
           ],
           bottom: 30,
-          start: 10,
-          end: 80,
+          start: 0,
+          end: 100,
           handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
           handleSize: '110%',
           handleStyle: {
-            color: '#d3dee5'
+            // color: ''
 
           },
           textStyle: {
-            color: '#fff'
-          },
-          borderColor: '#90979c'
+            // color: ''
+          }
+          // bordercolor: ''
 
         }, {
           type: 'inside',
           show: true,
-          height: 15,
+          height: 0,
           start: 1,
           end: 35
         }],
@@ -191,7 +196,7 @@ export default {
           symbol: 'circle',
           itemStyle: {
             normal: {
-              color: 'rgba(252,230,48,1)',
+              // color: '',
               barBorderRadius: 0,
               label: {
                 show: true,

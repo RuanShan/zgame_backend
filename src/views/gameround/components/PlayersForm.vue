@@ -72,7 +72,7 @@
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item :command="{cmd:'modify', album: scope.row}">编辑</el-dropdown-item>
                     <el-dropdown-item>修改票数</el-dropdown-item>
-                    <el-dropdown-item>投票日志</el-dropdown-item>
+                    <el-dropdown-item :command="{cmd:'result', album: scope.row}">投票日志</el-dropdown-item>
                     <el-dropdown-item :command="{cmd:'del', album: scope.row}">删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -182,6 +182,8 @@ export default {
       } else if (command.cmd == 'modify') {
         this.selectedAlbum = command.album
         this.showModifyAlbumForm = true
+      } else if (command.cmd == 'result') {
+        this.$router.push({ path: '/gameround/resultInfo/' + command.album.game_round_id, query: { albumId: command.album.id }})
       }
     },
     onchange() {

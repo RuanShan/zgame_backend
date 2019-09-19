@@ -220,8 +220,6 @@ export default {
         })
       } else if (e.cmd === 'resultInfo') {
         this.$router.push('/gameround/resultInfo/' + e.id)
-      } else if (e.cmd === 'gameDayInfo') {
-        this.$router.push('/gameround/gameDayInfo/' + e.id)
       }
     },
     showUrlDialog(number) {
