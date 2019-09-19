@@ -19,9 +19,9 @@
             <el-table-column label="操作" width="110px" align="left">
               <template slot-scope="scope">
                 <el-dropdown size="small" trigger="click">
-                  <!-- <span class="el-dropdown-link">
+                  <span class="el-dropdown-link">
                     操作<i class="el-icon-arrow-down el-icon--right" />
-                  </span> -->
+                  </span>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item>显示</el-dropdown-item>
                     <el-dropdown-item>隐藏</el-dropdown-item>

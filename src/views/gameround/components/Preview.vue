@@ -37,7 +37,7 @@ export default {
 
     previewUrl() {
       if (this.gameRound.number && this.gameRound.code) {
-        return `${baseGameUrl}/${this.gameRound.code}.html?number=${this.gameRound.number}&preview=yes`
+        return `${baseGameUrl}/${this.gameRound.code}.html?number=${this.gameRound.number}&openid=admin&preview=yes`
       } else {
         return ''
       }
