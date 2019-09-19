@@ -19,9 +19,9 @@
             <el-table-column label="操作" width="110px" align="left">
               <template slot-scope="scope">
                 <el-dropdown size="small" trigger="click">
-                  <span class="el-dropdown-link">
+                  <!-- <span class="el-dropdown-link">
                     操作<i class="el-icon-arrow-down el-icon--right" />
-                  </span>
+                  </span> -->
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item>显示</el-dropdown-item>
                     <el-dropdown-item>隐藏</el-dropdown-item>
@@ -70,7 +70,7 @@
                     <i class="el-icon-more " />
                   </span>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>编辑</el-dropdown-item>
+                    <el-dropdown-item :command="{cmd:'modify', album: scope.row}">编辑</el-dropdown-item>
                     <el-dropdown-item>修改票数</el-dropdown-item>
                     <el-dropdown-item>投票日志</el-dropdown-item>
                     <el-dropdown-item :command="{cmd:'del', album: scope.row}">删除</el-dropdown-item>
@@ -85,6 +85,11 @@
       <el-tab-pane label="新建选手" name="third">
         <AlbumForm :game-round="gameRound" @onchange="onchange" />
       </el-tab-pane>
+      <el-dialog title="修改选手" :visible.sync="showModifyAlbumForm" @opened="onOpen" @closed="onClosed">
+        修改选手
+        <ModifyAlbumForm :game-round="gameRound" @modifyOver="modifyOver" :modifyAlbum="modifyAlbum" :command="showModifyAlbumForm"/>
+      </el-dialog>
+
     </el-tabs>
 
   </div>
@@ -99,10 +104,12 @@ import {
 }
   from '@/api/backend.js'
 import AlbumForm from './AlbumForm.vue'
+import ModifyAlbumForm from './ModifyAlbumForm.vue'
 export default {
   name: 'PlayersForm',
   components: {
-    AlbumForm
+    AlbumForm,
+    ModifyAlbumForm
   },
   activeName: 'first',
   props: {
@@ -125,17 +132,35 @@ export default {
         limit: 20
       },
       albumList: [],
-      multipleSelection: []
+      multipleSelection: [],
+      modifyAlbum:{},
+      selectedAlbum:{},
+      showModifyAlbumForm:false
 
     }
   },
   watch: {
     // 当gameRound数据改变，重新初始化数据
-    'gameRound': 'initData'
+    'gameRound': 'initData',
+    showModifyAlbumForm: function(val, oldVal) {
+      // 外部触发游戏开始
+      console.log('watch-showModifyAlbumForm new: %s, old: %s', val, oldVal)
+
+    },
   },
   created() {},
   mounted() {},
   methods: {
+    onOpen(){
+      console.debug( "onOpened called ")
+      this.modifyAlbum = this.selectedAlbum
+    },
+    onClosed(){
+      console.debug( "onOpened called ")
+      this.modifyAlbum = {
+        Photos:[]
+      }
+    },
     handleCommand(command) {
       console.log('command---:', command)
       if (command.cmd == 'del') {
@@ -155,10 +180,18 @@ export default {
             message: '已取消删除'
           })
         })
+      }else if (command.cmd == 'modify') {
+        this.selectedAlbum = command.album
+        this.showModifyAlbumForm = true
       }
     },
     onchange() {
       this.$emit('changed')
+    },
+    modifyOver(){
+      console.log('----modifyOver----');
+      this.$emit('changed')
+      this.showModifyAlbumForm = false
     },
     initData() {
       if (this.gameRound != null) {
