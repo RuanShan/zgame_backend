@@ -1,27 +1,43 @@
 
 <template>
-<div class="addNewBox">
-  <el-form ref="albumForm" :model="albumForm" label-width="80px">
-    <div class="form-main-container">
-      <el-form-item label="作品名称">
-        <el-input v-model="albumForm.name" />
-      </el-form-item>
-      <el-form-item label="作品说明">
-        <el-input v-model="albumForm.desc" type="textarea" />
-      </el-form-item>
-      <el-form-item>
-        <el-upload ref="upload" class="upload-img-preview" list-type="picture-card" accept="image/*" :file-list="fileList" :action="options.uploadUrl" :auto-upload="false" :multiple="options.multiple" :limit="options.limit" :data="uploadData"
-          :http-request="handleUpload" :before-upload="beforeUpload" :on-progress="handleOnProgress" :on-success="handleUploadSuccess" :on-remove="handleRemove" :on-error="handleUploadError">
-          <i class="el-icon-plus" />
-        </el-upload>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">保存修改</el-button>
-      </el-form-item>
-    </div>
+  <div class="addNewBox">
+    <el-form ref="albumForm" :model="albumForm" label-width="80px">
+      <div class="form-main-container">
+        <el-form-item label="作品名称">
+          <el-input v-model="albumForm.name" />
+        </el-form-item>
+        <el-form-item label="作品说明">
+          <el-input v-model="albumForm.desc" type="textarea" />
+        </el-form-item>
+        <el-form-item>
+          <el-upload
+            ref="upload"
+            class="upload-img-preview"
+            list-type="picture-card"
+            accept="image/*"
+            :file-list="fileList"
+            :action="options.uploadUrl"
+            :auto-upload="false"
+            :multiple="options.multiple"
+            :limit="options.limit"
+            :data="uploadData"
+            :http-request="handleUpload"
+            :before-upload="beforeUpload"
+            :on-progress="handleOnProgress"
+            :on-success="handleUploadSuccess"
+            :on-remove="handleRemove"
+            :on-error="handleUploadError"
+          >
+            <i class="el-icon-plus" />
+          </el-upload>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">保存修改</el-button>
+        </el-form-item>
+      </div>
 
-  </el-form>
-</div>
+    </el-form>
+  </div>
 </template>
 
 <script>
@@ -78,15 +94,15 @@ export default {
   watch: {
     modifyAlbum: function(val, oldVal) {
       // 外部触发游戏开始
-      this.albumForm = {};
-      this.fileList = [];
-      this.removeFileList = [];
+      this.albumForm = {}
+      this.fileList = []
+      this.removeFileList = []
       console.log('modify watch-command new: %s, old: %s', val, oldVal)
       console.log('show')
-      console.log('modifyAlbum--:', this.modifyAlbum);
+      console.log('modifyAlbum--:', this.modifyAlbum)
       this.albumForm = Object.assign({}, this.modifyAlbum)
       for (let i = 0; i < this.albumForm.Photos.length; i++) {
-        let photo = {
+        const photo = {
           name: this.albumForm.Photos[i].id,
           url: this.albumForm.Photos[i].originalUrl
         }
@@ -95,7 +111,7 @@ export default {
     }
   },
   created() {
-    console.log('modify command---:', this.command);
+    console.log('modify command---:', this.command)
   },
   methods: {
     onSubmit: async function(e) {
@@ -149,9 +165,9 @@ export default {
 
     },
     handleRemove(file, fileList) {
-      console.log('====================handleRemove================');
-      console.log('file----', file);
-      console.log('fileList----', fileList);
+      console.log('====================handleRemove================')
+      console.log('file----', file)
+      console.log('fileList----', fileList)
       this.removeFileList.push(file)
     },
     handleUploadError(err, file, fileList) {
