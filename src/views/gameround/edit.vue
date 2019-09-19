@@ -77,6 +77,7 @@ export default {
     // fetch the data when the view is created and the data is
     // already being observed
     this.initData()
+    this.handleStepClick(this.$route.query.step)
   },
   methods: {
     refresh() {

@@ -54,9 +54,9 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item :command="{ cmd:'edit', id: scope.row.id }">活动设置</el-dropdown-item>
-                <el-dropdown-item :command="{ cmd:'edit', id: scope.row.id }">选手管理</el-dropdown-item>
-                <el-dropdown-item :command="{ cmd:'edit', id: scope.row.id }">显示设置</el-dropdown-item>
-                <el-dropdown-item :command="{ cmd:'edit', id: scope.row.id }">投票设置</el-dropdown-item>
+                <el-dropdown-item :command="{ cmd:'album', id: scope.row.id }">选手管理</el-dropdown-item>
+                <el-dropdown-item :command="{ cmd:'view', id: scope.row.id }">显示设置</el-dropdown-item>
+                <el-dropdown-item :command="{ cmd:'volt', id: scope.row.id }">投票设置</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
             <el-dropdown @command="handleCommand">
@@ -180,7 +180,13 @@ export default {
     },
     async handleCommand(e) {
       if (e.cmd === 'edit') {
-        this.$router.push('/gameround/edit/' + e.id)
+        this.$router.push({ path: '/gameround/edit/' + e.id, query: { step: 1 }})
+      } else if (e.cmd === 'album') {
+        this.$router.push({ path: '/gameround/edit/' + e.id, query: { step: 3 }})
+      } else if (e.cmd === 'view') {
+        this.$router.push({ path: '/gameround/edit/' + e.id, query: { step: 2 }})
+      } else if (e.cmd === 'volt') {
+        this.$router.push({ path: '/gameround/edit/' + e.id, query: { step: 4 }})
       } else if (e.cmd === 'remove') {
         const params = {
           round_id: e.id
