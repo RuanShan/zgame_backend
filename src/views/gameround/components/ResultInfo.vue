@@ -4,7 +4,6 @@
     <ResultForm id="ResultForm" height="90%" width="100%" class-name="ResultForm" />
     <DayForm id="DayForm" height="90%" width="100%" class-name="DayForm" />
 
-
   </div>
 </template>
 

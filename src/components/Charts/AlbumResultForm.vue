@@ -8,7 +8,7 @@
             type="date"
             placeholder="选择日期"
           />
-          <el-input v-model="gamePlayerId" placeholder="请输入选手编号" style="width:20vw;"></el-input>
+          <el-input v-model="gamePlayerId" placeholder="请输入选手编号" style="width:20vw;" />
           <el-button type="primary" @click="onSubmit">commit</el-button>
         </div>
       </el-form-item>
@@ -49,7 +49,7 @@ export default {
       chart: null,
       start_at: '',
       end_at: '',
-      time:'',
+      time: '',
       gamePlayerId: '',
       postForm: {},
       gameResults: []
@@ -215,7 +215,7 @@ export default {
       const param = {
         game_round_id: this.$route.params.id,
         gamePlayerId: this.gamePlayerId,
-        time:this.time
+        time: this.time
       }
 
       getAlbumResultInfo(param).then(res => {
