@@ -10,7 +10,7 @@
           end-placeholder="结束日期"
           format="yyyy-MM-dd"
         />
-        <el-button type="primary" @click="onSubmit">commit</el-button>
+        <el-button type="primary" @click="onSubmit">搜索</el-button>
       </el-form-item>
     </el-form>
     <div :id="id" :class="className" :style="{height:height,width:width}" />

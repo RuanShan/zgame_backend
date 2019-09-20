@@ -8,7 +8,7 @@
             type="date"
             placeholder="选择日期"
           />
-          <el-button type="primary" @click="onSubmit">commit</el-button>
+          <el-button type="primary" @click="onSubmit">搜索</el-button>
         </div>
       </el-form-item>
     </el-form>

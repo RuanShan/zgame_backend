@@ -55,3 +55,4 @@ export const getTermDetail = (data) => fetch(basePath + '/terms/getTermDetail', 
 export const getResultInfo = (data) => fetch(basePath + '/game_results/getResultInfo', data, 'POST')
 export const getGameDayInfo = (data) => fetch(basePath + '/game_days/getGameDayInfo', data, 'POST')
 export const getAlbumResultInfo = (data) => fetch(basePath + '/game_results/getAlbumResultInfo', data, 'POST')
+export const getExportInfo = (data) => fetch(basePath + '/export/getExportInfo', data, 'POST')

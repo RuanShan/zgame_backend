@@ -1,15 +1,16 @@
 <template>
   <div class="chart-container">
+
     <el-form ref="postForm" :model="postForm" label-width="80px">
       <el-form-item label="投票选手">
         <div class="block">
-          <el-date-picker
-            v-model="time"
-            type="date"
-            placeholder="选择日期"
-          />
-          <el-input v-model="gamePlayerId" placeholder="请输入选手编号" style="width:20vw;" />
-          <el-button type="primary" @click="onSubmit">commit</el-button>
+          <el-date-picker v-model="time" type="date" placeholder="选择日期" />
+          <el-input v-model="gamePlayerId" placeholder="请输入选手编号" style="width:10vw;" />
+          <el-button type="primary" @click="onSubmit">搜索</el-button>
+          <el-button :loading="downloadLoading" style="margin:0 20px 20px 20px; float: right;" type="primary" icon="document" @click="handleDownload">
+            数据导出
+          </el-button>
+          <span style="float: right;">{{ gameRound.name }}   </span>
         </div>
       </el-form-item>
     </el-form>
@@ -20,8 +21,11 @@
 <script>
 import echarts from 'echarts'
 import resize from './mixins/resize'
+import { parseTime } from '@/utils'
 import {
-  getAlbumResultInfo
+  getAlbumResultInfo,
+  getExportInfo,
+  getGameRound
 } from '@/api/backend.js'
 const moment = require('moment')
 
@@ -53,10 +57,17 @@ export default {
       time: '',
       gamePlayerId: '',
       postForm: {},
-      gameResults: []
+      gameResults: [],
+      downloadLoading: false,
+      gameRound: {}
     }
   },
   mounted() {
+    if (this.$route.params.id) {
+      getGameRound(this.$route.params.id).then(res => {
+        this.gameRound = res
+      })
+    }
     if (this.$route.query.albumId) {
       this.gamePlayerId = this.$route.query.albumId
     }
@@ -227,6 +238,47 @@ export default {
         this.gameResults = res
         this.initChart()
       })
+    },
+
+    handleDownload() {
+      this.downloadLoading = true
+      const param = {
+        game_round_id: this.$route.params.id,
+        code: 'ztoupiao'
+      }
+
+      getExportInfo(param).then(res => {
+        console.log('getExportInfo res---', res)
+        import('@/vendor/Export2Excel').then(excel => {
+          const tHeader = ['编号', '作品名', '得票数', '作者', '联系方式', '创建时间']
+          const filterVal = ['position', 'name', 'score', 'realname', 'cellphone', 'created_at']
+          const list = res
+          const data = this.formatJson(filterVal, list)
+          excel.export_json_to_excel({
+            header: tHeader,
+            data,
+            filename: this.filename,
+            autoWidth: this.autoWidth,
+            bookType: this.bookType
+          })
+          this.downloadLoading = false
+        })
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      console.log('jsonData---:', jsonData)
+      return jsonData.map(v => filterVal.map(j => {
+        console.log('j----:', j)
+        if (j === 'created_at') {
+          return parseTime(v[j])
+        } else if (j === 'realname') {
+          return v['GamePlayer'][j]
+        } else if (j === 'cellphone') {
+          return v['GamePlayer'][j]
+        } else {
+          return v[j]
+        }
+      }))
     }
   }
 
