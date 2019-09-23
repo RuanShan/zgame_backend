@@ -25,8 +25,12 @@
           </el-col>
 
           <el-col :span="12">
-            <el-form-item label="发布时间" class="postInfo-container-item">
-              <el-date-picker v-model="displayTime" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="Select date and time" />
+            <el-form-item label="发布时间">
+              <el-date-picker
+                v-model="publish_at"
+                type="datetime"
+                placeholder="选择日期时间"
+              />
             </el-form-item>
           </el-col>
 
@@ -120,7 +124,8 @@ export default {
         title: [{ validator: validateRequire }],
         content: [{ validator: validateRequire }]
       },
-      loading: false // 按钮功能是否处理中
+      loading: false, // 按钮功能是否处理中,
+      publish_at: ''
     }
   },
   computed: {
@@ -147,6 +152,7 @@ export default {
         terms.push(val.Terms[i].id)
       }
       this.selectedTerms = terms
+      this.publish_at = val.publish_at
       if (val.Covers[0]) {
         this.coverImage.url = val.Covers[0].originalUrl
       }
@@ -207,6 +213,7 @@ export default {
           name: postname,
           title: title,
           desc: desc,
+          publish_at: this.publish_at,
           content: this.postData.content
         }
         const params = { post: postData, photo_id: this.coverImage.id, terms }
