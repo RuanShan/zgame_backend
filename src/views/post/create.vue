@@ -51,10 +51,22 @@ export default {
   created() {
     getTermInfo().then(async res => {
       console.log('res----:', res)
-      this.termList = res
+      this.termList = []
+      this.makeTermList(res)
     })
   },
   methods: {
+    makeTermList(terms) {
+      for (let i = 0; i < terms.length; i++) {
+        for (let j = 1; j < terms[i].hierarchy_level; j++) {
+          terms[i].name = terms[i].name
+        }
+        this.termList.push(terms[i])
+        if (terms[i].children) {
+          this.makeTermList(terms[i].children)
+        }
+      }
+    },
     handleUpload(option) {
       const file = option.file
       const url = directUploadUrl + '?token=' + this.$store.getters.token

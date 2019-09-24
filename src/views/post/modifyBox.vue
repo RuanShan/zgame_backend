@@ -157,7 +157,8 @@ export default {
   created() {
     getTermInfo().then((res) => {
       console.log('res----:', res)
-      this.termList = res
+      this.termList = []
+      this.makeTermList(res)
       const parsed = JSON.parse(JSON.stringify(queryString.parse(location.hash)).replace(/\//g, ''))
       console.log('id--:', parsed.postmodify)
       const param = {
@@ -186,6 +187,17 @@ export default {
     })
   },
   methods: {
+    makeTermList(terms) {
+      for (let i = 0; i < terms.length; i++) {
+        for (let j = 1; j < terms[i].hierarchy_level; j++) {
+          terms[i].name = terms[i].name
+        }
+        this.termList.push(terms[i])
+        if (terms[i].children) {
+          this.makeTermList(terms[i].children)
+        }
+      }
+    },
     handleRemove(file, fileList) {
       console.log('----------handleRemove---------')
       console.log('file', file)
