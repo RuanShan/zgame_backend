@@ -4,13 +4,13 @@
       <el-form-item label="名称">
         <el-input v-model="termData.name" />
       </el-form-item>
-      <el-form-item  >
+      <el-form-item>
         <label slot="label">别名
           <el-tooltip class="item" effect="light" content="“别名”是在URL中使用的别称，它可以令URL更美观。通常使用小写，只能包含字母，数字和连字符（-）。" placement="bottom">
-           <i class="el-icon-question"></i>
-         </el-tooltip>
-         </label>
-        <el-input v-model="termData.slug"  placeholder="URL中使用的别称"/>
+            <i class="el-icon-question" />
+          </el-tooltip>
+        </label>
+        <el-input v-model="termData.slug" placeholder="URL中使用的别称" />
 
       </el-form-item>
       <el-form-item label="描述">
@@ -34,12 +34,8 @@
 <script>
 
 import weui from 'weui.js'
-import $ from 'jquery'
-import queryString from 'query-string'
 import { addTerm, getTermInfo } from '@/api/backend.js'
-import Tinymce from '@/components/Tinymce'
 export default {
-  components: { Tinymce },
   props: {
     command: {
       default: false
@@ -71,7 +67,8 @@ export default {
     command: function(val, oldVal) {
       getTermInfo().then(async res => {
         console.log('res----:', res)
-        this.termList = res
+        this.termList = []
+        this.makeTermList(res)
       })
     }
 
@@ -79,10 +76,22 @@ export default {
   created() {
     getTermInfo().then(async res => {
       console.log('res----:', res)
-      this.termList = res
+      this.termList = []
+      this.makeTermList(res)
     })
   },
   methods: {
+    makeTermList(terms) {
+      for (let i = 0; i < terms.length; i++) {
+        for (let j = 1; j < terms[i].hierarchy_level; j++) {
+          terms[i].name = terms[i].name
+        }
+        this.termList.push(terms[i])
+        if (terms[i].children) {
+          this.makeTermList(terms[i].children)
+        }
+      }
+    },
     post_msg: async function(e) {
       console.log('========post_msg========')
 
@@ -117,7 +126,7 @@ export default {
           name: termname,
           slug: slug,
           desc: desc,
-          parent: parent
+          parent_id: parent
         }
 
         addTerm(termData).then(async res => {

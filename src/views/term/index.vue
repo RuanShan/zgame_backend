@@ -77,21 +77,35 @@ export default {
   created() {
     getTermInfo().then(async res => {
       console.log('res----:', res)
-      this.termList = res
+      this.termList = []
+      this.makeTermList(res)
     })
   },
   methods: {
+    makeTermList(terms) {
+      for (let i = 0; i < terms.length; i++) {
+        for (let j = 1; j < terms[i].hierarchy_level; j++) {
+          terms[i].name = '--' + terms[i].name
+        }
+        this.termList.push(terms[i])
+        if (terms[i].children) {
+          this.makeTermList(terms[i].children)
+        }
+      }
+    },
     refresh: function() {
       getTermInfo().then(async res => {
         console.log('res----:', res)
-        this.termList = res
+        this.termList = []
+        this.makeTermList(res)
       })
     },
     modify_over: function() {
       this.ui.isModify = false
       getTermInfo().then(async res => {
         console.log('res----:', res)
-        this.termList = res
+        this.termList = []
+        this.makeTermList(res)
       })
     },
     remove: function(term) {
@@ -102,7 +116,8 @@ export default {
       removeTerm(params).then(data => {
         getTermInfo().then(async res => {
           console.log('res----:', res)
-          this.termList = res
+          this.termList = []
+          this.makeTermList(res)
         })
       })
     },

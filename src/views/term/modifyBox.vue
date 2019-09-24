@@ -27,15 +27,8 @@
 
 <script>
 
-import weui from 'weui.js'
-import queryString from 'query-string'
-import $ from 'jquery'
 import { getTermDetail, modifyTerm, getTermInfo } from '@/api/backend.js'
-import Tinymce from '@/components/Tinymce'
-import { Uploader } from '@/lib/activestorage/uploader'
-const directUploadUrl = '/api/backend/photos/ztoupiao/create'
 export default {
-  components: { Tinymce },
   props: {
     command: {
       default: false
@@ -63,7 +56,8 @@ export default {
     modifyTerm: function(val, oldVal) {
       getTermInfo().then((res) => {
         console.log('res----:', res)
-        this.termList = res
+        this.termList = []
+        this.makeTermList(res)
         if (val > 0) {
           const param = {
             id: val
@@ -80,7 +74,8 @@ export default {
   created() {
     getTermInfo().then((res) => {
       console.log('res----:', res)
-      this.termList = res
+      this.termList = []
+      this.makeTermList(res)
       if (modifyTerm > 0) {
         const param = {
           id: this.modifyTerm
@@ -94,6 +89,17 @@ export default {
     })
   },
   methods: {
+    makeTermList(terms) {
+      for (let i = 0; i < terms.length; i++) {
+        for (let j = 1; j < terms[i].hierarchy_level; j++) {
+          terms[i].name = terms[i].name
+        }
+        this.termList.push(terms[i])
+        if (terms[i].children) {
+          this.makeTermList(terms[i].children)
+        }
+      }
+    },
     async post_msg() {
       console.log('========post_msg========')
       var msg_is_ok = true
@@ -108,7 +114,7 @@ export default {
           name: termname,
           slug: slug,
           desc: desc,
-          parent: parent
+          parent_id: parent
         }
 
         console.log('data------:', data)
@@ -117,7 +123,8 @@ export default {
           this.$emit('modify_over')
           getTermInfo().then(async res => {
             console.log('res----:', res)
-            this.termList = res
+            this.termList = []
+            this.makeTermList(res)
           })
         })
       }
