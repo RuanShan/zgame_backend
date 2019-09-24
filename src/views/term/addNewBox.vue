@@ -130,7 +130,11 @@ export default {
         }
 
         addTerm(termData).then(async res => {
-          console.log('res----:', res)
+          getTermInfo().then(async res => {
+            console.log('res----:', res)
+            this.termList = []
+            this.makeTermList(res)
+          })
         })
       }
       this.$emit('refresh')
