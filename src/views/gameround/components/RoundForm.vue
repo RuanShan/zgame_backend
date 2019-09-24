@@ -42,6 +42,7 @@
 
 <script>
 import { updateGameRound, getTermInfo } from '@/api/backend.js'
+const moment = require('moment')
 export default {
   name: 'RoundForm',
   props: {
@@ -97,9 +98,10 @@ export default {
       let state = 'created'
       if (this.gameStateDisabled == false) {
         const now = new Date()
-        if (now < this.gameRound.start_at) {
+        console.log('panduan--:', moment(now).isBefore(moment(this.gameRound.start_at)))
+        if (moment(now).isBefore(moment(this.gameRound.start_at))) {
           state = 'created'
-        } else if (now > this.gameRound.end_at) {
+        } else if (moment(this.gameRound.end_at).isBefore(moment(now))) {
           state = 'completed'
         } else {
           state = 'started'
