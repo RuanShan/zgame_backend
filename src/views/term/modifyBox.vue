@@ -1,6 +1,7 @@
 <template>
-  <div class="addNewBox">
-    <el-form v-show="command" ref="form" :model="termData" label-width="80px">
+  <div class="addNewBox form-container">
+
+    <el-form ref="form" :model="termData" label-width="80px">
       <el-form-item label="分类名称">
         <el-input v-model="termData.name" />
       </el-form-item>
@@ -11,7 +12,7 @@
         <el-input v-model="termData.desc" type="textarea" />
       </el-form-item>
       <el-form-item label="分类">
-        <el-select v-model="termData.term" placeholder="请选择分类">
+        <el-select v-model="termData.parent_id" placeholder="请选择分类">
           <el-option v-for="term in termList" :key="term.id" :label="term.name" :value="term.id" />
         </el-select>
       </el-form-item>
@@ -30,10 +31,10 @@
 import { getTermDetail, modifyTerm, getTermInfo } from '@/api/backend.js'
 export default {
   props: {
-    command: {
-      default: false
-    },
-    modifyTerm: 0
+    modifyTerm: {
+      type: Number,
+      default: 0
+    }
   },
   data() {
     return {
@@ -48,7 +49,9 @@ export default {
       ui: {
         addNewBoxVisiable: false
       },
-      termData: {},
+      termData: {
+        parent_id: 0
+      },
       termssss: ''
     }
   },
@@ -65,7 +68,6 @@ export default {
           getTermDetail(param).then((res) => {
             console.log('res---:', res)
             this.termData = res
-            this.termssss = this.termData.parent
           })
         }
       })
@@ -83,7 +85,6 @@ export default {
         getTermDetail(param).then((res) => {
           console.log('res---:', res)
           this.termData = res
-          this.termssss = this.termData.parent
         })
       }
     })
@@ -91,9 +92,6 @@ export default {
   methods: {
     makeTermList(terms) {
       for (let i = 0; i < terms.length; i++) {
-        for (let j = 1; j < terms[i].hierarchy_level; j++) {
-          terms[i].name = terms[i].name
-        }
         this.termList.push(terms[i])
         if (terms[i].children) {
           this.makeTermList(terms[i].children)
@@ -106,7 +104,7 @@ export default {
       var termname = this.termData.name
       var slug = this.termData.slug
       var desc = this.termData.desc
-      var parent = this.termssss
+      var parent_id = this.termData.parent_id
 
       if (msg_is_ok) {
         var data = {
@@ -114,7 +112,7 @@ export default {
           name: termname,
           slug: slug,
           desc: desc,
-          parent_id: parent
+          parent_id: parent_id
         }
 
         console.log('data------:', data)

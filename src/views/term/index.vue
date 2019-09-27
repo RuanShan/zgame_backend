@@ -1,20 +1,20 @@
 <template>
-  <div>
+  <div class="app-container documentation-container">
     <el-row :gutter="20">
-      <el-col :span="7">
+      <el-col v-show="!ui.isModify" :span="7">
         <addNewBox :command="!ui.isModify" class="" @refresh="refresh" />
       </el-col>
-      <el-col :span="7">
-        <modifyBox :command="ui.isModify" :modify-term="modifyTerm" class="" @modify_over="modify_over" />
+      <el-col v-show="ui.isModify" :span="7">
+        <modifyBox :modify-term="modifyTermId" class="" @modify_over="modify_over" />
       </el-col>
       <el-col :span="16">
         <div v-show="ui.gameRoundListVisiable" class="grid-content bg-purple-light">
           <el-table
             :data="termList"
           >
-            <el-table-column label="name" prop="name" />
-            <el-table-column label="alias" prop="slug" />
-            <el-table-column label="desc" prop="desc" />
+            <el-table-column label="名称" prop="name" />
+            <el-table-column label="别名" prop="slug" />
+            <el-table-column label="描述" prop="desc" />
             <el-table-column width="180px" align="center" label="时间">
               <template slot-scope="scope">
                 <span>{{ scope.row.created_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
@@ -25,7 +25,6 @@
                 <el-button type="primary" size="small" icon="el-icon-edit" @click="modify(scope.row)">
                   编辑
                 </el-button>
-                </router-link>
               </template>
             </el-table-column>
             <el-table-column align="center" label="Actions" width="120">
@@ -33,7 +32,6 @@
                 <el-button type="primary" size="small" icon="el-icon-edit" @click="remove(scope.row)">
                   删除
                 </el-button>
-                </router-link>
               </template>
             </el-table-column>
           </el-table>
@@ -60,7 +58,7 @@ export default {
   },
   data() {
     return {
-      modifyTerm: 0,
+      modifyTermId: 0,
       company: {},
       authUrl: '',
       termList: [],
@@ -123,7 +121,7 @@ export default {
     },
     modify: function(term) {
       this.ui.isModify = true
-      this.modifyTerm = term.id
+      this.modifyTermId = term.id
     }
 
   }

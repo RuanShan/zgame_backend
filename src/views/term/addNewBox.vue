@@ -1,5 +1,5 @@
 <template>
-  <div v-show="command" class="addNewBox" style="padding: 10px;">
+  <div class="addNewBox" style="padding: 10px;">
     <el-form ref="form" :model="termData" label-width="80px">
       <el-form-item label="名称">
         <el-input v-model="termData.name" />
@@ -17,7 +17,7 @@
         <el-input v-model="termData.desc" type="textarea" />
       </el-form-item>
       <el-form-item label="上级分类">
-        <el-select v-model="termData.term" placeholder="请选择分类">
+        <el-select v-model="termData.parent_id" placeholder="请选择分类">
           <el-option v-for="term in termList" :key="term.id" :label="term.name" :value="term.id" />
         </el-select>
       </el-form-item>
@@ -38,6 +38,7 @@ import { addTerm, getTermInfo } from '@/api/backend.js'
 export default {
   props: {
     command: {
+      type: Boolean,
       default: false
     }
   },
@@ -53,9 +54,8 @@ export default {
       termData: {
         name: '',
         slug: '',
-        parent: null,
-        desc: '',
-        term: ''
+        parent_id: null,
+        desc: ''
       },
       termList: [],
       account: '',
@@ -65,27 +65,22 @@ export default {
   },
   watch: {
     command: function(val, oldVal) {
+      this.initData()
+    }
+  },
+  created() {
+    this.initData()
+  },
+  methods: {
+    initData() {
       getTermInfo().then(async res => {
         console.log('res----:', res)
         this.termList = []
         this.makeTermList(res)
       })
-    }
-
-  },
-  created() {
-    getTermInfo().then(async res => {
-      console.log('res----:', res)
-      this.termList = []
-      this.makeTermList(res)
-    })
-  },
-  methods: {
+    },
     makeTermList(terms) {
       for (let i = 0; i < terms.length; i++) {
-        for (let j = 1; j < terms[i].hierarchy_level; j++) {
-          terms[i].name = terms[i].name
-        }
         this.termList.push(terms[i])
         if (terms[i].children) {
           this.makeTermList(terms[i].children)
@@ -113,7 +108,7 @@ export default {
       var termname = this.termData.name
       var slug = this.termData.slug
       var desc = this.termData.desc
-      var parent = this.termData.term
+      var parent_id = this.termData.parent_id
       if (termname === '') {
         weui.form.showErrorTips({
           ele: termname,
@@ -126,7 +121,7 @@ export default {
           name: termname,
           slug: slug,
           desc: desc,
-          parent_id: parent
+          parent_id: parent_id
         }
 
         addTerm(termData).then(async res => {
@@ -141,9 +136,8 @@ export default {
       this.termData = {
         name: '',
         slug: '',
-        parent: null,
-        desc: '',
-        term: ''
+        parent_id: null,
+        desc: ''
       }
     }
   }

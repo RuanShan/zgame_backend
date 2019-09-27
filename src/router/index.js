@@ -157,37 +157,26 @@ export const constantRoutes = [
         meta: { title: '编辑', icon: 'list' },
         hidden: true
       },
+
       {
-        path: '/term',
-        component: Layout,
-        redirect: '/term',
-        name: 'terms',
-        meta: {
-          title: '文章分类',
-          icon: 'nested'
-        },
-        children: [
-          {
-            path: 'createterm',
-            component: () => import('@/views/term/addNewBox'),
-            name: 'create',
-            meta: { title: '新建分类', icon: 'edit' },
-            hidden: true
-          },
-          {
-            path: 'termList',
-            component: () => import('@/views/term/index'),
-            name: 'termList',
-            meta: { title: '管理分类', icon: 'list' }
-          },
-          {
-            path: 'modify=:term_id',
-            component: () => import('@/views/term/modifyBox'),
-            name: 'Editterm',
-            meta: { title: '编辑', icon: 'list' },
-            hidden: true
-          }
-        ]
+        path: 'createterm',
+        component: () => import('@/views/term/addNewBox'),
+        name: 'create',
+        meta: { title: '新建分类', icon: 'edit' },
+        hidden: true
+      },
+      {
+        path: 'termList',
+        component: () => import('@/views/term/index'),
+        name: 'termList',
+        meta: { title: '管理分类', icon: 'nested' }
+      },
+      {
+        path: 'modify=:term_id',
+        component: () => import('@/views/term/modifyBox'),
+        name: 'Editterm',
+        meta: { title: '编辑', icon: 'list' },
+        hidden: true
       }
     ]
   },
