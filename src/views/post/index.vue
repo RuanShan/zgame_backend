@@ -10,14 +10,25 @@
         style="width: 100%;"
       >
         <el-table-column label="标题" prop="title" />
+        <el-table-column label="作者" prop="author" />
+        <el-table-column label="分类">
+          <template slot-scope="scope">
+            <el-tag v-for="term in scope.row.Terms" :key="term.id">{{ term.name }} </el-tag>
+          </template>
+        </el-table-column>
 
-        <el-table-column width="180px" align="center" label="时间">
+        <el-table-column width="180" align="center" label="发布日期">
+          <template slot-scope="scope">
+            <span v-if="scope.row.publish_at">{{ scope.row.publish_at | parseTime('{y}-{m}-{d}') }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column width="180px" align="center" label="更新时间">
           <template slot-scope="scope">
             <span>{{ scope.row.updated_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="Actions" width="120">
+        <el-table-column align="center" label="操作" width="120">
           <template slot-scope="scope">
             <router-link :to="'/post/edit/'+scope.row.id">
               <el-button type="primary" size="small" icon="el-icon-edit">
@@ -66,8 +77,8 @@ export default {
     this.initData()
   },
   methods: {
-    initData(  ){
-      getPosts( this.listQuery ).then(async res => {
+    initData() {
+      getPosts(this.listQuery).then(async res => {
         console.log('res----:', res)
         this.postList = res.posts
         this.total = res.total
