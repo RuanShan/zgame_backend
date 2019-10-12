@@ -10,7 +10,7 @@
         style="width: 100%;"
       >
         <el-table-column label="标题" prop="title" />
-        <el-table-column label="作者" prop="author" />
+        <el-table-column label="作者" prop="author" width="100" />
         <el-table-column label="分类">
           <template slot-scope="scope">
             <el-tag v-for="term in scope.row.Terms" :key="term.id">{{ term.name }} </el-tag>

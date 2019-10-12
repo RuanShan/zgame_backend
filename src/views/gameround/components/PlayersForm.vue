@@ -17,20 +17,20 @@
               align="center"
             />
             <el-table-column label="操作" width="110px" align="left">
-              <template slot-scope="scope">
-                <el-dropdown size="small" trigger="click">
+              <template slot="header" slot-scope="scope">
+                <el-dropdown size="small" trigger="click" @command="handleGroupCommand">
                   <span class="el-dropdown-link">
                     操作<i class="el-icon-arrow-down el-icon--right" />
                   </span>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>显示</el-dropdown-item>
-                    <el-dropdown-item>隐藏</el-dropdown-item>
-                    <el-dropdown-item>删除</el-dropdown-item>
+                    <el-dropdown-item :command="{cmd:'show', album: scope.row}">显示</el-dropdown-item>
+                    <el-dropdown-item :command="{cmd:'hide', album: scope.row}">隐藏</el-dropdown-item>
+                    <el-dropdown-item :command="{cmd:'del', album: scope.row}">删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
               <template slot-scope="scope">
-                <el-image :src="scope.row.Photos[0].thumbUrl" fit="contain" />
+                <el-image :src="getAlbumPhotoThumbUrl(scope.row)" fit="contain" />
               </template>
             </el-table-column>
             <el-table-column label="选手" align="left">
@@ -80,6 +80,8 @@
             </el-table-column>
 
           </el-table>
+          <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="initData" />
+
         </div>
       </el-tab-pane>
       <el-tab-pane label="新建选手" name="third">
@@ -101,13 +103,15 @@
 import {
   getAlbums,
   removeAlbum
-}
-  from '@/api/backend.js'
+} from '@/api/backend.js'
+import Pagination from '@/components/Pagination'
 import AlbumForm from './AlbumForm.vue'
 import ModifyAlbumForm from './ModifyAlbumForm.vue'
+
 export default {
   name: 'PlayersForm',
   components: {
+    Pagination,
     AlbumForm,
     ModifyAlbumForm
   },
@@ -131,6 +135,7 @@ export default {
         page: 1,
         limit: 20
       },
+      total: 0,
       albumList: [],
       multipleSelection: [],
       modifyAlbum: {},
@@ -162,7 +167,7 @@ export default {
     },
     handleCommand(command) {
       console.log('command---:', command)
-      if (command.cmd == 'del') {
+      if (command.cmd === 'del') {
         this.$confirm('此操作将删除选手, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -179,10 +184,10 @@ export default {
             message: '已取消删除'
           })
         })
-      } else if (command.cmd == 'modify') {
+      } else if (command.cmd === 'modify') {
         this.selectedAlbum = command.album
         this.showModifyAlbumForm = true
-      } else if (command.cmd == 'result') {
+      } else if (command.cmd === 'result') {
         this.$router.push({ path: '/gameround/resultInfo/' + command.album.game_round_id, query: { albumId: command.album.id }})
       }
     },
@@ -203,6 +208,8 @@ export default {
         }
         getAlbums(param).then((res) => {
           this.albumList = res.albums
+          this.total = res.count
+          console.debug('getAlbums res=', res)
         })
       }
     },
@@ -226,8 +233,19 @@ export default {
         this.$refs.multipleTable.clearSelection()
       }
     },
+    handleGroupCommand(command) {
+      this.$message('click on item ' + command)
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val
+    },
+    getAlbumPhotoThumbUrl(album) {
+      // album.Photos 可能为空
+      let url = ''
+      if (album.Photos.length > 0) {
+        url = album.Photos[0].thumbUrl
+      }
+      return url
     }
   }
 
@@ -247,5 +265,8 @@ export default {
 .albums .desc{
   color: #909399;
   font-size: 85%;
+}
+.albums th .el-dropdown{
+  line-height: 23px;
 }
 </sytle>
