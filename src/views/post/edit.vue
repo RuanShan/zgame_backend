@@ -31,7 +31,8 @@ export default {
         viewable_type: 'cover',
         viewable_id: 0
       },
-      termssss: []
+      termssss: [],
+      group: ''
     }
   },
   computed: {
@@ -58,7 +59,15 @@ export default {
       }
     },
     async initData() {
-      const termPromise = getTermInfo()
+      const hash = location.hash
+      this.group = 'gameRound'
+      if (hash.indexOf('post') > 0) {
+        this.group = 'post'
+      }
+      const param = {
+        group: this.group
+      }
+      const termPromise = getTermInfo(param)
       const postPromise = getPostDetail(this.postId)
       Promise.all([termPromise, postPromise]).then((results) => {
         const [res1, res] = [...results]

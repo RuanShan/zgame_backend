@@ -125,7 +125,8 @@ export default {
         content: [{ validator: validateRequire }]
       },
       loading: false, // 按钮功能是否处理中,
-      publish_at: ''
+      publish_at: '',
+      group: ''
     }
   },
   computed: {
@@ -161,7 +162,15 @@ export default {
     }
   },
   created() {
-    getTermInfo().then(async res => {
+    const hash = location.hash
+    this.group = 'gameRound'
+    if (hash.indexOf('post') > 0) {
+      this.group = 'post'
+    }
+    const param = {
+      group: this.group
+    }
+    getTermInfo(param).then(async res => {
       console.log('res----:', res)
       this.termList = []
       this.makeTermList(res)

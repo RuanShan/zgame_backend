@@ -105,7 +105,8 @@ export default {
       uploadData: {
         type: 'cover',
         id: 0
-      }
+      },
+      group: ''
     }
   },
   watch: {
@@ -128,7 +129,15 @@ export default {
     }
   },
   created() {
-    getTermInfo().then(async res => {
+    const hash = location.hash
+    this.group = 'gameRound'
+    if (hash.indexOf('post') > 0) {
+      this.group = 'post'
+    }
+    const param = {
+      group: this.group
+    }
+    getTermInfo(param).then(async res => {
       console.log('res----:', res)
       this.termList = []
       this.makeTermList(res)

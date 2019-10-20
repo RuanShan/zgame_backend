@@ -134,7 +134,8 @@ export default {
         type: 'cover',
         id: 0
       },
-      termssss: []
+      termssss: [],
+      group: ''
     }
   },
   watch: {
@@ -155,7 +156,15 @@ export default {
     }
   },
   created() {
-    getTermInfo().then((res) => {
+    const hash = location.hash
+    this.group = 'gameRound'
+    if (hash.indexOf('post') > 0) {
+      this.group = 'post'
+    }
+    const param = {
+      group: this.group
+    }
+    getTermInfo(param).then((res) => {
       console.log('res----:', res)
       this.termList = []
       this.makeTermList(res)

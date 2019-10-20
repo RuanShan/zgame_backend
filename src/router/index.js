@@ -106,6 +106,12 @@ export const constantRoutes = [
         meta: { title: '管理活动', icon: 'list' }
       },
       {
+        path: 'termList',
+        component: () => import('@/views/term/index'),
+        name: 'termList',
+        meta: { title: '管理分类', icon: 'list' }
+      },
+      {
         path: 'edit/:id(\\d+)',
         component: () => import('@/views/gameround/edit'),
         name: 'EditGameround',

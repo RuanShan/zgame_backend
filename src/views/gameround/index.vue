@@ -19,6 +19,12 @@
           </template>
         </el-table-column>
 
+        <el-table-column label="活动类型">
+          <template slot-scope="scope">
+            <span>{{ scope.row.code }}</span>
+          </template>
+        </el-table-column>
+
         <el-table-column label="活动状态">
           <template slot-scope="scope">
             <span v-if="scope.row.state=='created'">新建</span>
@@ -64,7 +70,7 @@
                 操作<i class="el-icon-arrow-down el-icon--right" />
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :command="{ cmd:'showurl', id: scope.row.id, number: scope.row.number }">活动网址</el-dropdown-item>
+                <el-dropdown-item :command="{ cmd:'showurl', id: scope.row.id, number: scope.row.number,code:scope.row.code }">活动网址</el-dropdown-item>
                 <el-dropdown-item :command="{ cmd:'resultInfo', id: scope.row.id }" divided>投票流量统计</el-dropdown-item>
                 <el-dropdown-item :command="{ cmd:'clearData', id: scope.row.id }" divided>清空数据</el-dropdown-item>
                 <el-dropdown-item :command="{ cmd:'remove', id: scope.row.id }">删除</el-dropdown-item>
@@ -195,7 +201,7 @@ export default {
           this.getList()
         })
       } else if (e.cmd === 'showurl') {
-        this.showUrlDialog(e.number)
+        this.showUrlDialog(e.number, e.code)
       } else if (e.cmd === 'clearData') {
         this.$confirm('此操作将清空数据, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -222,9 +228,9 @@ export default {
         this.$router.push('/gameround/resultInfo/' + e.id)
       }
     },
-    showUrlDialog(number) {
+    showUrlDialog(number, code) {
       console.log(' showUrlDialog ', number)
-      this.gameUrl = config.baseGameUrl + '/game/ztoupiao/' + number + '/entry'
+      this.gameUrl = config.baseGameUrl + '/game/' + code + '/' + number + '/entry'
 
       QRCode.toDataURL(this.gameUrl, { type: 'image/png' }, (error, gameurl) => {
         if (error) {

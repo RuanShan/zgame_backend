@@ -52,12 +52,16 @@ export default {
       termData: {
         parent_id: 0
       },
-      termssss: ''
+      termssss: '',
+      group: ''
     }
   },
   watch: {
     modifyTerm: function(val, oldVal) {
-      getTermInfo().then((res) => {
+      const param = {
+        group: this.group
+      }
+      getTermInfo(param).then((res) => {
         console.log('res----:', res)
         this.termList = []
         this.makeTermList(res)
@@ -74,7 +78,15 @@ export default {
     }
   },
   created() {
-    getTermInfo().then((res) => {
+    const hash = location.hash
+    this.group = 'gameRound'
+    if (hash.indexOf('post') > 0) {
+      this.group = 'post'
+    }
+    const param = {
+      group: this.group
+    }
+    getTermInfo(param).then((res) => {
       console.log('res----:', res)
       this.termList = []
       this.makeTermList(res)
@@ -119,7 +131,10 @@ export default {
         modifyTerm(data).then((res) => {
           console.log('res----:', res)
           this.$emit('modify_over')
-          getTermInfo().then(async res => {
+          const param = {
+            group: this.group
+          }
+          getTermInfo(param).then(async res => {
             console.log('res----:', res)
             this.termList = []
             this.makeTermList(res)

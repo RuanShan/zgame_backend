@@ -59,7 +59,8 @@ export default {
       },
       termList: [],
       account: '',
-      password: ''
+      password: '',
+      group: ''
 
     }
   },
@@ -69,11 +70,22 @@ export default {
     }
   },
   created() {
+    const hash = location.hash
+    this.group = 'gameRound'
+    if (hash.indexOf('post') > 0) {
+      this.group = 'post'
+    }
+    const param = {
+      group: this.group
+    }
     this.initData()
   },
   methods: {
     initData() {
-      getTermInfo().then(async res => {
+      const param = {
+        group: this.group
+      }
+      getTermInfo(param).then(async res => {
         console.log('res----:', res)
         this.termList = []
         this.makeTermList(res)
@@ -121,11 +133,15 @@ export default {
           name: termname,
           slug: slug,
           desc: desc,
-          parent_id: parent_id
+          parent_id: parent_id,
+          group: this.group
         }
 
         addTerm(termData).then(async res => {
-          getTermInfo().then(async res => {
+          const param = {
+            group: this.group
+          }
+          getTermInfo(param).then(async res => {
             console.log('res----:', res)
             this.termList = []
             this.makeTermList(res)

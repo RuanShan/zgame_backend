@@ -46,7 +46,7 @@ export const modifyPost = (data) => fetch(basePath + '/posts/modifyPost', data, 
 export const removePost = (data) => fetch(basePath + '/posts/removePost', data, 'DELETE')
 export const removeCover = (data) => fetch(basePath + '/covers/removeCover', data, 'DELETE')
 
-export const getTermInfo = (data) => fetch(basePath + '/terms/getTermInfo', data, 'GET')
+export const getTermInfo = (data) => fetch(basePath + '/terms/getTermInfo', data, 'POST')
 export const addTerm = (data) => fetch(basePath + '/terms/addTerm', data, 'POST')
 export const modifyTerm = (data) => fetch(basePath + '/terms/modifyTerm', data, 'PUT')
 export const removeTerm = (data) => fetch(basePath + '/terms/removeTerm', data, 'DELETE')
