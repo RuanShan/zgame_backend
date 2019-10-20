@@ -116,6 +116,10 @@ export default {
     },
     onSubmit() {
       console.log('formData.time---:', this.formData.time)
+      console.log('publish_at.time---:', this.publish_at)
+      if(this.publish_at==null||this.publish_at=='null'){
+        this.gameStateDisabled = true
+      }
       let state = 'created'
       if (this.gameStateDisabled == false) {
         const now = new Date()
