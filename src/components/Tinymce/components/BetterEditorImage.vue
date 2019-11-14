@@ -49,10 +49,11 @@ export default {
           round_id: this.gameRound.id,
           newImg: image
         }
-        bindPhotoRelationship(data).then(res => {
-          this.imageBrowserVisible = false
-          this.$emit('successCBK', image)
-        })
+        this.$emit('successCBK', image)
+        // bindPhotoRelationship(data).then(res => {
+        //   this.imageBrowserVisible = false
+        //
+        // })
       }
     },
     checkAllSuccess() {
