@@ -1,50 +1,70 @@
 <template>
-  <div>
-    <el-form ref="form" :model="formData" label-width="80px">
-      <el-form-item label="活动名称">
-        <el-input v-model="formData.name" />
-      </el-form-item>
-      <el-form-item label="投票时间">
-        <el-date-picker
-          v-model="formData.time"
-          type="datetimerange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          format="yyyy-MM-dd HH:mm"
-          :default-time="['00:00:00','23:59:59']"
-        />
-      </el-form-item>
-      <el-form-item label="关闭活动">
+  <el-tabs v-model="activeName" type="card" class="round-general-wrap" @tab-click="handleClick">
+    <el-tab-pane label="基本设置" name="first">
+      <el-form ref="form" :model="formData" label-width="80px">
+        <el-form-item label="活动名称">
+          <el-input v-model="formData.name" />
+        </el-form-item>
+        <el-form-item label="投票时间">
+          <el-date-picker
+            v-model="formData.time"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            format="yyyy-MM-dd HH:mm"
+            :default-time="['00:00:00','23:59:59']"
+          />
+        </el-form-item>
+        <el-form-item label="关闭活动">
 
-        <el-switch
-          v-model="gameStateDisabled"
-        />
-      </el-form-item>
-      <el-form-item label="分类">
-        <el-select v-model="selectedTerms" multiple placeholder="请选择">
-          <el-option v-for="term in termList" :key="term.id" :label="term.name" :value="term.id" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="发布时间">
-        <el-date-picker
-          v-model="publish_at"
-          type="datetime"
-          placeholder="选择日期时间"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">保存</el-button>
-      </el-form-item>
-    </el-form>
-  </div>
+          <el-switch
+            v-model="gameStateDisabled"
+          />
+        </el-form-item>
+        <el-form-item label="分类">
+          <el-select v-model="selectedTerms" multiple placeholder="请选择">
+            <el-option v-for="term in termList" :key="term.id" :label="term.name" :value="term.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="发布时间">
+          <el-date-picker
+            v-model="publish_at"
+            type="datetime"
+            placeholder="选择日期时间"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">保存</el-button>
+        </el-form-item>
+      </el-form>
+    </el-tab-pane>
+
+    <el-tab-pane label="活动介绍" name="third">
+      <el-form :model="formData" label-width="80px">
+        <Tinymce ref="editor" v-model="formData.desc" :height="400" :game-round="gameRound" :menubar="tinyMenubar" :toolbar="tinyToolbar" />
+      </el-form>
+      <el-button type="primary" @click="onSubmit">保存</el-button>
+    </el-tab-pane>
+    <el-tab-pane label="活动动态" name="fourth">活动动态</el-tab-pane>
+
+    <el-tab-pane label="分享设置" name="wxshare">
+      <DisplayForm />
+    </el-tab-pane>
+  </el-tabs>
+
 </template>
 
 <script>
+import DisplayForm from './DisplayForm'
+import Tinymce from '@/components/Tinymce/better.vue'
+import { tiny } from '@/config/env'
+
 import { updateGameRound, getTermInfo } from '@/api/backend.js'
 const moment = require('moment')
 export default {
   name: 'RoundForm',
+  components: { DisplayForm, Tinymce },
   props: {
     gameRound: {
       type: Object,
@@ -53,7 +73,10 @@ export default {
   },
   data() {
     return {
+      activeName: 'first',
       gameStateDisabled: false,
+      tinyMenubar: '',
+      tinyToolbar: tiny.toolbar,
       unlink: true,
       formData: {
         name: '',
@@ -87,10 +110,13 @@ export default {
   },
   mounted() {},
   methods: {
+    handleClick(tab, event) {
+      console.log(tab, event)
+    },
     makeTermList(terms) {
       for (let i = 0; i < terms.length; i++) {
         for (let j = 1; j < terms[i].hierarchy_level; j++) {
-          terms[i].name = terms[i].name
+          terms[i].name = '-' + terms[i].name
         }
         this.termList.push(terms[i])
         if (terms[i].children) {
@@ -105,7 +131,7 @@ export default {
         for (let i = 0; i < this.gameRound.termList.length; i++) {
           this.selectedTerms.push(this.gameRound.termList[i].term_id)
         }
-        if (this.gameRound.state == 'disabled') {
+        if (this.gameRound.state === 'disabled') {
           this.gameStateDisabled = true
         }
         Object.assign(this.formData, this.gameRound)
@@ -117,11 +143,11 @@ export default {
     onSubmit() {
       console.log('formData.time---:', this.formData.time)
       console.log('publish_at.time---:', this.publish_at)
-      if(this.publish_at==null||this.publish_at=='null'){
+      if (this.publish_at === null || this.publish_at === 'null') {
         this.gameStateDisabled = true
       }
       let state = 'created'
-      if (this.gameStateDisabled == false) {
+      if (this.gameStateDisabled === false) {
         const now = new Date()
         console.log('panduan--:', moment(now).isBefore(moment(this.gameRound.start_at)))
         if (moment(now).isBefore(moment(this.gameRound.start_at))) {

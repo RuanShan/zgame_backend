@@ -6,7 +6,7 @@
         <el-form ref="form" :model="formData" label-width="80px">
           <el-form-item label="配色方案">
             <ul class="color-ul">
-              <li v-for="color in predefineColors" class="cursor" :style="{backgroundColor: color}" @click="onColorChanged(color)">
+              <li v-for="color in predefineColors" :key="color" class="cursor" :style="{backgroundColor: color}" @click="onColorChanged(color)">
                 <i v-show="color==formData.color" class="el-icon-check" />
               </li>
             </ul>
@@ -71,32 +71,23 @@
       />
 
     </el-tab-pane>
-    <el-tab-pane label="活动介绍" name="third">
-      <el-form :model="formData" label-width="80px">
-        <Tinymce ref="editor" v-model="formData.desc" :height="400" :game-round="gameRound" :menubar="tinyMenubar" :toolbar="tinyToolbar" />
-      </el-form>
-      <el-button type="primary" @click="onSubmit">保存</el-button>
-    </el-tab-pane>
-    <el-tab-pane label="活动动态" name="fourth">活动动态</el-tab-pane>
+
   </el-tabs>
 
 </template>
 
 <script>
 
-import Tinymce from '@/components/Tinymce/better.vue'
 import { Uploader } from '@/lib/activestorage/uploader'
 import ImageBrowser from '@/components/ImageBrowser/better'
 import { removeSlide, bindPhotoRelationship, updateGameRound } from '@/api/backend'
 import ChangeSlideBrowser from '@/components/ImageBrowser/change'
 import CustomColorPicker from './CustomColorPicker'
 import { buildImageUrlByStyle } from '@/utils/oss'
-import { tiny } from '@/config/env'
 const directUploadUrl = '/api/backend/photos/ztoupiao/create'
 export default {
   name: 'GameRoundGeneralForm',
   components: {
-    Tinymce,
     ImageBrowser,
     ChangeSlideBrowser,
     CustomColorPicker
@@ -111,8 +102,7 @@ export default {
     return {
       viewableType: 'slide',
       newUploads: [],
-      tinyMenubar: '',
-      tinyToolbar: tiny.toolbar,
+
       imageBrowserVisible: false,
       ChangeSlideBrowserVisible: false,
       activeName: 'first',

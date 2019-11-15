@@ -14,29 +14,30 @@
 </style>
 
 <template>
+  <el-tabs v-model="activeName" type="card" class="round-general-wrap" @tab-click="handleClick">
+    <el-tab-pane label="投票设置" name="first">
+      <span>投票次数设置:</span><br>
+      <div class="actions">
+        <el-radio v-model="voteStyle" label="sum">活动期间n次</el-radio>
+        <el-radio v-model="voteStyle" label="times">周期次数</el-radio>
+      </div>
+      <el-form v-show="voteStyle=='sum'" ref="formData" :model="formData" label-width="80px">
+        <el-form-item label="活动期间共" label-width="100px">
+          <el-input v-model="formData.sum" style="width:80px" />次
+        </el-form-item>
+      </el-form>
+      <el-form v-show="voteStyle=='times'" :inline="true" :model="formData" class="demo-form-inline">
+        <el-form-item label="每">
+          <el-input v-model="formData.day" style="width:80px" />
+        </el-form-item>
+        <el-form-item label="天">
+          <el-input v-model="formData.times" style="width:80px" />
+        </el-form-item>次
+      </el-form>
+      <el-button type="primary" @click="onSubmit">保存</el-button>
+    </el-tab-pane>
 
-  <div>
-    <span>投票次数设置:</span></br>
-    <div class="actions">
-      <el-radio v-model="voteStyle" label="sum">活动期间n次</el-radio>
-      <el-radio v-model="voteStyle" label="times">周期次数</el-radio>
-    </div>
-    <el-form v-show="voteStyle=='sum'" ref="formData" :model="formData" label-width="80px">
-      <el-form-item label="活动期间共" label-width="100px">
-        <el-input v-model="formData.sum" style="width:80px" />次
-      </el-form-item>
-    </el-form>
-    <el-form v-show="voteStyle=='times'" :inline="true" :model="formData" class="demo-form-inline">
-      <el-form-item label="每">
-        <el-input v-model="formData.day" style="width:80px" />
-      </el-form-item>
-      <el-form-item label="天">
-        <el-input v-model="formData.times" style="width:80px" />
-      </el-form-item>次
-    </el-form>
-    <el-button type="primary" @click="onSubmit">保存</el-button>
-  </div>
-
+  </el-tabs>
 </template>
 
 <script>
@@ -46,6 +47,7 @@ export default {
   name: 'GameRoundPreviewForm',
   props: {
     command: {
+      default: 'void',
       type: String
     },
     gameRound: {
@@ -55,6 +57,7 @@ export default {
   },
   data() {
     return {
+      activeName: 'first',
       voteStyle: 'sum',
       dialogUrlVisible: false,
       gameUrl: null,
@@ -106,6 +109,9 @@ export default {
       setVoteStyle(param).then((res) => {
         console.log('res----:', res)
       })
+    },
+    handleClick(tab, event) {
+      console.log(tab, event)
     }
   }
 }

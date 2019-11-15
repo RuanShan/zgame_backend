@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'Vue Element Admin',
+  title: '星投票 - 大连软山网络',
 
   /**
    * @type {boolean} true | false

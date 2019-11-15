@@ -5,9 +5,9 @@
       <el-step status="wait" :class="{ active: activeStep==1 }" @click.native="handleStepClick(1)">
         <span slot="title"> 活动设置</span>
       </el-step>
-      <el-step status="wait" :class="{ active: activeStep==2 }" @click.native="handleStepClick(2)"><span slot="title"> 通用设置</span> </el-step>
-      <el-step status="wait" :class="{ active: activeStep==3 }" @click.native="handleStepClick(3)"> <span slot="title"> 选手管理</span> </el-step>
-      <el-step status="wait" :class="{ active: activeStep==4 }" @click.native="handleStepClick(4)"> <span slot="title"> 投票设置</span> </el-step>
+      <el-step status="wait" :class="{ active: activeStep==4 }" @click.native="handleStepClick(4)"> <span slot="title"> 选手管理</span> </el-step>
+      <el-step status="wait" :class="{ active: activeStep==2 }" @click.native="handleStepClick(2)"><span slot="title"> 页面设置</span> </el-step>
+      <el-step status="wait" :class="{ active: activeStep==5 }" @click.native="handleStepClick(5)"> <span slot="title"> 投票设置</span> </el-step>
     </el-steps>
 
     <div class="content">
@@ -18,8 +18,8 @@
       <div class="setup-wrap">
         <RoundForm v-show="activeStep==1" :game-round="gameRound" />
         <GeneralForm v-show="activeStep==2" :game-round="gameRound" @changed="onChanged" />
-        <PlayersForm v-show="activeStep==3" :game-round="gameRound" @changed="onChanged" />
-        <VoteForm v-show="activeStep==4" :game-round="gameRound" @changed="onChanged" />
+        <PlayersForm v-show="activeStep==4" :game-round="gameRound" @changed="onChanged" />
+        <VoteForm v-show="activeStep==5" :game-round="gameRound" @changed="onChanged" />
       </div>
     </div>
 
@@ -262,7 +262,7 @@ export default {
       }
     },
     handleStepClick(i) {
-      console.log('this.activeStep =  ', this.activeStep)
+      console.log('this.activeStep =  newactiveStep =', this.activeStep, i)
       this.activeStep = i
     },
     onChanged(gameRound) {
@@ -298,7 +298,7 @@ export default {
       color:#1890ff;
     }
     .el-steps--simple{
-      width: 500px;
+      width: 600px;
       padding: 0 20px;
     }
     .content{
