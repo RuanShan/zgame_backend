@@ -62,13 +62,7 @@
         </el-form-item>
       </el-form>
 
-      <ImageBrowser :viewable-type="viewableType" :dialog-visible.sync="imageBrowserVisible" @selected="handleImageSelected" />
-      <ChangeSlideBrowser
-        :viewable-type="viewableType"
-        :slide-to-change="slideToChange"
-        :dialog-visible.sync="ChangeSlideBrowserVisible"
-        @changSlide="changSlide"
-      />
+      <ImageBrowser :viewable-type="viewableType" :dialog-visible.sync="imageBrowserVisible" :image-style="imageStyle" @selected="handleImageSelected" @changSlide="changSlide" />
 
     </el-tab-pane>
 
@@ -81,7 +75,7 @@
 import { Uploader } from '@/lib/activestorage/uploader'
 import ImageBrowser from '@/components/ImageBrowser/better'
 import { removeSlide, bindPhotoRelationship, updateGameRound } from '@/api/backend'
-import ChangeSlideBrowser from '@/components/ImageBrowser/change'
+// import ChangeSlideBrowser from '@/components/ImageBrowser/change'
 import CustomColorPicker from './CustomColorPicker'
 import { buildImageUrlByStyle } from '@/utils/oss'
 const directUploadUrl = '/api/backend/photos/ztoupiao/create'
@@ -89,7 +83,7 @@ export default {
   name: 'GameRoundGeneralForm',
   components: {
     ImageBrowser,
-    ChangeSlideBrowser,
+    // ChangeSlideBrowser,
     CustomColorPicker
   },
   props: {
@@ -102,9 +96,9 @@ export default {
     return {
       viewableType: 'slide',
       newUploads: [],
-
+      imageStyle: 'create',
       imageBrowserVisible: false,
-      ChangeSlideBrowserVisible: false,
+      // ChangeSlideBrowserVisible: false,
       activeName: 'first',
       postersData: [],
       formData: {
@@ -171,14 +165,15 @@ export default {
     },
     changSlide(img) {
       console.log('slideToChange', this.slideToChange)
-      console.log('new Slide---:', img)
+      console.log('img----------:', img)
+      console.log('new Slide---:', img.selectedImages[0])
       const data = {
         round_id: this.gameRound.id,
-        newImg: img
+        newImg: img.selectedImages[0]
       }
       bindPhotoRelationship(data).then(res => {
         this.deletePhoto(this.slideToChange.id)
-        this.ChangeSlideBrowserVisible = false
+        // this.ChangeSlideBrowserVisible = false
       })
     },
     refresh() {
@@ -229,11 +224,13 @@ export default {
       console.log(file)
     },
     handleOpenImageBrowser() {
+      this.imageStyle = 'create'
       this.imageBrowserVisible = true
     },
     handleChangeSlideBrowser(slide) {
+      this.imageStyle = 'change'
       this.slideToChange = slide
-      this.ChangeSlideBrowserVisible = true
+      this.imageBrowserVisible = true
     },
     handlePopoverShow(id) {
       this.hoveringImageId = id

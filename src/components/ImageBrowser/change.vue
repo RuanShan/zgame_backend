@@ -109,7 +109,7 @@ export default {
         total: 0
       },
       uploadData: {
-        viewable_type: 'silde'
+        viewable_type: 'slide'
       }
     }
   },
