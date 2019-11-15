@@ -44,7 +44,7 @@
       <el-form :model="formData" label-width="80px">
         <Tinymce ref="editor" v-model="formData.desc" :height="400" :game-round="gameRound" :menubar="tinyMenubar" :toolbar="tinyToolbar" />
       </el-form>
-      <el-button type="primary" @click="onSubmit">保存</el-button>
+      <el-button type="primary" @click="onSaveDesc">保存</el-button>
     </el-tab-pane>
     <el-tab-pane label="活动动态" name="fourth">活动动态</el-tab-pane>
 
@@ -173,6 +173,15 @@ export default {
         }
       }).then(res => {
         console.log('res====:', res)
+      })
+    },
+    onSaveDesc() {
+      updateGameRound(this.gameRound.id, {
+        gameRound: {
+          desc: this.formData.desc
+        }
+      }).then(res => {
+        this.$emit('changed', res)
       })
     }
   }
