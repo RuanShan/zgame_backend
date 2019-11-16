@@ -49,7 +49,7 @@
     <el-tab-pane label="活动动态" name="fourth">活动动态</el-tab-pane>
 
     <el-tab-pane label="分享设置" name="wxshare">
-      <DisplayForm />
+      <DisplayForm :game-round="gameRound" @changed="onWxConfigSaved" />
     </el-tab-pane>
   </el-tabs>
 
@@ -183,6 +183,9 @@ export default {
       }).then(res => {
         this.$emit('changed', res)
       })
+    },
+    onWxConfigSaved(res) {
+      this.$emit('changed', res)
     }
   }
 

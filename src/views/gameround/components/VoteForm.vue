@@ -97,21 +97,18 @@ export default {
     onSubmit() {
       console.log('==========onSubmit==========')
       const voteStyleData = this.formData
-      voteStyleData.game_round_id = this.gameRound.id
       voteStyleData.style = this.voteStyle
 
       const param = {
         code: this.gameRound.code,
-        game_round_id: this.gameRound.id,
-        voteStyleData: voteStyleData
+        voteStyle: voteStyleData
       }
 
-      setVoteStyle(param).then((res) => {
+      setVoteStyle(this.gameRound.id, param).then((res) => {
         console.log('res----:', res)
       })
     },
     handleClick(tab, event) {
-      console.log(tab, event)
     }
   }
 }

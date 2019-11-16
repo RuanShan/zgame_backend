@@ -89,7 +89,6 @@ export default {
       Object.assign(this.formData, this.gameRound)
     },
     handleClick(tab, event) {
-      console.log(tab, event)
     },
     readyToRemove(photo) {
       console.log('==========readyToRemove==========')
