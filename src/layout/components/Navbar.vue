@@ -24,20 +24,21 @@
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
-          <router-link to="/profile/index">
-            <el-dropdown-item>Profile</el-dropdown-item>
-          </router-link>
           <router-link to="/">
-            <el-dropdown-item>Dashboard</el-dropdown-item>
+            <el-dropdown-item>用户中心</el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a>
+          <router-link to="/profile/index">
+            <el-dropdown-item>设置密码</el-dropdown-item>
+          </router-link>
+
+          <router-link to="/profile/transaction">
+            <el-dropdown-item>财务明细</el-dropdown-item>
+          </router-link>
+          <router-link to="/profile/upgrade">
+            <el-dropdown-item>升级会员</el-dropdown-item>
+          </router-link>
           <el-dropdown-item divided>
-            <span style="display:block;" @click="logout">Log Out</span>
+            <span style="display:block;" @click="logout">退出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
