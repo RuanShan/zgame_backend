@@ -13,6 +13,6 @@ export const modifyAlbum = (number, data) => fetch(basePath + '/' + number + '/m
 export const getPoster = (number, data) => fetch(basePath + '/' + number + '/getPoster', data, 'POST')
 export const modifyPoster = (number, data) => fetch(basePath + '/' + number + '/modifyPoster', data, 'POST')
 
-export const createDesc = (number, data) => fetch(basePath + '/' + number + '/createDesc', data, 'POST')
+export const createDesc = (data) => fetch(basePath + '/' + 'number' + '/createDesc', data, 'POST')
 
 export const createImage = (data) => fetch('/gapi/photos/ztoupiao/create', data, 'POST')

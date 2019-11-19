@@ -46,8 +46,21 @@
       </el-form>
       <el-button type="primary" @click="onSaveDesc">保存</el-button>
     </el-tab-pane>
-    <el-tab-pane label="活动动态" name="fourth">活动动态</el-tab-pane>
-
+    <el-tab-pane label="活动动态" name="fourth">
+      <el-button type="primary" @click="onCreatePost">新建</el-button>
+      <el-table
+        :data="postData"
+        border
+        fit
+        style="width: 100%;"
+      >
+      <el-table-column label="活动状态">
+        <template slot-scope="scope">
+          <span @click="onEditPost(scope.row.id)">{{ scope.row.title }}</span>
+        </template>
+      </el-table-column>
+      </el-table>
+    </el-tab-pane>
     <el-tab-pane label="分享设置" name="wxshare">
       <DisplayForm :game-round="gameRound" @changed="onWxConfigSaved" />
     </el-tab-pane>
@@ -60,7 +73,7 @@ import DisplayForm from './DisplayForm'
 import Tinymce from '@/components/Tinymce/better.vue'
 import { tiny } from '@/config/env'
 
-import { updateGameRound, getTermInfo } from '@/api/backend.js'
+import { updateGameRound, getTermInfo, getAllPost } from '@/api/backend.js'
 const moment = require('moment')
 export default {
   name: 'RoundForm',
@@ -85,7 +98,8 @@ export default {
       termList: [],
       selectedTerms: [],
       publish_at: '',
-      group: ''
+      group: '',
+      postData:null
 
     }
   },
@@ -138,6 +152,14 @@ export default {
         if (this.gameRound.start_at && this.gameRound.end_at) {
           this.formData.time = [this.gameRound.start_at, this.gameRound.end_at]
         }
+
+        let data = {
+          gameRoundId:this.gameRound.id
+        }
+        getAllPost(data).then((res)=>{
+          console.log('getAllPost res----:',res);
+          this.postData = res
+        })
       }
     },
     onSubmit() {
@@ -186,6 +208,13 @@ export default {
     },
     onWxConfigSaved(res) {
       this.$emit('changed', res)
+    },
+    onCreatePost(){
+      console.log('==============onCreatePost===============');
+      this.$router.push('/gameround/createpost/'+this.gameRound.id)
+    },
+    onEditPost(post_id){
+      this.$router.push('/gameround/editPost/' + post_id)
     }
   }
 

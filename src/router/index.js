@@ -144,6 +144,20 @@ export const constantRoutes = [
         name: 'GetGameDayInfo',
         meta: { title: '流量统计', noCache: true, activeMenu: '/gamerounds/list' },
         hidden: true
+      },
+      {
+        path: 'createpost/:id(\\d+)',
+        component: () => import('@/views/gameround/components/createPost'),
+        name: 'CreatePost',
+        meta: { title: '编辑', noCache: true, activeMenu: '/gamerounds/list' },
+        hidden: true
+      },
+      {
+        path: 'editpost/:id(\\d+)',
+        component: () => import('@/views/gameround/components/editPost'),
+        name: 'EditPost',
+        meta: { title: '编辑', noCache: true, activeMenu: '/gamerounds/list' },
+        hidden: true
       }
     ]
   },

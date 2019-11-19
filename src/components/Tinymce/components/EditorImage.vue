@@ -112,12 +112,11 @@ export default {
         }
         photo.checksum = checksum
         console.log('photo----:', photo)
-        var number = this.gameRound.number
         var data = {
           code: 'ztoupiao',
           photo: photo
         }
-        createDesc(number, data).then((res) => {
+        createDesc(data).then((res) => {
           const directUploadData = res.directUploadData
           console.log('directUploadData-----:', directUploadData)
 

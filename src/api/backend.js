@@ -24,6 +24,17 @@ export const getAlbums = (data) => fetch(basePath + '/albums/getAlbums', data, '
 export const removeAlbum = (data) => fetch(basePath + '/albums/removeAlbum', data, 'DELETE')
 export const modifyAlbum = (data) => fetch(basePath + '/albums/modifyAlbum', data, 'PUT')
 
+export const createPost = (data) => fetch(basePath + '/game_rounds/createPost', data, 'POST')
+export const editPost = (data) => fetch(basePath + '/game_rounds/modifyPost', data, 'POST')
+export const deletePost = (data) => fetch(basePath + '/game_rounds/deletePost', data, 'POST')
+export const getAllPost = (data) => fetch(basePath + '/game_rounds/getAllPost', data, 'POST')
+export const getPostData = (data) => fetch(basePath + '/game_rounds/getPostDetail', data, 'POST')
+
+export const createComment = (data) => fetch(basePath + '/comments/createComment', data, 'POST')
+export const deleteComment = (data) => fetch(basePath + '/comments/deleteComment', data, 'POST')
+export const getAllComment = (data) => fetch(basePath + '/comments/getAllComment', data, 'POST')
+export const getCommentDetail = (data) => fetch(basePath + '/comments/getCommentDetail', data, 'POST')
+
 export const addGameRound = (data) => fetch(basePath + '/game_rounds/addGameRound', data, 'POST')
 export const modifyGameRound = (data) => fetch(basePath + '/game_rounds/modifyGameRound', data, 'PUT')
 export const removeSlide = (data) => fetch(basePath + '/slides/removeSlide', data, 'DELETE')
