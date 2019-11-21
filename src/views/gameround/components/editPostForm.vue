@@ -11,7 +11,7 @@
           <Tinymce ref="editor" v-model="content" :height="400" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">立即创建</el-button>
+          <el-button type="primary" @click="onSubmit">立即保存</el-button>
         </el-form-item>
       </div>
     </el-form>
@@ -24,7 +24,7 @@
 
 import $ from 'jquery'
 import queryString from 'query-string'
-import { editPost,getPostData } from '@/api/backend.js'
+import { editPost, getPostData } from '@/api/backend.js'
 import Tinymce from '@/components/Tinymce'
 import { FileChecksum } from '@/lib/activestorage/file_checksum'
 import { BlobUpload } from '@/lib/activestorage/blob_upload'
@@ -48,10 +48,10 @@ export default {
       },
       filelist: [],
       fileToDelete: [],
-      title:'',
+      title: '',
       account: '',
       password: '',
-      content:''
+      content: ''
 
     }
   },
@@ -72,11 +72,11 @@ export default {
     }
   },
   created() {
-    if(this.$route.params.id){
-      let data = {
-        id:this.$route.params.id
+    if (this.$route.params.id) {
+      const data = {
+        id: this.$route.params.id
       }
-      getPostData(data).then((res)=>{
+      getPostData(data).then((res) => {
         this.title = res.title
         this.content = res.content
       })
@@ -85,18 +85,18 @@ export default {
   methods: {
     onSubmit: async function(e) {
       console.log('========onSubmit========')
-      console.log('parsed----:',this.$route.params.id);
-        const data = {
-          id:this.$route.params.id,
-          postParam:{
-            title: this.title,
-            content: this.content
-          }
+      console.log('parsed----:', this.$route.params.id)
+      const data = {
+        id: this.$route.params.id,
+        postParam: {
+          title: this.title,
+          content: this.content
         }
-        editPost(data).then(res => {
-          console.log('res----:', res)
-          this.$router.push('/gameround/edit/' + res.game_round_id)
-        })
+      }
+      editPost(data).then(res => {
+        console.log('res----:', res)
+        this.$router.push('/gameround/edit/' + res.game_round_id)
+      })
     }
   }
 }

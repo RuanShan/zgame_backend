@@ -48,10 +48,10 @@ export default {
       },
       filelist: [],
       fileToDelete: [],
-      title:'',
+      title: '',
       account: '',
       password: '',
-      content:''
+      content: ''
 
     }
   },
@@ -76,16 +76,19 @@ export default {
   methods: {
     onSubmit: async function(e) {
       console.log('========onSubmit========')
-      console.log('parsed----:',this.$route.params.id);
-        const postParam = {
-          title: this.title,
-          game_round_id:this.$route.params.id,
-          content: this.content
-        }
-        createPost(postParam).then(res => {
-          console.log('res----:', res)
-          this.$router.push('/gameround/editPost/' + res.id)
-        })
+      console.log('parsed----:', this.$route.params.id)
+      const postParam = {
+        title: this.title,
+        game_round_id: this.$route.params.id,
+        content: this.content
+      }
+      createPost(postParam).then(res => {
+        console.log('res----:', res)
+        this.$emit('createSuccess')
+        this.content = ''
+        this.title = ''
+        // this.$router.push('/gameround/editPost/' + res.id)
+      })
     }
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="form-container">
-  <Form  />
+    <Form @createSuccess="createSuccess" />
   </div>
 </template>
 
@@ -10,7 +10,12 @@ import Form from './postForm'
 
 export default {
   name: 'CreateGameRound',
-  components: { Form }
+  components: { Form },
+  methods: {
+    createSuccess() {
+      this.$emit('createSuccess')
+    }
+  }
 
 }
 

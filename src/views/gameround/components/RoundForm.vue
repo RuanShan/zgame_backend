@@ -6,21 +6,11 @@
           <el-input v-model="formData.name" />
         </el-form-item>
         <el-form-item label="投票时间">
-          <el-date-picker
-            v-model="formData.time"
-            type="datetimerange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            format="yyyy-MM-dd HH:mm"
-            :default-time="['00:00:00','23:59:59']"
-          />
+          <el-date-picker v-model="formData.time" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" format="yyyy-MM-dd HH:mm" :default-time="['00:00:00','23:59:59']" />
         </el-form-item>
         <el-form-item label="关闭活动">
 
-          <el-switch
-            v-model="gameStateDisabled"
-          />
+          <el-switch v-model="gameStateDisabled" />
         </el-form-item>
         <el-form-item label="分类">
           <el-select v-model="selectedTerms" multiple placeholder="请选择">
@@ -28,11 +18,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="发布时间">
-          <el-date-picker
-            v-model="publish_at"
-            type="datetime"
-            placeholder="选择日期时间"
-          />
+          <el-date-picker v-model="publish_at" type="datetime" placeholder="选择日期时间" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">保存</el-button>
@@ -48,36 +34,44 @@
     </el-tab-pane>
     <el-tab-pane label="活动动态" name="fourth">
       <el-button type="primary" @click="onCreatePost">新建</el-button>
-      <el-table
-        :data="postData"
-        border
-        fit
-        style="width: 100%;"
-      >
-      <el-table-column label="活动状态">
-        <template slot-scope="scope">
-          <span @click="onEditPost(scope.row.id)">{{ scope.row.title }}</span>
-        </template>
-      </el-table-column>
+      <el-dialog title="提示" :visible.sync="dialogVisible" width="70%">
+        <CreatePost @createSuccess="createSuccess" />
+      </el-dialog>
+      <el-table :data="postData" border fit style="width: 100%;">
+        <el-table-column label="活动状态">
+          <template slot-scope="scope">
+            <span @click="onEditPost(scope.row.id)">{{ scope.row.title }}</span>
+          </template>
+        </el-table-column>
       </el-table>
     </el-tab-pane>
     <el-tab-pane label="分享设置" name="wxshare">
       <DisplayForm :game-round="gameRound" @changed="onWxConfigSaved" />
     </el-tab-pane>
   </el-tabs>
-
 </template>
 
 <script>
 import DisplayForm from './DisplayForm'
 import Tinymce from '@/components/Tinymce/better.vue'
-import { tiny } from '@/config/env'
+import CreatePost from './createPost.vue'
+import {
+  tiny
+} from '@/config/env'
 
-import { updateGameRound, getTermInfo, getAllPost } from '@/api/backend.js'
+import {
+  updateGameRound,
+  getTermInfo,
+  getAllPost
+} from '@/api/backend.js'
 const moment = require('moment')
 export default {
   name: 'RoundForm',
-  components: { DisplayForm, Tinymce },
+  components: {
+    DisplayForm,
+    Tinymce,
+    CreatePost
+  },
   props: {
     gameRound: {
       type: Object,
@@ -99,7 +93,8 @@ export default {
       selectedTerms: [],
       publish_at: '',
       group: '',
-      postData:null
+      postData: null,
+      dialogVisible: false
 
     }
   },
@@ -153,11 +148,11 @@ export default {
           this.formData.time = [this.gameRound.start_at, this.gameRound.end_at]
         }
 
-        let data = {
-          gameRoundId:this.gameRound.id
+        const data = {
+          gameRoundId: this.gameRound.id
         }
-        getAllPost(data).then((res)=>{
-          console.log('getAllPost res----:',res);
+        getAllPost(data).then((res) => {
+          console.log('getAllPost res----:', res)
           this.postData = res
         })
       }
@@ -209,11 +204,17 @@ export default {
     onWxConfigSaved(res) {
       this.$emit('changed', res)
     },
-    onCreatePost(){
-      console.log('==============onCreatePost===============');
-      this.$router.push('/gameround/createpost/'+this.gameRound.id)
+    onCreatePost() {
+      console.log('==============onCreatePost===============')
+      this.dialogVisible = true
+      // this.$router.push('/gameround/createpost/' + this.gameRound.id)
     },
-    onEditPost(post_id){
+    createSuccess() {
+      console.log('==============createSuccess===============')
+      this.dialogVisible = false
+      this.initData()
+    },
+    onEditPost(post_id) {
       this.$router.push('/gameround/editPost/' + post_id)
     }
   }
