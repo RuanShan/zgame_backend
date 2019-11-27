@@ -23,7 +23,6 @@
 <script>
 
 import $ from 'jquery'
-import queryString from 'query-string'
 import { createPost } from '@/api/backend.js'
 import Tinymce from '@/components/Tinymce'
 import { FileChecksum } from '@/lib/activestorage/file_checksum'

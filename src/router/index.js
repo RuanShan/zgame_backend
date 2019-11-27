@@ -139,6 +139,13 @@ export const constantRoutes = [
         hidden: true
       },
       {
+        path: 'commentInfo/:id(\\d+)',
+        component: () => import('@/views/gameround/components/CommentInfo'),
+        name: 'GetCommentInfo',
+        meta: { title: '评论管理', noCache: true, activeMenu: '/gamerounds/list' },
+        hidden: true
+      },
+      {
         path: 'gameDayInfo/:id(\\d+)',
         component: () => import('@/views/gameround/components/GameDayInfo'),
         name: 'GetGameDayInfo',

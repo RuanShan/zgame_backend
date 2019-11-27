@@ -43,6 +43,19 @@
             <span @click="onEditPost(scope.row.id)">{{ scope.row.title }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="操作" width="110px" align="center">
+          <template slot-scope="scope">
+            <el-dropdown @command="handleCommand">
+              <span class="el-dropdown-link">
+                <i class="el-icon-more " />
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item :command="{cmd:'comment', post: scope.row}">评论管理</el-dropdown-item>
+                <el-dropdown-item :command="{cmd:'del', post: scope.row}">删除</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
+        </el-table-column>
       </el-table>
     </el-tab-pane>
     <el-tab-pane label="分享设置" name="wxshare">
@@ -216,6 +229,29 @@ export default {
     },
     onEditPost(post_id) {
       this.$router.push('/gameround/editPost/' + post_id)
+    },
+    handleCommand(command) {
+      console.log('command---:', command)
+      if (command.cmd === 'del') {
+        this.$confirm('此操作将删除选手, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          // this.deletepost(command.post)
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+      } else if (command.cmd === 'comment') {
+        this.$router.push({ path: '/gameround/commentInfo/' + command.post.game_round_id, query: { type: 'post', id: command.post.id }})
+      }
     }
   }
 
