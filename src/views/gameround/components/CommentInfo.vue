@@ -35,39 +35,39 @@
 </template>
 
 <script>
-import {getAllComment} from '@/api/backend'
+import { getAllComment } from '@/api/backend'
 import queryString from 'query-string'
 export default {
   name: 'CommentBox',
   components: {},
-  data(){
+  data() {
     return {
-      commentList:[],
-      multipleSelection:[]
+      commentList: [],
+      multipleSelection: []
     }
   },
   created() {
     this.init()
   },
   mounted() {},
-  methods:{
-    init(){
-      console.log('this.$route.params----:',this.$route.params);
+  methods: {
+    init() {
+      console.log('this.$route.params----:', this.$route.params)
       const query = this.$route.query
-      let type = query.type
-      let id = query.id
-      console.log(type,id);
-      let param = {
-        type:type,
-        viewable_id:id
+      const type = query.type
+      const id = query.id
+      console.log(type, id)
+      const param = {
+        type: type,
+        viewable_id: id
       }
-      getAllComment(param).then((res)=>{
-        console.log('getAllComment res----:',res);
+      getAllComment(param).then((res) => {
+        console.log('getAllComment res----:', res)
         this.commentList = res.Comments
       })
     },
-    handleCommand(command){
-      console.log('handleCommand');
+    handleCommand(command) {
+      console.log('handleCommand')
       if (command.cmd === 'del') {
         this.$confirm('此操作将删除选手, 是否继续?', '提示', {
           confirmButtonText: '确定',
