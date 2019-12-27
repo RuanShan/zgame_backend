@@ -1,31 +1,30 @@
 
 <template>
-<div class="addNewBox">
-  <el-form ref="postForm" :model="postForm" label-width="80px">
-    <div class="form-main-container">
+  <div class="addNewBox">
+    <el-form ref="postForm" :model="postForm" label-width="80px">
+      <div class="form-main-container">
 
-      <el-form-item label="活动名称">
-        <el-input v-model="game.name" />
-      </el-form-item>
-      <el-form-item label="投票时间">
-        <el-date-picker v-model="game.time" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" format="yyyy-MM-dd HH:mm" :default-time="['00:00:00','23:59:59']" />
-      </el-form-item>
-      <el-form-item label="code">
-        <el-select v-model="gameCode" placeholder="请选择">
-          <el-option v-for="item in gameTypes" :key="item.name" :label="item.name" :value="item.code">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="活动说明">
-        <Tinymce ref="editor" v-model="postForm.content" :height="400" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">立即创建</el-button>
-      </el-form-item>
-    </div>
-  </el-form>
-</div>
-</div>
+        <el-form-item label="活动名称">
+          <el-input v-model="game.name" />
+        </el-form-item>
+        <el-form-item label="投票时间">
+          <el-date-picker v-model="game.time" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" format="yyyy-MM-dd HH:mm" :default-time="['00:00:00','23:59:59']" />
+        </el-form-item>
+        <el-form-item label="code">
+          <el-select v-model="gameCode" placeholder="请选择">
+            <el-option v-for="item in gameTypes" :key="item.name" :label="item.name" :value="item.code" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="活动说明">
+          <Tinymce ref="editor" v-model="postForm.content" :height="400" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">立即创建</el-button>
+        </el-form-item>
+      </div>
+    </el-form>
+  </div>
+  </div>
 </template>
 
 <script>
@@ -69,7 +68,7 @@ export default {
       filelist: [],
       fileToDelete: [],
       gameTypes: [],
-      gameCode:"",
+      gameCode: '',
       game: {
         name: '',
         desc: '',
