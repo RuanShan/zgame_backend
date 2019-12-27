@@ -97,6 +97,19 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/othergameround',
+    component: Layout,
+    redirect: '/othergameround',
+    children: [
+      {
+        path: 'create',
+        component: () => import('@/views/othergameround/create'),
+        name: '创建活动',
+        meta: { title: '创建活动', icon: 'user', affix: true }
+      }
+    ]
+  },
+  {
     path: '/gameround',
     component: Layout,
     redirect: '/gameround',
