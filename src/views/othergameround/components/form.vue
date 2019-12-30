@@ -15,6 +15,15 @@
             <el-option v-for="item in gameTypes" :key="item.name" :label="item.name" :value="item.code" />
           </el-select>
         </el-form-item>
+        <el-form-item label="活动分享标题">
+          <el-input v-model="game.wxshare_title" />
+        </el-form-item>
+        <el-form-item label="选手分享标题">
+          <el-input v-model="game.wxshare_ptitle" />
+        </el-form-item>
+        <el-form-item label="分享描述">
+          <el-input v-model="game.wxshare_desc" />
+        </el-form-item>
         <el-form-item label="活动说明">
           <Tinymce ref="editor" v-model="postForm.content" :height="400" />
         </el-form-item>
@@ -24,25 +33,14 @@
       </div>
     </el-form>
   </div>
-  </div>
 </template>
 
 <script>
-import $ from 'jquery'
 import {
   createOtherGameRound,
   getGameType
 } from '@/api/backend.js'
 import Tinymce from '@/components/Tinymce'
-import {
-  FileChecksum
-} from '@/lib/activestorage/file_checksum'
-import {
-  BlobUpload
-} from '@/lib/activestorage/blob_upload'
-import {
-  modifyDesc
-} from '@/api/backend'
 import {
   desc
 } from './template.js'
@@ -73,7 +71,10 @@ export default {
         name: '',
         desc: '',
         duration: '',
-        time: []
+        time: [],
+        wxshare_title: '',
+        wxshare_ptitle: '',
+        wxshare_desc: ''
       },
       account: '',
       password: ''
@@ -106,7 +107,6 @@ export default {
       console.log('========onSubmit========')
       var msg_is_ok = true
       var gamename = this.game.name
-      var gameduration = this.game.duration
       console.log('game.time----:', this.game.time)
       if (msg_is_ok) {
         const game = {
@@ -119,13 +119,6 @@ export default {
 
         createOtherGameRound(game).then(async res => {
           console.log('res----:', res)
-          console.log('postForm-------:', this.postForm)
-          console.log('content------:', this.postForm.content)
-          const param = {
-            code: res.code,
-            number: res.number,
-            desc: this.postForm.content
-          }
         })
       }
     }

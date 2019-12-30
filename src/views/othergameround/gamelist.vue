@@ -10,9 +10,9 @@
         style="width: 100%;"
       >
 
-        <el-table-column label="活动类型" min-width="250px">
+        <el-table-column label="活动名称" min-width="250px">
           <template slot-scope="scope">
-            <p @click="showList(scope.row)"> <span class="link-type">{{ scope.row.name }}</span> </p>
+            <p> <span class="link-type">{{ scope.row.name }}</span> </p>
           </template>
         </el-table-column>
 
@@ -30,9 +30,8 @@
 
 <script>
 import {
-  getGameTypeByType
+  getOtherGameRound
 } from '@/api/backend.js'
-
 export default {
   name: 'Authorize',
   data() {
@@ -42,22 +41,23 @@ export default {
     }
   },
   created() {
+    console.log('==================gamelist==================')
     this.getList()
   },
   methods: {
     getList() {
       this.listLoading = true
+      console.log('location-----:', location.hash)
+      const code = 'zhaobaba'
       const param = {
-        is_dp: 'N'
+        code: code
       }
-      getGameTypeByType(param).then(data => {
+      console.log('param---:', param)
+      getOtherGameRound(param).then(data => {
         console.log('data----:', data)
         this.list = data
         this.listLoading = false
       })
-    },
-    showList(gametype) {
-      this.$router.push({ path: '/othergameround/gamelist/' + gametype.code })
     }
   }
 }
