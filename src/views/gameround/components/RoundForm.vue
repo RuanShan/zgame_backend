@@ -34,6 +34,14 @@
             placeholder="选择日期时间"
           />
         </el-form-item>
+        <el-form-item label="底部菜单">
+          <draggable :set-data="setData" :list="tabbarOptions" group="article" class="dragArea">
+            <el-checkbox-group v-model="formData.tabbarList">
+              <el-checkbox v-for="option in tabbarOptions" :key="option.value" :label="option.label" />
+            </el-checkbox-group>
+          </draggable>
+
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">保存</el-button>
         </el-form-item>
@@ -56,6 +64,7 @@
 </template>
 
 <script>
+// import draggable from 'vuedraggable'
 import DisplayForm from './DisplayForm'
 import Tinymce from '@/components/Tinymce/better.vue'
 import { tiny } from '@/config/env'
@@ -78,9 +87,18 @@ export default {
       tinyMenubar: '',
       tinyToolbar: tiny.toolbar,
       unlink: true,
+      tabbarOptions: [
+        { label: '介绍', value: 'intro' },
+        { label: '投票', value: 'works' },
+        { label: '排名', value: 'rank' },
+        { label: '我的', value: 'my' },
+        { label: '动态', value: 'news' },
+        { label: '自定义', value: 'custom' }
+      ],
       formData: {
         name: '',
-        time: ''
+        time: '',
+        tabbarList: []
       },
       termList: [],
       selectedTerms: [],
@@ -186,6 +204,11 @@ export default {
     },
     onWxConfigSaved(res) {
       this.$emit('changed', res)
+    },
+    setData(dataTransfer) {
+      // to avoid Firefox bug
+      // Detail see : https://github.com/RubaXa/Sortable/issues/1012
+      dataTransfer.setData('Text', '')
     }
   }
 
