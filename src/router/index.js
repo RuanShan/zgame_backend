@@ -97,12 +97,72 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/othergameround',
+    component: Layout,
+    redirect: '/othergameround',
+    meta: {
+      title: 'H5活动中心',
+      icon: 'example'
+    },
+    children: [
+      {
+        path: 'create',
+        component: () => import('@/views/othergameround/create'),
+        name: '创建活动',
+        meta: { title: '创建活动', icon: 'user', affix: true }
+      },
+      {
+        path: 'index',
+        component: () => import('@/views/othergameround/index'),
+        name: 'GameroundList',
+        meta: { title: '管理活动', icon: 'list' }
+      },
+      {
+        path: 'gamelist/:code',
+        component: () => import('@/views/othergameround/gamelist'),
+        name: 'GameroundList',
+        meta: { title: '管理活动', icon: 'list' },
+        hidden: true
+      }
+    ]
+  },
+  {
+    path: '/dpgameround',
+    component: Layout,
+    redirect: '/dpgameround',
+    meta: {
+      title: '大屏活动中心',
+      icon: 'example'
+    },
+    children: [
+      {
+        path: 'create',
+        component: () => import('@/views/dpgameround/create'),
+        name: '创建活动',
+        meta: { title: '创建活动', icon: 'user', affix: true }
+      },
+      {
+        path: 'index',
+        component: () => import('@/views/dpgameround/index'),
+        name: 'GameroundList',
+        meta: { title: '管理活动', icon: 'list' }
+      },
+      {
+        path: 'gamelist/:code',
+        component: () => import('@/views/dpgameround/gamelist'),
+        name: 'GameroundList',
+        meta: { title: '管理活动', icon: 'list' },
+        hidden: true
+      }
+    ]
+  },
+  {
     path: '/gameround',
     component: Layout,
     redirect: '/gameround',
     name: 'gameround',
     meta: {
-      title: '活动中心',
+      title: '投票活动',
       icon: 'example'
     },
     children: [
