@@ -56,8 +56,3 @@ export const getResultInfo = (data) => fetch(basePath + '/game_results/getResult
 export const getGameDayInfo = (data) => fetch(basePath + '/game_days/getGameDayInfo', data, 'POST')
 export const getAlbumResultInfo = (data) => fetch(basePath + '/game_results/getAlbumResultInfo', data, 'POST')
 export const getExportInfo = (data) => fetch(basePath + '/export/getExportInfo', data, 'POST')
-
-export const createOtherGameRound = (data) => fetch('/api/othergameround/createOtherGameRound', data, 'POST')
-export const getOtherGameRound = (data) => fetch('/api/othergameround/getOtherGameRound', data, 'POST')
-export const getGameType = (data) => fetch('/api/gametypes/getGameType', data, 'POST')
-export const getGameTypeByType = (data) => fetch('/api/gametypes/getGameTypeByType', data, 'POST')
