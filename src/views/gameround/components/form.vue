@@ -1,4 +1,3 @@
-
 <template>
   <div class="addNewBox">
     <el-form ref="postForm" :model="postForm" label-width="80px">
@@ -27,18 +26,12 @@
       </div>
     </el-form>
   </div>
-  </div>
 
 </template>
 
 <script>
-
-import $ from 'jquery'
-import queryString from 'query-string'
 import { addGameRound } from '@/api/backend.js'
 import Tinymce from '@/components/Tinymce'
-import { FileChecksum } from '@/lib/activestorage/file_checksum'
-import { BlobUpload } from '@/lib/activestorage/blob_upload'
 import { modifyDesc } from '@/api/backend'
 import { desc } from './template.js'
 export default {
@@ -68,7 +61,6 @@ export default {
       },
       account: '',
       password: ''
-
     }
   },
   watch: {
@@ -94,7 +86,6 @@ export default {
       console.log('========onSubmit========')
       var msg_is_ok = true
       var gamename = this.game.name
-      var gameduration = this.game.duration
       console.log('game.time----:', this.game.time)
       if (msg_is_ok) {
         const game = {
@@ -104,7 +95,6 @@ export default {
           code: 'ztoupiao',
           duration: 30
         }
-
         addGameRound(game).then(async res => {
           console.log('res----:', res)
           console.log('postForm-------:', this.postForm)
@@ -123,8 +113,6 @@ export default {
     }
   }
 }
-
 </script>
 <style scoped>
-
 </style>

@@ -6,21 +6,11 @@
           <el-input v-model="formData.name" />
         </el-form-item>
         <el-form-item label="投票时间">
-          <el-date-picker
-            v-model="formData.time"
-            type="datetimerange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            format="yyyy-MM-dd HH:mm"
-            :default-time="['00:00:00','23:59:59']"
-          />
+          <el-date-picker v-model="formData.time" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" format="yyyy-MM-dd HH:mm" :default-time="['00:00:00','23:59:59']" />
         </el-form-item>
         <el-form-item label="关闭活动">
 
-          <el-switch
-            v-model="gameStateDisabled"
-          />
+          <el-switch v-model="gameStateDisabled" />
         </el-form-item>
         <el-form-item label="分类">
           <el-select v-model="selectedTerms" multiple placeholder="请选择">
@@ -28,19 +18,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="发布时间">
-          <el-date-picker
-            v-model="publish_at"
-            type="datetime"
-            placeholder="选择日期时间"
-          />
-        </el-form-item>
-        <el-form-item label="底部菜单">
-          <draggable :set-data="setData" :list="tabbarOptions" group="article" class="dragArea">
-            <el-checkbox-group v-model="formData.tabbarList">
-              <el-checkbox v-for="option in tabbarOptions" :key="option.value" :label="option.label" />
-            </el-checkbox-group>
-          </draggable>
-
+          <el-date-picker v-model="publish_at" type="datetime" placeholder="选择日期时间" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">保存</el-button>
@@ -54,26 +32,58 @@
       </el-form>
       <el-button type="primary" @click="onSaveDesc">保存</el-button>
     </el-tab-pane>
-    <el-tab-pane label="活动动态" name="fourth">活动动态</el-tab-pane>
-
+    <el-tab-pane label="活动动态" name="fourth">
+      <el-button type="primary" @click="onCreatePost">新建</el-button>
+      <el-dialog title="提示" :visible.sync="dialogVisible" width="70%">
+        <CreatePost @createSuccess="createSuccess" />
+      </el-dialog>
+      <el-table :data="postData" border fit style="width: 100%;">
+        <el-table-column label="活动状态">
+          <template slot-scope="scope">
+            <span @click="onEditPost(scope.row.id)">{{ scope.row.title }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="110px" align="center">
+          <template slot-scope="scope">
+            <el-dropdown @command="handleCommand">
+              <span class="el-dropdown-link">
+                <i class="el-icon-more " />
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item :command="{cmd:'comment', post: scope.row}">评论管理</el-dropdown-item>
+                <el-dropdown-item :command="{cmd:'del', post: scope.row}">删除</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-tab-pane>
     <el-tab-pane label="分享设置" name="wxshare">
       <DisplayForm :game-round="gameRound" @changed="onWxConfigSaved" />
     </el-tab-pane>
   </el-tabs>
-
 </template>
 
 <script>
-// import draggable from 'vuedraggable'
 import DisplayForm from './DisplayForm'
 import Tinymce from '@/components/Tinymce/better.vue'
-import { tiny } from '@/config/env'
-
-import { updateGameRound, getTermInfo } from '@/api/backend.js'
+import CreatePost from './createPost.vue'
+import {
+  tiny
+} from '@/config/env'
+import {
+  updateGameRound,
+  getTermInfo,
+  getAllPost
+} from '@/api/backend.js'
 const moment = require('moment')
 export default {
   name: 'RoundForm',
-  components: { DisplayForm, Tinymce },
+  components: {
+    DisplayForm,
+    Tinymce,
+    CreatePost
+  },
   props: {
     gameRound: {
       type: Object,
@@ -87,24 +97,16 @@ export default {
       tinyMenubar: '',
       tinyToolbar: tiny.toolbar,
       unlink: true,
-      tabbarOptions: [
-        { label: '介绍', value: 'intro' },
-        { label: '投票', value: 'works' },
-        { label: '排名', value: 'rank' },
-        { label: '我的', value: 'my' },
-        { label: '动态', value: 'news' },
-        { label: '自定义', value: 'custom' }
-      ],
       formData: {
         name: '',
-        time: '',
-        tabbarList: []
+        time: ''
       },
       termList: [],
       selectedTerms: [],
       publish_at: '',
-      group: ''
-
+      group: '',
+      postData: null,
+      dialogVisible: false
     }
   },
   watch: {
@@ -156,6 +158,13 @@ export default {
         if (this.gameRound.start_at && this.gameRound.end_at) {
           this.formData.time = [this.gameRound.start_at, this.gameRound.end_at]
         }
+        const data = {
+          gameRoundId: this.gameRound.id
+        }
+        getAllPost(data).then((res) => {
+          console.log('getAllPost res----:', res)
+          this.postData = res
+        })
       }
     },
     onSubmit() {
@@ -179,7 +188,6 @@ export default {
         state = 'disabled'
       }
       var terms = this.selectedTerms // array of term_id
-
       updateGameRound(this.gameRound.id, {
         terms: terms,
         gameRound: {
@@ -205,16 +213,45 @@ export default {
     onWxConfigSaved(res) {
       this.$emit('changed', res)
     },
-    setData(dataTransfer) {
-      // to avoid Firefox bug
-      // Detail see : https://github.com/RubaXa/Sortable/issues/1012
-      dataTransfer.setData('Text', '')
+    onCreatePost() {
+      console.log('==============onCreatePost===============')
+      this.dialogVisible = true
+      // this.$router.push('/gameround/createpost/' + this.gameRound.id)
+    },
+    createSuccess() {
+      console.log('==============createSuccess===============')
+      this.dialogVisible = false
+      this.initData()
+    },
+    onEditPost(post_id) {
+      this.$router.push('/gameround/editPost/' + post_id)
+    },
+    handleCommand(command) {
+      console.log('command---:', command)
+      if (command.cmd === 'del') {
+        this.$confirm('此操作将删除选手, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          // this.deletepost(command.post)
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+      } else if (command.cmd === 'comment') {
+        this.$router.push({ path: '/gameround/commentInfo/' + command.post.game_round_id, query: { type: 'post', id: command.post.id }})
+      }
     }
   }
-
 }
 </script>
 
 <style lang="scss" scoped>
-
 </style>

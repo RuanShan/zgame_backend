@@ -199,10 +199,31 @@ export const constantRoutes = [
         hidden: true
       },
       {
+        path: 'commentInfo/:id(\\d+)',
+        component: () => import('@/views/gameround/components/CommentInfo'),
+        name: 'GetCommentInfo',
+        meta: { title: '评论管理', noCache: true, activeMenu: '/gamerounds/list' },
+        hidden: true
+      },
+      {
         path: 'gameDayInfo/:id(\\d+)',
         component: () => import('@/views/gameround/components/GameDayInfo'),
         name: 'GetGameDayInfo',
         meta: { title: '流量统计', noCache: true, activeMenu: '/gamerounds/list' },
+        hidden: true
+      },
+      {
+        path: 'createpost/:id(\\d+)',
+        component: () => import('@/views/gameround/components/createPost'),
+        name: 'CreatePost',
+        meta: { title: '编辑', noCache: true, activeMenu: '/gamerounds/list' },
+        hidden: true
+      },
+      {
+        path: 'editpost/:id(\\d+)',
+        component: () => import('@/views/gameround/components/editPost'),
+        name: 'EditPost',
+        meta: { title: '编辑', noCache: true, activeMenu: '/gamerounds/list' },
         hidden: true
       }
     ]
