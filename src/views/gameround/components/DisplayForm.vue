@@ -65,22 +65,32 @@ export default {
     'gameRound': 'initData'
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.initData()
+  },
   methods: {
     initData() {
-
+      this.formData.gameShareName = this.gameRound.wxshare_title
+      this.formData.albumShareName = this.gameRound.wxshare_ptitle
+      this.formData.albumShareDesc = this.gameRound.wxshare_desc
     },
     onSubmit() {
       console.log('this.gameRound---:', this.gameRound)
       const wxshareParams = {}
       if (this.formData.gameShareName.length > 0) {
-        wxshareParams.p_wxshare_title = this.formData.gameShareName
+        wxshareParams.wxshare_title = this.formData.gameShareName
+      } else {
+        wxshareParams.wxshare_title = ''
       }
       if (this.formData.albumShareName.length > 0) {
-        wxshareParams.p_wxshare_ptitle = this.formData.albumShareName
+        wxshareParams.wxshare_ptitle = this.formData.albumShareName
+      } else {
+        wxshareParams.wxshare_ptitle = ''
       }
       if (this.formData.albumShareDesc.length > 0) {
-        wxshareParams.p_wxshare_desc = this.formData.albumShareDesc
+        wxshareParams.wxshare_desc = this.formData.albumShareDesc
+      } else {
+        wxshareParams.wxshare_desc = ''
       }
       updateGameRound(this.gameRound.id, {
         gameRound: wxshareParams
