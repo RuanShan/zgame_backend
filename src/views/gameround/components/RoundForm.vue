@@ -254,6 +254,9 @@ export default {
         })
       } else if (command.cmd === 'comment') {
         this.$router.push({ path: '/gameround/commentInfo/' + command.post.game_round_id, query: { type: 'post', id: command.post.id }})
+      } else if (command.cmd === 'edit') {
+        console.log('command.post----:', command.post)
+        this.onEditPost(command.post.id)
       }
     },
     formatDate(date) {
