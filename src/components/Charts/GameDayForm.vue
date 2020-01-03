@@ -21,7 +21,7 @@
 import echarts from 'echarts'
 import resize from './mixins/resize'
 import { getGameDayInfo } from '@/api/backend.js'
-const moment = require('moment')
+const dayjs = require('dayjs')
 
 export default {
   mixins: [resize],
@@ -54,8 +54,8 @@ export default {
     }
   },
   mounted() {
-    this.start_at = moment().add(-7, 'day')
-    this.end_at = moment()
+    this.start_at = dayjs().add(-7, 'day')
+    this.end_at = dayjs()
     this.time = [this.start_at, this.end_at]
     this.getInfo()
   },

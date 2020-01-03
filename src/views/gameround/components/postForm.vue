@@ -3,11 +3,11 @@
     <el-form ref="postForm" :model="postForm" label-width="80px">
       <div class="form-main-container">
 
-        <el-form-item label="title">
+        <el-form-item label="动态标题">
           <el-input v-model="title" />
         </el-form-item>
-        <el-form-item label="活动说明">
-          <Tinymce ref="editor" v-model="content" :height="400" />
+        <el-form-item label="动态内容">
+          <Tinymce ref="editor" v-model="content" :height="300" :menubar="tinyMenubar" :toolbar="tinyToolbar" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">立即创建</el-button>
@@ -20,7 +20,10 @@
 
 <script>
 import { createPost } from '@/api/backend.js'
-import Tinymce from '@/components/Tinymce'
+import Tinymce from '@/components/Tinymce/better.vue'
+import {
+  tiny
+} from '@/config/tinymce'
 import { desc } from './template.js'
 export default {
   components: { Tinymce },
@@ -31,6 +34,8 @@ export default {
   },
   data() {
     return {
+      tinyMenubar: '',
+      tinyToolbar: tiny.toolbar,
       postForm: {
         content: desc
       },

@@ -22,7 +22,7 @@ import resize from './mixins/resize'
 import {
   getResultInfo
 } from '@/api/backend.js'
-const moment = require('moment')
+const dayjs = require('dayjs')
 export default {
   mixins: [resize],
   props: {
@@ -55,7 +55,7 @@ export default {
   },
   mounted() {
     console.log('======resultform===========')
-    this.time = moment()
+    this.time = dayjs()
     this.getInfo()
   },
   beforeDestroy() {

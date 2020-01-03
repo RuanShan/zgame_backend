@@ -34,13 +34,18 @@
     </el-tab-pane>
     <el-tab-pane label="活动动态" name="fourth">
       <el-button type="primary" @click="onCreatePost">新建</el-button>
-      <el-dialog title="提示" :visible.sync="dialogVisible" width="70%">
+      <el-dialog title="新增动态" :visible.sync="dialogVisible" width="70%">
         <CreatePost @createSuccess="createSuccess" />
       </el-dialog>
       <el-table :data="postData" border fit style="width: 100%;">
         <el-table-column label="活动状态">
           <template slot-scope="scope">
             <span @click="onEditPost(scope.row.id)">{{ scope.row.title }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="创建时间" width="160">
+          <template slot-scope="scope">
+            <span>{{ formatDate(scope.row.created_at) }}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="110px" align="center">
@@ -51,6 +56,7 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item :command="{cmd:'comment', post: scope.row}">评论管理</el-dropdown-item>
+                <el-dropdown-item :command="{cmd:'edit', post: scope.row}">编辑</el-dropdown-item>
                 <el-dropdown-item :command="{cmd:'del', post: scope.row}">删除</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -70,13 +76,14 @@ import Tinymce from '@/components/Tinymce/better.vue'
 import CreatePost from './createPost.vue'
 import {
   tiny
-} from '@/config/env'
+} from '@/config/tinymce'
 import {
   updateGameRound,
   getTermInfo,
   getAllPost
 } from '@/api/backend.js'
-const moment = require('moment')
+const dayjs = require('dayjs')
+
 export default {
   name: 'RoundForm',
   components: {
@@ -176,10 +183,10 @@ export default {
       let state = 'created'
       if (this.gameStateDisabled === false) {
         const now = new Date()
-        console.log('panduan--:', moment(now).isBefore(moment(this.gameRound.start_at)))
-        if (moment(now).isBefore(moment(this.gameRound.start_at))) {
+        console.log('panduan--:', dayjs(now).isBefore(dayjs(this.gameRound.start_at)))
+        if (dayjs(now).isBefore(dayjs(this.gameRound.start_at))) {
           state = 'created'
-        } else if (moment(this.gameRound.end_at).isBefore(moment(now))) {
+        } else if (dayjs(this.gameRound.end_at).isBefore(dayjs(now))) {
           state = 'completed'
         } else {
           state = 'started'
@@ -248,6 +255,9 @@ export default {
       } else if (command.cmd === 'comment') {
         this.$router.push({ path: '/gameround/commentInfo/' + command.post.game_round_id, query: { type: 'post', id: command.post.id }})
       }
+    },
+    formatDate(date) {
+      return dayjs(date).format('YYYY-MM-DD HH:mm')
     }
   }
 }

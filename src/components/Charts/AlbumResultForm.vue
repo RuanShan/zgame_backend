@@ -27,7 +27,7 @@ import {
   getExportInfo,
   getGameRound
 } from '@/api/backend.js'
-const moment = require('moment')
+const dayjs = require('dayjs')
 
 export default {
   mixins: [resize],
@@ -71,7 +71,7 @@ export default {
     if (this.$route.query.albumId) {
       this.gamePlayerId = this.$route.query.albumId
     }
-    this.time = moment()
+    this.time = dayjs()
     this.getInfo()
   },
   beforeDestroy() {

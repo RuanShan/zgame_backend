@@ -20,6 +20,10 @@ import './utils/error-log' // error log
 import * as filters from './filters' // global filters
 import 'weui/dist/style/weui.css'
 import '@/styles/app.css'
+
+// import 'dayjs/locale/zh-cn' // load on demand
+// import  dayjs from 'dayjs'
+// dayjs.locale('zh-cn')
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

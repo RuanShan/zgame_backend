@@ -8,7 +8,7 @@
           <el-input v-model="title" />
         </el-form-item>
         <el-form-item label="活动说明">
-          <Tinymce ref="editor" v-model="content" :height="400" />
+          <Tinymce ref="editor" v-model="content" :height="400" :menubar="tinyMenubar" :toolbar="tinyToolbar" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">立即保存</el-button>
@@ -21,6 +21,9 @@
 
 <script>
 import { editPost, getPostData } from '@/api/backend.js'
+import {
+  tiny
+} from '@/config/tinymce'
 import Tinymce from '@/components/Tinymce'
 import { desc } from './template.js'
 export default {
@@ -32,6 +35,8 @@ export default {
   },
   data() {
     return {
+      tinyMenubar: '',
+      tinyToolbar: tiny.toolbar,
       postForm: {
         content: desc
       },
