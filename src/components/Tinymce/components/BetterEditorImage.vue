@@ -3,7 +3,7 @@
     <el-button :style="{background:color,borderColor:color}" icon="el-icon-upload" size="mini" type="primary" @click=" dialogVisible=true">
       upload
     </el-button>
-    <ImgUpload :viewable-type="viewableType" :dialog-visible.sync="dialogVisible" @selected="handleImageSelected" />
+    <ImgUpload :viewable-type="viewableType" :image-style="imageStyle" :dialog-visible.sync="dialogVisible" @selected="handleImageSelected" />
   </div>
 </template>
 
@@ -16,7 +16,7 @@ import {
 } from '@/api/albums.js'
 import { FileChecksum } from '@/lib/activestorage/file_checksum'
 import { BlobUpload } from '@/lib/activestorage/blob_upload'
-import { bindPhotoRelationship } from '@/api/backend'
+// import { bindPhotoRelationship } from '@/api/backend'
 
 export default {
   name: 'EditorSlideUpload',
@@ -37,18 +37,21 @@ export default {
       dialogVisible: false,
       listObj: {},
       fileList: [],
-      viewableType: 'desc'
+      viewableType: 'desc',
+      imageStyle: 'create'
     }
   },
   methods: {
     handleImageSelected(e) {
       // 图片数据结构 [{id, url}]
+      console.log('e----:', e)
+      console.log('this.gameRound---:', this.gameRound)
       const [image] = [...e.selectedImages]
       if (image) {
-        const data = {
-          round_id: this.gameRound.id,
-          newImg: image
-        }
+        // const data = {
+        //   // round_id: this.gameRound.id,
+        //   newImg: image
+        // }
         this.$emit('successCBK', image)
         // bindPhotoRelationship(data).then(res => {
         //   this.imageBrowserVisible = false
