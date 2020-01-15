@@ -118,6 +118,13 @@ export const constantRoutes = [
         meta: { title: '管理活动', icon: 'list' }
       },
       {
+        path: 'edit/:code/:id',
+        component: () => import('@/views/othergameround/edit'),
+        name: 'GameroundEdit',
+        meta: { title: '管理活动', icon: 'list' },
+        hidden: true
+      },
+      {
         path: 'gamelist/:code',
         component: () => import('@/views/othergameround/gamelist'),
         name: 'GameroundList',

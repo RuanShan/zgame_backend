@@ -30,7 +30,7 @@
 
 <script>
 import {
-  getOtherGameRound
+  getOtherGameRoundList
 } from '@/api/backend.js'
 export default {
   name: 'Authorize',
@@ -54,7 +54,7 @@ export default {
         code: code
       }
       console.log('param---:', param)
-      getOtherGameRound(param).then(data => {
+      getOtherGameRoundList(param).then(data => {
         console.log('data----:', data)
         this.list = data
         this.listLoading = false
