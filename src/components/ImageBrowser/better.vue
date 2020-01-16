@@ -8,7 +8,7 @@
         </div>
 
         <div class="elx-main img-list">
-          <div v-for="(img, imgKey) in imgRes.list" class="img-item" @click="handleSelectImage(img)">
+          <div v-for="(img,i) in imgRes.list" :key="i" class="img-item" @click="handleSelectImage(img)">
             <div class="thumb-wp"><img :src="img.thumb" alt="img.name"></div>
             <div class="title">{{ img.name }}</div>
             <div v-if="img.label" class="label">{{ img.label }}</div>
@@ -206,7 +206,8 @@ export default {
        * @returns {boolean}
        */
     handleConfirmSelect() {
-      if (this.imageStyle == 'create') {
+      console.log('this.imageStyle----:', this.imageStyle)
+      if (this.imageStyle === 'create') {
         const selectedImages = this.imgRes.list.filter((img) => img.selected)
 
         // selectedImages { id: photo.id, url: photo.previewUrl }
@@ -214,7 +215,7 @@ export default {
 
         // 隐藏，取消已选
         this.handleCloseDialog()
-      } else if (this.imageStyle == 'change') {
+      } else if (this.imageStyle === 'change') {
         console.log('===========change==========')
         const selectedImages = this.imgRes.list.filter((img) => img.selected)
 
@@ -346,7 +347,7 @@ export default {
       console.log('this.viewableType---:', this.viewableType)
       this.listQuery.q.viewable_type = this.viewableType
       this.uploadData.viewable_type = this.viewableType
-      if (this.imageStyle == 'change') {
+      if (this.imageStyle === 'change') {
         this.options.limit = 1
       }
       this.loadImgList()

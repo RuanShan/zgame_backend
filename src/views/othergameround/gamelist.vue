@@ -46,7 +46,7 @@
                 设置<i class="el-icon-arrow-down el-icon--right" />
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :command="{ cmd:'edit', id: scope.row.id }">活动设置</el-dropdown-item>
+                <el-dropdown-item :command="{ cmd:'edit', id: scope.row.id ,code:scope.row.code}">活动设置</el-dropdown-item>
                 <el-dropdown-item :command="{ cmd:'players', id: scope.row.id }">选手管理</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -73,7 +73,7 @@
 
 <script>
 import {
-  getOtherGameRound
+  getOtherGameRoundList
 } from '@/api/backend.js'
 import GameUrlDialog from './components/GameUrlDialog.vue' // secondary package based on el-pagination
 
@@ -106,7 +106,7 @@ export default {
         code: code
       }
       console.log('param---:', param)
-      getOtherGameRound(param).then(data => {
+      getOtherGameRoundList(param).then(data => {
         console.log('data----:', data)
         this.list = data
         this.listLoading = false
@@ -134,6 +134,9 @@ export default {
       } else if (command.cmd === 'showurl') {
         this.selectedGameRound = command.row
         this.dialogUrlVisible = true
+      } else if (command.cmd === 'edit') {
+        console.log('command.id----:', command.id)
+        this.$router.push({ path: '/othergameround/edit/' + command.code + '/' + command.id })
       }
     },
     formatDate(date) {
