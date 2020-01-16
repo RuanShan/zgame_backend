@@ -103,13 +103,13 @@ export default {
     getOtherGameRoundById(param).then((res) => {
       console.log('res----:', res)
       this.game.name = res.name
-      this.game.time[0] = res.start_at
-      this.game.time[1] = res.end_at
+      this.game.time = [res.start_at, res.end_at]
       this.gameCode = res.code
       this.game.wxshare_title = res.wxshare_title
       this.game.wxshare_ptitle = res.wxshare_ptitle
       this.game.wxshare_desc = res.wxshare_desc
       this.postForm.content = res.desc
+      console.log('game.time----:', this.game.time)
     })
   },
   methods: {
