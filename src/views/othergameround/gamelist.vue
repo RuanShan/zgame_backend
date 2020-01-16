@@ -13,7 +13,7 @@
         <el-table-column label="活动" min-width="250px">
           <template slot-scope="scope">
             <p> <span class="link-type">{{ scope.row.name }}</span> </p>
-            <p>活动时间：{{ formatDate(scope.row.start_at) }} - {{ formatDate(scope.row.end_at) }} </p>
+            <p>活动时间：{{ formatDate(scope.row.start_at) }} ~ {{ formatDate(scope.row.end_at) }} </p>
             <p>创建时间：<span>{{ formatDate(scope.row.created_at) }}</span> </p>
           </template>
         </el-table-column>
