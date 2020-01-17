@@ -74,3 +74,6 @@ export const getOtherGameRoundById = (data) => fetch('/api/othergameround/getOth
 export const updateOtherGameRound = (data) => fetch('/api/othergameround/updateGameRound', data, 'POST')
 export const getGameType = (data) => fetch('/api/gametypes/getGameType', data, 'POST')
 export const getGameTypeByType = (data) => fetch('/api/gametypes/getGameTypeByType', data, 'POST')
+
+export const getGamePlayerList = (data) => fetch('/api/othergameround/getGamePlayerList', data, 'POST')
+export const deleteGamePlayer = (data) => fetch('/api/othergameround/deleteGamePlayer', data, 'POST')
