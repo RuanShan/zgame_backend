@@ -68,12 +68,12 @@ export const getGameDayInfo = (data) => fetch(basePath + '/game_days/getGameDayI
 export const getAlbumResultInfo = (data) => fetch(basePath + '/game_results/getAlbumResultInfo', data, 'POST')
 export const getExportInfo = (data) => fetch(basePath + '/export/getExportInfo', data, 'POST')
 
-export const createOtherGameRound = (data) => fetch('/api/othergameround/createOtherGameRound', data, 'POST')
-export const getOtherGameRoundList = (data) => fetch('/api/othergameround/getOtherGameRoundList', data, 'POST')
-export const getOtherGameRoundById = (data) => fetch('/api/othergameround/getOtherGameRoundById', data, 'POST')
-export const updateOtherGameRound = (data) => fetch('/api/othergameround/updateGameRound', data, 'POST')
+export const createOtherGameRound = (data) => fetch(basePath + '/createOtherGameRound', data, 'POST')
+export const getOtherGameRoundList = (data) => fetch(basePath + '/getOtherGameRoundList', data, 'POST')
+export const getOtherGameRoundById = (data) => fetch(basePath + '/getOtherGameRoundById', data, 'POST')
+export const updateOtherGameRound = (data) => fetch(basePath + '/updateGameRound', data, 'POST')
 export const getGameType = (data) => fetch('/api/gametypes/getGameType', data, 'POST')
 export const getGameTypeByType = (data) => fetch('/api/gametypes/getGameTypeByType', data, 'POST')
 
-export const getGamePlayerList = (data) => fetch('/api/othergameround/getGamePlayerList', data, 'POST')
-export const deleteGamePlayer = (data) => fetch('/api/othergameround/deleteGamePlayer', data, 'POST')
+export const getGamePlayerList = (data) => fetch(basePath + '/getGamePlayerList', data, 'POST')
+export const deleteGamePlayer = (data) => fetch(basePath + '/deleteGamePlayer', data, 'POST')
