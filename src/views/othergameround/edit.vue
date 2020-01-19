@@ -125,6 +125,7 @@ export default {
           start_at: this.game.time[0],
           end_at: this.game.time[1],
           code: this.gameCode,
+          desc: this.postForm.content,
           wxshare_title: this.game.wxshare_title,
           wxshare_ptitle: this.game.wxshare_ptitle,
           wxshare_desc: this.game.wxshare_desc
