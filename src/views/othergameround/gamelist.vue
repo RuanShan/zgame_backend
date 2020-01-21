@@ -66,6 +66,7 @@
         </el-table-column>
       </el-table>
     </div>
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     <GameUrlDialog :game-round="selectedGameRound" :dialog-visible.sync="dialogUrlVisible" />
   </div>
 
@@ -76,20 +77,30 @@ import {
   getOtherGameRoundList
 } from '@/api/backend.js'
 import GameUrlDialog from './components/GameUrlDialog.vue' // secondary package based on el-pagination
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 const dayjs = require('dayjs')
 
 export default {
   name: 'H5GameRounds',
   components: {
-    GameUrlDialog
+    GameUrlDialog, Pagination
   },
   data() {
     return {
       list: null,
       listLoading: true,
       dialogUrlVisible: false,
-      selectedGameRound: {}
+      selectedGameRound: {},
+      total: 0,
+      listQuery: {
+        page: 1,
+        limit: 20,
+        importance: undefined,
+        title: undefined,
+        type: undefined,
+        sort: '+id'
+      }
     }
   },
   created() {
@@ -103,12 +114,14 @@ export default {
       const hash = location.hash
       const code = hash.substring(hash.lastIndexOf('/') + 1)
       const param = {
-        code: code
+        code: code,
+        listQuery: this.listQuery
       }
       console.log('param---:', param)
       getOtherGameRoundList(param).then(data => {
         console.log('data----:', data)
-        this.list = data
+        this.list = data.gameRounds
+        this.total = data.count
         this.listLoading = false
       })
     },
