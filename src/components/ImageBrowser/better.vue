@@ -224,6 +224,12 @@ export default {
 
         // 隐藏，取消已选
         this.handleCloseDialog()
+      } else {
+        const selectedImages = this.imgRes.list.filter((img) => img.selected)
+        // selectedImages { id: photo.id, url: photo.previewUrl }
+        this.$emit('selected', { selectedImages })
+        // 隐藏，取消已选
+        this.handleCloseDialog()
       }
     },
 
