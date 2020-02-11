@@ -57,8 +57,8 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item :command="{ cmd:'showurl', row: scope.row }">活动网址</el-dropdown-item>
                 <el-dropdown-item :command="{ cmd:'resultInfo', id: scope.row.id }" divided>流量统计</el-dropdown-item>
-                <el-dropdown-item :command="{ cmd:'clearData', id: scope.row.id }" divided>清空数据</el-dropdown-item>
-                <el-dropdown-item :command="{ cmd:'remove', id: scope.row.id }">删除</el-dropdown-item>
+                <el-dropdown-item :command="{ cmd:'clearData', id: scope.row.id ,code:scope.row.code}" divided>清空数据</el-dropdown-item>
+                <el-dropdown-item :command="{ cmd:'remove', id: scope.row.id ,code:scope.row.code}">删除</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
 
@@ -74,7 +74,9 @@
 
 <script>
 import {
-  getOtherGameRoundList
+  getOtherGameRoundList,
+  deleteOtherGameRound,
+  clearOtherGameRound
 } from '@/api/backend.js'
 import GameUrlDialog from './components/GameUrlDialog.vue' // secondary package based on el-pagination
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -126,6 +128,7 @@ export default {
       })
     },
     handleCommand(command) {
+      const that = this
       console.log('command---:', command)
       if (command.cmd === 'del') {
         this.$confirm('此操作将删除游戏, 是否继续?', '提示', {
@@ -150,6 +153,46 @@ export default {
       } else if (command.cmd === 'edit') {
         console.log('command.id----:', command.id)
         this.$router.push({ path: '/othergameround/edit/' + command.code + '/' + command.id })
+      } else if (command.cmd === 'clearData') {
+        console.log('command.id----:', command.id)
+        this.$confirm('此操作将删除数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const params = {
+            id: command.id,
+            code: command.code
+          }
+          clearOtherGameRound(params).then(data => {
+            console.log('data---:', data)
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+      } else if (command.cmd === 'remove') {
+        console.log('command.id----:', command.id)
+        this.$confirm('此操作将删除数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const params = {
+            id: command.id,
+            code: command.code
+          }
+          deleteOtherGameRound(params).then(data => {
+            that.getList()
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
       }
     },
     formatDate(date) {
