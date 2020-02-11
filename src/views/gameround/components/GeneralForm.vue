@@ -62,7 +62,7 @@
         </el-form-item>
       </el-form>
 
-      <ImageBrowser :viewable-type="viewableType" :dialog-visible.sync="imageBrowserVisible" :image-style="imageStyle" @selected="handleImageSelected" @changSlide="changSlide" />
+      <ImageBrowser :viewable-type="viewableType" :dialog-visible.sync="imageBrowserVisible" :image-style="imageStyle" @selected="handleImageSelected" />
 
     </el-tab-pane>
 
@@ -163,19 +163,6 @@ export default {
         this.$emit('changed', res)
       })
     },
-    changSlide(img) {
-      console.log('slideToChange', this.slideToChange)
-      console.log('img----------:', img)
-      console.log('new Slide---:', img.selectedImages[0])
-      const data = {
-        round_id: this.gameRound.id,
-        newImg: img.selectedImages[0]
-      }
-      bindPhotoRelationship(data).then(res => {
-        this.deletePhoto(this.slideToChange.id)
-        // this.ChangeSlideBrowserVisible = false
-      })
-    },
     refresh() {
       this.$emit('changed')
     },
@@ -237,15 +224,29 @@ export default {
     },
     handleImageSelected(e) {
       // 图片数据结构 [{id, url}]
-      const [image] = [...e.selectedImages]
-      if (image) {
+      if (this.imageStyle === 'create') {
+        const [image] = [...e.selectedImages]
+        if (image) {
+          const data = {
+            round_id: this.gameRound.id,
+            newImg: image
+          }
+          bindPhotoRelationship(data).then(res => {
+            this.imageBrowserVisible = false
+            this.refresh()
+          })
+        }
+      } else if (this.imageStyle === 'change') {
+        console.log('slideToChange', this.slideToChange)
+        console.log('e----------:', e)
+        console.log('new Slide---:', e.selectedImages[0])
         const data = {
           round_id: this.gameRound.id,
-          newImg: image
+          newImg: e.selectedImages[0]
         }
         bindPhotoRelationship(data).then(res => {
-          this.imageBrowserVisible = false
-          this.refresh()
+          this.deletePhoto(this.slideToChange.id)
+          // this.ChangeSlideBrowserVisible = false
         })
       }
     },

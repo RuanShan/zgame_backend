@@ -206,31 +206,11 @@ export default {
        * @returns {boolean}
        */
     handleConfirmSelect() {
-      console.log('this.imageStyle----:', this.imageStyle)
-      if (this.imageStyle === 'create') {
-        const selectedImages = this.imgRes.list.filter((img) => img.selected)
-
-        // selectedImages { id: photo.id, url: photo.previewUrl }
-        this.$emit('selected', { selectedImages })
-
-        // 隐藏，取消已选
-        this.handleCloseDialog()
-      } else if (this.imageStyle === 'change') {
-        console.log('===========change==========')
-        const selectedImages = this.imgRes.list.filter((img) => img.selected)
-
-        // selectedImages { id: photo.id, url: photo.previewUrl }
-        this.$emit('changSlide', { selectedImages })
-
-        // 隐藏，取消已选
-        this.handleCloseDialog()
-      } else {
-        const selectedImages = this.imgRes.list.filter((img) => img.selected)
-        // selectedImages { id: photo.id, url: photo.previewUrl }
-        this.$emit('selected', { selectedImages })
-        // 隐藏，取消已选
-        this.handleCloseDialog()
-      }
+      const selectedImages = this.imgRes.list.filter((img) => img.selected)
+      // selectedImages { id: photo.id, url: photo.previewUrl }
+      this.$emit('selected', { selectedImages })
+      // 隐藏，取消已选
+      this.handleCloseDialog()
     },
 
     removePhoto() {
