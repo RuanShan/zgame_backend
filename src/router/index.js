@@ -160,6 +160,13 @@ export const constantRoutes = [
         name: 'GameroundList',
         meta: { title: '管理活动', icon: 'list' },
         hidden: true
+      },
+      {
+        path: 'edit/:code/:id',
+        component: () => import('@/views/dpgameround/step'),
+        name: 'GameroundEdit',
+        meta: { title: '管理活动', icon: 'list' },
+        hidden: true
       }
     ]
   },

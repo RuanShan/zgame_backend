@@ -1,4 +1,3 @@
-
 <template>
   <div class="addNewBox">
     <el-form ref="postForm" :model="postForm" label-width="80px">
@@ -9,11 +8,6 @@
         </el-form-item>
         <el-form-item label="投票时间">
           <el-date-picker v-model="game.time" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" format="yyyy-MM-dd HH:mm" :default-time="['00:00:00','23:59:59']" />
-        </el-form-item>
-        <el-form-item label="code">
-          <el-select v-model="gameCode" placeholder="请选择">
-            <el-option v-for="item in gameTypes" :key="item.name" :label="item.name" :value="item.code" />
-          </el-select>
         </el-form-item>
         <el-form-item label="活动分享标题">
           <el-input v-model="game.wxshare_title" />
@@ -28,7 +22,7 @@
           <Tinymce ref="editor" v-model="postForm.content" :height="400" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">立即创建</el-button>
+          <el-button type="primary" @click="onSubmit">save</el-button>
         </el-form-item>
       </div>
     </el-form>
@@ -37,13 +31,11 @@
 
 <script>
 import {
-  createOtherGameRound,
-  getGameTypeByType
+  updateOtherGameRound,
+  getGameType,
+  getOtherGameRoundById
 } from '@/api/backend.js'
 import Tinymce from '@/components/Tinymce'
-import {
-  desc
-} from './template.js'
 export default {
   components: {
     Tinymce
@@ -56,7 +48,7 @@ export default {
   data() {
     return {
       postForm: {
-        content: desc
+        content: ''
       },
       albumData: {
         name: '',
@@ -78,7 +70,6 @@ export default {
       },
       account: '',
       password: ''
-
     }
   },
   watch: {
@@ -98,11 +89,27 @@ export default {
     }
   },
   created() {
+    console.log('this.$router----:', this.$router.currentRoute.params)
+    const hash = this.$router.currentRoute.params
+    const id = hash.id
+    const code = hash.code
     const param = {
-      is_dp: 'Y'
+      id: id,
+      code: code
     }
-    getGameTypeByType(param).then((res) => {
+    getGameType().then((res) => {
       this.gameTypes = res
+    })
+    getOtherGameRoundById(param).then((res) => {
+      console.log('res----:', res)
+      this.game.name = res.name
+      this.game.time = [res.start_at, res.end_at]
+      this.gameCode = res.code
+      this.game.wxshare_title = res.wxshare_title
+      this.game.wxshare_ptitle = res.wxshare_ptitle
+      this.game.wxshare_desc = res.wxshare_desc
+      this.postForm.content = res.desc
+      console.log('game.time----:', this.game.time)
     })
   },
   methods: {
@@ -113,19 +120,18 @@ export default {
       console.log('game.time----:', this.game.time)
       if (msg_is_ok) {
         const game = {
+          id: this.$router.currentRoute.params.id,
           name: gamename,
           start_at: this.game.time[0],
           end_at: this.game.time[1],
           code: this.gameCode,
-          duration: 30,
+          desc: this.postForm.content,
           wxshare_title: this.game.wxshare_title,
           wxshare_ptitle: this.game.wxshare_ptitle,
           wxshare_desc: this.game.wxshare_desc
         }
-
-        createOtherGameRound(game).then(async res => {
+        updateOtherGameRound(game).then(async res => {
           console.log('res----:', res)
-          this.$router.push({ path: '/dpgameround/edit/' + res.code + '/' + res.id })
         })
       }
     }
@@ -133,5 +139,4 @@ export default {
 }
 </script>
 <style scoped>
-
 </style>

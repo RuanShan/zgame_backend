@@ -93,14 +93,25 @@ export default {
       })
     },
     remove: function(post) {
-      console.log('entry---:', post.id)
-      const params = {
-        id: post.id
-      }
-      removePost(params).then(data => {
-        getPosts().then(async res => {
-          console.log('res----:', res)
-          this.postList = res.posts
+      this.$confirm('此操作将删除数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        console.log('entry---:', post.id)
+        const params = {
+          id: post.id
+        }
+        removePost(params).then(data => {
+          getPosts().then(async res => {
+            console.log('res----:', res)
+            this.postList = res.posts
+          })
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
         })
       })
     },
