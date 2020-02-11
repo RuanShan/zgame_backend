@@ -37,6 +37,13 @@
             </router-link>
           </template>
         </el-table-column>
+        <el-table-column align="center" label="操作" width="120">
+          <template slot-scope="scope">
+            <el-button type="primary" size="small" icon="el-icon-edit" @click="remove(scope.row)">
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
       </el-table>
 
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="postList" />
