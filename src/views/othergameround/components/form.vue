@@ -37,7 +37,7 @@
 <script>
 import {
   createOtherGameRound,
-  getGameType
+  getGameTypeByType
 } from '@/api/backend.js'
 import Tinymce from '@/components/Tinymce'
 import {
@@ -96,7 +96,10 @@ export default {
     }
   },
   created() {
-    getGameType().then((res) => {
+    const param = {
+      is_dp: 'N'
+    }
+    getGameTypeByType(param).then((res) => {
       this.gameTypes = res
     })
   },
@@ -119,6 +122,7 @@ export default {
         }
         createOtherGameRound(game).then(async res => {
           console.log('res----:', res)
+          this.$router.push({ path: '/othergameround/edit/' + res.code + '/' + res.id })
         })
       }
     }
