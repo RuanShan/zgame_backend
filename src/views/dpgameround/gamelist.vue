@@ -47,7 +47,7 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item :command="{ cmd:'edit', id: scope.row.id ,code:scope.row.code}">活动设置</el-dropdown-item>
-                <el-dropdown-item :command="{ cmd:'players', id: scope.row.id }">选手管理</el-dropdown-item>
+                <el-dropdown-item :command="{ cmd:'players', id: scope.row.id ,code:scope.row.code}">选手管理</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
             <el-dropdown @command="handleCommand">
@@ -193,6 +193,9 @@ export default {
             message: '已取消删除'
           })
         })
+      } else if (command.cmd === 'players') {
+        console.log('command.id----:', command.id)
+        this.$router.push({ path: '/othergameround/edit/' + command.code + '/' + command.id })
       }
     },
     formatDate(date) {
