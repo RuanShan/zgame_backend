@@ -6,7 +6,7 @@
           <el-button v-loading="loading" style="margin-left: 10px;" type="success" @click="submitForm">
             Publish
           </el-button>
-          <el-button v-loading="loading" type="warning" @click="draftForm">
+          <el-button v-loading="loading" type="warning" @click="saveDraft">
             Draft
           </el-button>
         </sticky>
@@ -59,7 +59,6 @@
 <script>
 
 import {
-  addPost,
   getTermInfo
 } from '@/api/backend'
 import MDinput from '@/components/MDinput'
@@ -180,7 +179,7 @@ export default {
     makeTermList(terms) {
       for (let i = 0; i < terms.length; i++) {
         for (let j = 1; j < terms[i].hierarchy_level; j++) {
-          terms[i].name = terms[i].name
+          terms[i].name = terms[j].name
         }
         this.termList.push(terms[i])
         if (terms[i].children) {
@@ -233,6 +232,31 @@ export default {
           author: author,
           name: postname,
           title: title,
+          status: 'publish',
+          desc: desc,
+          publish_at: this.publish_at,
+          content: this.postData.content
+        }
+        const params = { post: postData, photo_id: this.coverImage.id, terms }
+        this.$emit('submit', params)
+      }
+    },
+    saveDraft: async function(e) {
+      console.log('========saveDraft========')
+
+      var validated = true
+      var postname = this.postData.name
+      var title = this.postData.title
+      var desc = this.postData.desc
+      var terms = this.selectedTerms // array of term_id
+      var author = this.postData.author
+      if (validated) {
+        const postData = {
+          user_id: 1,
+          author: author,
+          name: postname,
+          title: title,
+          status: 'draft',
           desc: desc,
           publish_at: this.publish_at,
           content: this.postData.content
