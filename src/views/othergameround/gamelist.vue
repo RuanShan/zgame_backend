@@ -193,6 +193,9 @@ export default {
             message: '已取消删除'
           })
         })
+      } else if (command.cmd === 'players') {
+        console.log('command.id----:', command.id)
+        this.$router.push({ path: '/othergameround/edit/' + command.code + '/' + command.id })
       }
     },
     formatDate(date) {
