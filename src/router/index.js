@@ -112,6 +112,12 @@ export const constantRoutes = [
         meta: { title: '创建活动', icon: 'user', affix: true }
       },
       {
+        path: 'rencentgamelist',
+        component: () => import('@/views/othergameround/rencentgamelist'),
+        name: 'RencentGameroundList',
+        meta: { title: '近期活动', icon: 'list' }
+      },
+      {
         path: 'index',
         component: () => import('@/views/othergameround/index'),
         name: 'GameroundList',
@@ -147,6 +153,12 @@ export const constantRoutes = [
         component: () => import('@/views/dpgameround/create'),
         name: '创建活动',
         meta: { title: '创建活动', icon: 'user', affix: true }
+      },
+      {
+        path: 'rencentgamelist',
+        component: () => import('@/views/dpgameround/rencentgamelist'),
+        name: 'RencentGameroundList',
+        meta: { title: '近期活动', icon: 'list' }
       },
       {
         path: 'index',

@@ -80,3 +80,5 @@ export const clearOtherGameRound = (data) => fetch(basePath + '/clearGameRound',
 
 export const getGamePlayerList = (data) => fetch(basePath + '/getGamePlayerList', data, 'POST')
 export const deleteGamePlayer = (data) => fetch(basePath + '/deleteGamePlayer', data, 'POST')
+
+export const getRencentGameRoundList = (data) => fetch(basePath + '/getRencentGameRoundList', data, 'POST')
