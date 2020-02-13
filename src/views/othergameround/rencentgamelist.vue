@@ -1,14 +1,15 @@
 <template>
   <div class="app-container documentation-container">
     <div class="gameRoundList">
+      <div>
+        <el-radio-group v-model="status">
+          <el-radio-button label="started" />
+          <el-radio-button label="created" />
+          <el-radio-button label="completed" />
+        </el-radio-group>
+      </div>
 
-      <el-table
-        v-loading="listLoading"
-        :data="list"
-        border
-        fit
-        style="width: 100%;"
-      >
+      <el-table v-loading="listLoading" :data="list" border fit style="width: 100%;">
 
         <el-table-column label="活动" min-width="250px">
           <template slot-scope="scope">
@@ -69,7 +70,6 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     <GameUrlDialog :game-round="selectedGameRound" :dialog-visible.sync="dialogUrlVisible" />
   </div>
-
 </template>
 
 <script>
@@ -86,7 +86,8 @@ const dayjs = require('dayjs')
 export default {
   name: 'H5GameRounds',
   components: {
-    GameUrlDialog, Pagination
+    GameUrlDialog,
+    Pagination
   },
   data() {
     return {
@@ -94,6 +95,7 @@ export default {
       listLoading: true,
       dialogUrlVisible: false,
       selectedGameRound: {},
+      status: 'started',
       total: 0,
       listQuery: {
         page: 1,
@@ -103,6 +105,12 @@ export default {
         type: undefined,
         sort: '+id'
       }
+    }
+  },
+  watch: {
+    status: function(val, oldVal) {
+      // 外部触发游戏开始
+      this.getList()
     }
   },
   created() {
@@ -115,7 +123,8 @@ export default {
       console.log('location-----:', location.hash)
       const param = {
         is_dp: 'N',
-        listQuery: this.listQuery
+        listQuery: this.listQuery,
+        status: this.status
       }
       console.log('param---:', param)
       getRencentGameRoundList(param).then(data => {
@@ -150,7 +159,9 @@ export default {
         this.dialogUrlVisible = true
       } else if (command.cmd === 'edit') {
         console.log('command.id----:', command.id)
-        this.$router.push({ path: '/othergameround/edit/' + command.code + '/' + command.id })
+        this.$router.push({
+          path: '/othergameround/edit/' + command.code + '/' + command.id
+        })
       } else if (command.cmd === 'clearData') {
         console.log('command.id----:', command.id)
         this.$confirm('此操作将删除数据, 是否继续?', '提示', {
@@ -193,7 +204,9 @@ export default {
         })
       } else if (command.cmd === 'players') {
         console.log('command.id----:', command.id)
-        this.$router.push({ path: '/othergameround/edit/' + command.code + '/' + command.id })
+        this.$router.push({
+          path: '/othergameround/edit/' + command.code + '/' + command.id
+        })
       }
     },
     formatDate(date) {
@@ -202,8 +215,9 @@ export default {
     formatState(state) {
       const states = {
         created: '新建',
-        open: '进行中',
+        started: '进行中',
         completed: '结束'
+
       }
       return states[state]
     }
@@ -212,27 +226,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .el-dropdown-link {
+.el-dropdown-link {
     cursor: pointer;
     color: #409EFF;
-  }
-  .el-icon-arrow-down {
+}
+.el-icon-arrow-down {
     font-size: 12px;
-  }
+}
 .documentation-container {
-  margin: 50px;
-  .document-btn {
-    float: left;
-    margin-left: 50px;
-    display: block;
-    cursor: pointer;
-    background: black;
-    color: white;
-    height: 60px;
-    width: 200px;
-    line-height: 60px;
-    font-size: 20px;
-    text-align: center;
-  }
+    margin: 50px;
+    .document-btn {
+        float: left;
+        margin-left: 50px;
+        display: block;
+        cursor: pointer;
+        background: black;
+        color: white;
+        height: 60px;
+        width: 200px;
+        line-height: 60px;
+        font-size: 20px;
+        text-align: center;
+    }
 }
 </style>

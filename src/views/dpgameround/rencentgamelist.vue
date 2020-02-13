@@ -1,6 +1,13 @@
 <template>
   <div class="app-container documentation-container">
     <div class="gameRoundList">
+      <div>
+        <el-radio-group v-model="status">
+          <el-radio-button label="started" />
+          <el-radio-button label="created" />
+          <el-radio-button label="completed" />
+        </el-radio-group>
+      </div>
 
       <el-table
         v-loading="listLoading"
@@ -94,6 +101,7 @@ export default {
       listLoading: true,
       dialogUrlVisible: false,
       selectedGameRound: {},
+      status: 'started',
       total: 0,
       listQuery: {
         page: 1,
@@ -103,6 +111,12 @@ export default {
         type: undefined,
         sort: '+id'
       }
+    }
+  },
+  watch: {
+    status: function(val, oldVal) {
+      // 外部触发游戏开始
+      this.getList()
     }
   },
   created() {
@@ -115,7 +129,8 @@ export default {
       console.log('location-----:', location.hash)
       const param = {
         is_dp: 'Y',
-        listQuery: this.listQuery
+        listQuery: this.listQuery,
+        status: this.status
       }
       console.log('param---:', param)
       getRencentGameRoundList(param).then(data => {
