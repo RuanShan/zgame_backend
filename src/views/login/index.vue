@@ -170,14 +170,12 @@ export default {
             cellphone: this.loginForm.username,
             password: this.loginForm.password
           }
-          console.log('params--:', params)
           login(params).then(data => {
             console.log('data--:', data)
             if (data.success) {
               this.loading = false
               this.$store.dispatch('user/login', data).then(() => {
                 this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-                console.log('this.$store====:', this.$store)
               })
             }
           })

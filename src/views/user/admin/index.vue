@@ -14,6 +14,7 @@
                 {{ user.role }}
               </pan-thumb>
               <div class="fl descwrap">
+                <div> {{ name }}</div>
                 <div> 免费用户 有效期限：永久</div>
                 <div> <el-button> 会员升级</el-button></div>
               </div>
@@ -44,6 +45,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import StatisGroup from './components/StatisGroup'
 import PanThumb from '@/components/PanThumb'
 
@@ -96,6 +98,13 @@ export default {
         avatar: this.avatar
       }
     }
+  },
+  computed: {
+    ...mapGetters([
+      'name',
+      'avatar',
+      'roles'
+    ])
   }
 }
 </script>
