@@ -21,6 +21,12 @@
             <span>{{ scope.row.code }}</span>
           </template>
         </el-table-column>
+
+        <el-table-column label="活动数量">
+          <template slot-scope="scope">
+            <span>{{ scope.row.round_count }}</span>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
 

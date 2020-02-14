@@ -3,8 +3,11 @@
     <div class="gameRoundList">
       <div>
         <el-radio-group v-model="status">
-          <el-radio-button label="started" />
           <el-radio-button label="created" />
+          <el-radio-button label="open" />
+          <el-radio-button label="ready" />
+          <el-radio-button label="starting" />
+          <el-radio-button label="started" />
           <el-radio-button label="completed" />
         </el-radio-group>
       </div>
