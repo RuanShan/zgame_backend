@@ -4,9 +4,6 @@
       <div>
         <el-radio-group v-model="status">
           <el-radio-button label="created" />
-          <el-radio-button label="open" />
-          <el-radio-button label="ready" />
-          <el-radio-button label="starting" />
           <el-radio-button label="started" />
           <el-radio-button label="completed" />
         </el-radio-group>
@@ -113,6 +110,11 @@ export default {
         title: undefined,
         type: undefined,
         sort: '+id'
+      },
+      gameStatus: {
+        created: ['created', 'open'],
+        started: ['ready', 'starting', 'started'],
+        completed: ['completed', 'disabled']
       }
     }
   },
@@ -130,10 +132,17 @@ export default {
     getList() {
       this.listLoading = true
       console.log('location-----:', location.hash)
+
       const param = {
         is_dp: 'Y',
-        listQuery: this.listQuery,
-        status: this.status
+        listQuery: this.listQuery
+      }
+      if (this.status === 'created') {
+        param.status = this.gameStatus.created
+      } else if (this.status === 'started') {
+        param.status = this.gameStatus.started
+      } else if (this.status === 'completed') {
+        param.status = this.gameStatus.completed
       }
       console.log('param---:', param)
       getRencentGameRoundList(param).then(data => {

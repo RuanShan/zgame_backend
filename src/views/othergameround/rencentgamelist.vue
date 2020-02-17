@@ -104,6 +104,11 @@ export default {
         title: undefined,
         type: undefined,
         sort: '+id'
+      },
+      gameStatus: {
+        created: ['created', 'open'],
+        started: ['ready', 'starting', 'started'],
+        completed: ['completed', 'disabled']
       }
     }
   },
@@ -122,9 +127,15 @@ export default {
       this.listLoading = true
       console.log('location-----:', location.hash)
       const param = {
-        is_dp: 'N',
-        listQuery: this.listQuery,
-        status: this.status
+        is_dp: 'Y',
+        listQuery: this.listQuery
+      }
+      if (this.status === 'created') {
+        param.status = this.gameStatus.created
+      } else if (this.status === 'started') {
+        param.status = this.gameStatus.started
+      } else if (this.status === 'completed') {
+        param.status = this.gameStatus.completed
       }
       console.log('param---:', param)
       getRencentGameRoundList(param).then(data => {
