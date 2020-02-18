@@ -50,7 +50,7 @@ export default {
     makeTermList(terms) {
       for (let i = 0; i < terms.length; i++) {
         for (let j = 1; j < terms[i].hierarchy_level; j++) {
-          terms[i].name = terms[i].name
+          terms[i].name = terms[j].name
         }
         this.termList.push(terms[i])
         if (terms[i].children) {
@@ -116,14 +116,23 @@ export default {
       const param = {
         post_id: this.postData.id
       }
-      removeCover(param).then((res) => {
+      if (data.photo_id === null) {
         modifyPost(data).then((res) => {
           console.log('res----:', res)
           this.$router.push('/post/list')
           // this.uploadData.viewable_id = res.id
           // this.$refs.upload.submit()
         })
-      })
+      } else {
+        removeCover(param).then((res) => {
+          modifyPost(data).then((res) => {
+            console.log('res----:', res)
+            this.$router.push('/post/list')
+            // this.uploadData.viewable_id = res.id
+            // this.$refs.upload.submit()
+          })
+        })
+      }
     }
   }
 }

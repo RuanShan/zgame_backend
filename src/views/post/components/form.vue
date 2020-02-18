@@ -279,6 +279,7 @@ export default {
       // 图片数据结构 [{id, url}]
       const [image] = [...e.selectedImages]
       if (image) {
+        console.log('============handleImageSelected===========')
         this.coverImage = image
       }
     }
