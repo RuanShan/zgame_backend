@@ -37,7 +37,7 @@
         </el-row>
 
         <el-form-item label="描述">
-          <Tinymce ref="editor" v-model="postData.content" :height="400" />
+          <BetterTinymce ref="editor" v-model="postData.content" :height="400" />
         </el-form-item>
         <el-form-item label="分类">
           <el-select v-model="selectedTerms" multiple placeholder="请选择">
@@ -62,7 +62,7 @@ import {
   getTermInfo
 } from '@/api/backend'
 import MDinput from '@/components/MDinput'
-import Tinymce from '@/components/Tinymce'
+import BetterTinymce from '@/components/Tinymce/better'
 import Sticky from '@/components/Sticky' // 粘性header组件
 import PostCoverBrowser from '@/components/ImageBrowser/better'
 import HoverableImage from './HoverableImage'
@@ -73,7 +73,7 @@ import {
 const directUploadUrl = '/api/backend/photos/ztoupiao/create'
 export default {
   components: {
-    Tinymce, MDinput, Sticky, PostCoverBrowser, HoverableImage
+    BetterTinymce, MDinput, Sticky, PostCoverBrowser, HoverableImage
   },
   props: {
     post: {
