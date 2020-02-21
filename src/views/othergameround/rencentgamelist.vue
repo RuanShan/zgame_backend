@@ -127,7 +127,7 @@ export default {
       this.listLoading = true
       console.log('location-----:', location.hash)
       const param = {
-        is_dp: 'Y',
+        is_dp: 'N',
         listQuery: this.listQuery
       }
       if (this.status === 'created') {

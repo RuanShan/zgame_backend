@@ -112,7 +112,7 @@ export default {
         }
         photo.checksum = checksum
         console.log('photo----:', photo)
-        var number = this.gameRound.number
+        var number = 'number'
         var data = {
           code: 'ztoupiao',
           photo: photo
