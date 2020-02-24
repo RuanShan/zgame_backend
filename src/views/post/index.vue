@@ -46,7 +46,7 @@
         </el-table-column>
       </el-table>
 
-      <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="postList" />
+      <pagination v-show="total>0" :total="total" :page.sync="pageNum" :limit.sync="pageSize" @pagination="initData" />
 
     </div>
 
@@ -74,10 +74,13 @@ export default {
       postList: [],
       total: 0,
       listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20
-      }
+      pageNum: 1,
+      pageSize: 20
+    }
+  },
+  computed: {
+    listQuery() {
+      return { page: this.pageNum, limit: this.pageSize }
     }
   },
   created() {
