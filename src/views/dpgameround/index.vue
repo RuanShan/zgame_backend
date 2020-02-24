@@ -24,7 +24,7 @@
 
         <el-table-column label="活动数量">
           <template slot-scope="scope">
-            <span>{{ scope.row.round_count }}</span>
+            <span>{{ scope.row.Types[0].round_count }}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -59,6 +59,11 @@ export default {
       getGameTypeByType(param).then(data => {
         console.log('data----:', data)
         this.list = data
+        for (let i = 0; i < this.list.length; i++) {
+          if (this.list[i].Types.length === 0) {
+            this.list[i].Types.push({ round_count: 0 })
+          }
+        }
         this.listLoading = false
       })
     },
