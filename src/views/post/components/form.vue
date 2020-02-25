@@ -98,7 +98,7 @@ export default {
       }
     }
     return {
-      viewableType: 'cover',
+      viewableType: 'post_cover',
       imageBrowserVisible: false,
       dialogImageUrl: '',
       dialogVisible: false,

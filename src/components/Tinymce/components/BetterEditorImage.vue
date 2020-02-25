@@ -37,7 +37,7 @@ export default {
       dialogVisible: false,
       listObj: {},
       fileList: [],
-      viewableType: 'desc',
+      viewableType: 'post_desc',
       imageStyle: 'create'
     }
   },
