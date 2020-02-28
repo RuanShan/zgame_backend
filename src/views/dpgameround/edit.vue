@@ -1,5 +1,17 @@
 <template>
   <div class="addNewBox">
+    <el-steps :active="activeStep" simple process-state="success">
+      <el-step status="wait" :class="{ active: activeStep==1 }" @click.native="handleStepClick(1)">
+        <span slot="title"> 基础设置</span>
+      </el-step>
+      <el-step status="wait" :class="{ active: activeStep==2 }" @click.native="handleStepClick(2)">
+        <span slot="title"> 分享设置</span>
+      </el-step>
+      <el-step status="wait" :class="{ active: activeStep==3 }" @click.native="handleStepClick(3)">
+        <span slot="title"> 奖品设置</span>
+      </el-step>
+    </el-steps>
+    <component :is="currentView" :game="game" :game-code="gameCode" />
     <el-form ref="postForm" :model="postForm" label-width="80px">
       <div class="form-main-container">
 
@@ -38,7 +50,9 @@ import {
 import Tinymce from '@/components/Tinymce'
 export default {
   components: {
-    Tinymce
+    Tinymce,
+    comA: () => import('@/views/components/shareEdit'),
+    comB: () => import('@/views/components/awardEdit')
   },
   props: {
     command: {
@@ -113,6 +127,23 @@ export default {
     })
   },
   methods: {
+    handleStepClick(step) {
+      console.log('handleStepClick')
+      if (step === 1) {
+        this.activeStep = 1
+        this.currentView = ''
+        this.showBase = true
+      } else if (step === 2) {
+        console.log('22222222')
+        this.activeStep = 2
+        this.showBase = false
+        this.currentView = 'comA'
+      } else if (step === 3) {
+        this.activeStep = 3
+        this.showBase = false
+        this.currentView = 'comB'
+      }
+    },
     onSubmit: async function(e) {
       console.log('========onSubmit========')
       var msg_is_ok = true

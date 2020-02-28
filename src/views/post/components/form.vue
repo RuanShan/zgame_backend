@@ -26,11 +26,17 @@
 
           <el-col :span="12">
             <el-form-item label="发布时间">
-              <el-date-picker
-                v-model="publish_at"
-                type="datetime"
-                placeholder="选择日期时间"
-              />
+              <el-date-picker v-model="publish_at" type="datetime" placeholder="选择日期时间" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="meta_keyword">
+              <el-input v-model="postData.meta_keyword" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="meta_description">
+              <el-input v-model="postData.meta_description" type="textarea" :rows="2" placeholder="请输入内容" />
             </el-form-item>
           </el-col>
 
@@ -57,7 +63,6 @@
 </template>
 
 <script>
-
 import {
   getTermInfo
 } from '@/api/backend'
@@ -73,7 +78,11 @@ import {
 const directUploadUrl = '/api/backend/photos/ztoupiao/create'
 export default {
   components: {
-    BetterTinymce, MDinput, Sticky, PostCoverBrowser, HoverableImage
+    BetterTinymce,
+    MDinput,
+    Sticky,
+    PostCoverBrowser,
+    HoverableImage
   },
   props: {
     post: {
@@ -102,7 +111,8 @@ export default {
       imageBrowserVisible: false,
       dialogImageUrl: '',
       dialogVisible: false,
-      coverImage: { id: null,
+      coverImage: {
+        id: null,
         url: null
       },
       postData: {
@@ -119,9 +129,15 @@ export default {
         post_id: 0
       },
       rules: {
-        image_uri: [{ validator: validateRequire }],
-        title: [{ validator: validateRequire }],
-        content: [{ validator: validateRequire }]
+        image_uri: [{
+          validator: validateRequire
+        }],
+        title: [{
+          validator: validateRequire
+        }],
+        content: [{
+          validator: validateRequire
+        }]
       },
       loading: false, // 按钮功能是否处理中,
       publish_at: '',
@@ -221,23 +237,31 @@ export default {
       console.log('========submitForm========')
 
       var validated = true
-      var postname = this.postData.name
-      var title = this.postData.title
-      var desc = this.postData.desc
+      // var postname = this.postData.name
+      // var title = this.postData.title
+      // var desc = this.postData.desc
       var terms = this.selectedTerms // array of term_id
-      var author = this.postData.author
+      // var author = this.postData.author
       if (validated) {
-        const postData = {
-          user_id: 1,
-          author: author,
-          name: postname,
-          title: title,
-          status: 'publish',
-          desc: desc,
-          publish_at: this.publish_at,
-          content: this.postData.content
+        // const postData = {
+        //   user_id: 1,
+        //   author: author,
+        //   name: postname,
+        //   title: title,
+        //   status: 'publish',
+        //   desc: desc,
+        //   publish_at: this.publish_at,
+        //   content: this.postData.content,
+        //   meta_keyword: this.postData.meta_keyword,
+        //   meta_description: this.postData.meta_description
+        // }
+        // console.log('this.postData----:', this.postData)
+        const params = {
+          post: this.postData,
+          photo_id: this.coverImage.id,
+          terms
         }
-        const params = { post: postData, photo_id: this.coverImage.id, terms }
+
         this.$emit('submit', params)
       }
     },
@@ -259,9 +283,15 @@ export default {
           status: 'draft',
           desc: desc,
           publish_at: this.publish_at,
-          content: this.postData.content
+          content: this.postData.content,
+          meta_keyword: this.postData.meta_keyword,
+          meta_description: this.postData.meta_description
         }
-        const params = { post: postData, photo_id: this.coverImage.id, terms }
+        const params = {
+          post: postData,
+          photo_id: this.coverImage.id,
+          terms
+        }
         this.$emit('submit', params)
       }
     },
@@ -290,11 +320,10 @@ export default {
 <style lang="scss">
 .post-form-wrap {
 
- .uploads-wrap .el-upload  {
-   width: 200px;
-   height: 120px;
+    .uploads-wrap .el-upload {
+        width: 200px;
+        height: 120px;
 
- }
+    }
 }
-
 </style>

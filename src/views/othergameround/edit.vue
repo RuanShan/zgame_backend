@@ -1,31 +1,45 @@
 <template>
   <div class="addNewBox">
-    <el-form ref="postForm" :model="postForm" label-width="80px">
-      <div class="form-main-container">
+    <el-steps :active="activeStep" simple process-state="success">
+      <el-step status="wait" :class="{ active: activeStep==1 }" @click.native="handleStepClick(1)">
+        <span slot="title"> 基础设置</span>
+      </el-step>
+      <el-step status="wait" :class="{ active: activeStep==2 }" @click.native="handleStepClick(2)">
+        <span slot="title"> 分享设置</span>
+      </el-step>
+      <el-step status="wait" :class="{ active: activeStep==3 }" @click.native="handleStepClick(3)">
+        <span slot="title"> 奖品设置</span>
+      </el-step>
+    </el-steps>
+    <component :is="currentView" :game="game" :game-code="gameCode" />
+    <div v-show="showBase">
+      <el-form ref="postForm" :model="postForm" label-width="80px">
+        <div class="form-main-container">
 
-        <el-form-item label="活动名称">
-          <el-input v-model="game.name" />
-        </el-form-item>
-        <el-form-item label="投票时间">
-          <el-date-picker v-model="game.time" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" format="yyyy-MM-dd HH:mm" :default-time="['00:00:00','23:59:59']" />
-        </el-form-item>
-        <el-form-item label="活动分享标题">
-          <el-input v-model="game.wxshare_title" />
-        </el-form-item>
-        <el-form-item label="选手分享标题">
-          <el-input v-model="game.wxshare_ptitle" />
-        </el-form-item>
-        <el-form-item label="分享描述">
-          <el-input v-model="game.wxshare_desc" />
-        </el-form-item>
-        <el-form-item label="活动说明">
-          <Tinymce ref="editor" v-model="postForm.content" :height="400" />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">save</el-button>
-        </el-form-item>
-      </div>
-    </el-form>
+          <el-form-item label="活动名称">
+            <el-input v-model="game.name" />
+          </el-form-item>
+          <el-form-item label="投票时间">
+            <el-date-picker v-model="game.time" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" format="yyyy-MM-dd HH:mm" :default-time="['00:00:00','23:59:59']" />
+          </el-form-item>
+          <!-- <el-form-item label="活动分享标题">
+            <el-input v-model="game.wxshare_title" />
+          </el-form-item>
+          <el-form-item label="选手分享标题">
+            <el-input v-model="game.wxshare_ptitle" />
+          </el-form-item>
+          <el-form-item label="分享描述">
+            <el-input v-model="game.wxshare_desc" />
+          </el-form-item> -->
+          <el-form-item label="活动说明">
+            <Tinymce ref="editor" v-model="postForm.content" :height="400" />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="onSubmit">save</el-button>
+          </el-form-item>
+        </div>
+      </el-form>
+    </div>
   </div>
 </template>
 
@@ -36,9 +50,12 @@ import {
   getOtherGameRoundById
 } from '@/api/backend.js'
 import Tinymce from '@/components/Tinymce'
+// import EditShare from '@/views/components/shareEdit'
 export default {
   components: {
-    Tinymce
+    Tinymce,
+    comA: () => import('@/views/components/shareEdit'),
+    comB: () => import('@/views/components/awardEdit')
   },
   props: {
     command: {
@@ -69,7 +86,10 @@ export default {
         wxshare_desc: ''
       },
       account: '',
-      password: ''
+      password: '',
+      activeStep: 1,
+      currentView: null,
+      showBase: true
     }
   },
   watch: {
@@ -113,6 +133,23 @@ export default {
     })
   },
   methods: {
+    handleStepClick(step) {
+      console.log('handleStepClick')
+      if (step === 1) {
+        this.activeStep = 1
+        this.currentView = ''
+        this.showBase = true
+      } else if (step === 2) {
+        console.log('22222222')
+        this.activeStep = 2
+        this.showBase = false
+        this.currentView = 'comA'
+      } else if (step === 3) {
+        this.activeStep = 3
+        this.showBase = false
+        this.currentView = 'comB'
+      }
+    },
     onSubmit: async function(e) {
       console.log('========onSubmit========')
       var msg_is_ok = true
