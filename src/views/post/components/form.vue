@@ -1,6 +1,6 @@
 <template>
   <div class="post-form-wrap">
-    <el-form ref="postForm" :model="postData" :rules="rules" label-width="80px">
+    <el-form ref="postForm" :model="postData" :rules="rules" label-width="90px">
       <div id="awardUserInfoBox">
         <sticky :z-index="10" :class-name="'sub-navbar '+postData.status">
           <el-button v-loading="loading" style="margin-left: 10px;" type="success" @click="submitForm">
@@ -29,24 +29,17 @@
               <el-date-picker v-model="publish_at" type="datetime" placeholder="选择日期时间" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="meta_keyword">
-              <el-input v-model="postData.meta_keyword" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="meta_description">
-              <el-input v-model="postData.meta_description" type="textarea" :rows="2" placeholder="请输入内容" />
-            </el-form-item>
-          </el-col>
 
         </el-row>
+        <el-form-item label="摘要">
+          <el-input v-model="postData.excerpt" type="textarea" :rows="2" placeholder=" " />
+        </el-form-item>
 
         <el-form-item label="描述">
           <BetterTinymce ref="editor" v-model="postData.content" :height="400" />
         </el-form-item>
-        <el-form-item label="分类">
-          <el-select v-model="selectedTerms" multiple placeholder="请选择">
+        <el-form-item label="分类" class="form-item-terms">
+          <el-select v-model="selectedTerms" multiple placeholder="请选择文章分类">
             <el-option v-for="term in termList" :key="term.id" :label="term.name" :value="term.id" />
           </el-select>
         </el-form-item>
@@ -55,7 +48,12 @@
             <el-button type="text" class="add-btn" @click="handleOpenImageBrowser"> 添加图片 </el-button>
           </HoverableImage>
         </el-form-item>
-
+        <el-form-item label="SEO关键字">
+          <el-input v-model="postData.meta_keyword" />
+        </el-form-item>
+        <el-form-item label="SEO描述">
+          <el-input v-model="postData.meta_description" type="textarea" :rows="2" placeholder="" />
+        </el-form-item>
       </div>
     </el-form>
     <PostCoverBrowser :dialog-visible.sync="imageBrowserVisible" :viewable-type="viewableType" @selected="handleImageSelected" />
@@ -324,6 +322,9 @@ export default {
         width: 200px;
         height: 120px;
 
+    }
+    .form-item-terms .el-select {
+      width: 100%;
     }
 }
 </style>
