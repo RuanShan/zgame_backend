@@ -1,18 +1,12 @@
 <template>
   <div>
-
+    <ImageBrowser :dialog-visible.sync="imageBrowserVisible" :viewable-type="viewableType" @selected="handleImageSelected" />
     <el-form ref="form" :model="formData" label-width="120px">
+
       <el-form-item label="分享图片">
-        <div class="clearfix">
-
-          <el-image class="fl" style="width: 80px; height: 80px" :src="formData.shareImageUrl" fit="contain" />
-
-          <el-upload class="fl uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false">
-            <el-button slot="trigger" size="small" type="primary">更换图片</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-          </el-upload>
-
-        </div>
+        <HoverableImage :url="formData.shareImageUrl">
+          <el-button type="text" class="add-btn" @click="handleOpenImageBrowser"> 添加图片 </el-button>
+        </HoverableImage>
       </el-form-item>
       <el-form-item label="活动分享标题">
         <el-input v-model="formData.gameShareName" />
@@ -35,9 +29,15 @@
 import {
   updateGameRound
 } from '@/api/backend.js'
+import ImageBrowser from '@/components/ImageBrowser/better'
+import HoverableImage from './HoverableImage'
 
 export default {
   name: 'DisplayForm',
+  components: {
+    ImageBrowser,
+    HoverableImage
+  },
   props: {
     gameRound: {
       type: Object,
@@ -56,7 +56,9 @@ export default {
       termList: [],
       selectedTerms: [],
       publish_at: '',
-      group: ''
+      group: '',
+      imageBrowserVisible: false,
+      viewableType: 'shareImg'
 
     }
   },
@@ -70,6 +72,7 @@ export default {
   },
   methods: {
     initData() {
+      this.formData.shareImageUrl = this.gameRound.wxshare_img_url
       this.formData.gameShareName = this.gameRound.wxshare_title
       this.formData.albumShareName = this.gameRound.wxshare_ptitle
       this.formData.albumShareDesc = this.gameRound.wxshare_desc
@@ -92,11 +95,24 @@ export default {
       } else {
         wxshareParams.wxshare_desc = ''
       }
+      wxshareParams.wxshare_img_url = this.formData.shareImageUrl
       updateGameRound(this.gameRound.id, {
         gameRound: wxshareParams
       }).then(res => {
         console.log('res====:', res)
       })
+    },
+    handleOpenImageBrowser() {
+      console.log('handleOpenImageBrowser')
+      this.imageBrowserVisible = true
+    },
+    handleImageSelected(e) {
+      // 图片数据结构 [{id, url}]
+      const [image] = [...e.selectedImages]
+      if (image) {
+        console.log('============handleImageSelected===========')
+        this.formData.shareImageUrl = image.url
+      }
     }
   }
 
