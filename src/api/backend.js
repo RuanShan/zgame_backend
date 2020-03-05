@@ -78,6 +78,9 @@ export const getGameTypeByType = (data) => fetch('/api/gametypes/getGameTypeByTy
 export const deleteOtherGameRound = (data) => fetch(basePath + '/deleteGameRound', data, 'POST')
 export const clearOtherGameRound = (data) => fetch(basePath + '/clearGameRound', data, 'POST')
 
+export const updateMenuData = (data) => fetch(basePath + '/updateMenuData', data, 'POST')
+export const getMenuData = (data) => fetch(basePath + '/getMenuData', data, 'POST')
+
 export const createGameAward = (data) => fetch(basePath + '/createGameAward', data, 'POST')
 export const deleteGameAward = (data) => fetch(basePath + '/deleteGameAward', data, 'POST')
 export const getGameAward = (data) => fetch(basePath + '/getGameAward', data, 'POST')

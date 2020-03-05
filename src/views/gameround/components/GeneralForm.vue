@@ -1,7 +1,7 @@
 <template>
-
   <el-tabs v-model="activeName" type="card" class="round-general-wrap" @tab-click="handleClick">
     <el-tab-pane label="页面设置" name="first">
+      <BgImageBrowser :dialog-visible.sync="bgImageBrowserVisible" :viewable-type="bgviewableType" @selected="handleBgImageSelected" />
       <div>
         <el-form ref="form" :model="formData" label-width="80px">
           <el-form-item label="配色方案">
@@ -13,6 +13,16 @@
 
             <CustomColorPicker class="custom-color-picker" :value="formData.color" @change="onColorChanged" />
 
+          </el-form-item>
+
+          <el-form-item label="bg图片">
+            <HoverableImage :url="formData.bg_img_url">
+              <el-button type="text" class="add-btn" @click="handleOpenBgImageBrowser"> 添加图片 </el-button>
+            </HoverableImage>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="primary" @click="onChangeBgImg">保存bg图片</el-button>
           </el-form-item>
 
         </el-form>
@@ -66,24 +76,45 @@
 
     </el-tab-pane>
 
-  </el-tabs>
+    <el-tab-pane label="MENU设置" name="3">
+      <div>
+        <el-checkbox-group v-model="menus">
+          <el-checkbox v-for="menu in menuData" :key="menu" :label="menu">{{ menu }}</el-checkbox>
+        </el-checkbox-group>
+        <el-button type="primary" @click="onChangeMenus">保存设置</el-button>
+      </div>
+    </el-tab-pane>
 
+  </el-tabs>
 </template>
 
 <script>
-
-import { Uploader } from '@/lib/activestorage/uploader'
+import {
+  Uploader
+} from '@/lib/activestorage/uploader'
 import ImageBrowser from '@/components/ImageBrowser/better'
-import { removeSlide, bindPhotoRelationship, updateGameRound } from '@/api/backend'
+import {
+  removeSlide,
+  bindPhotoRelationship,
+  updateGameRound,
+  updateMenuData,
+  getMenuData
+} from '@/api/backend'
 // import ChangeSlideBrowser from '@/components/ImageBrowser/change'
 import CustomColorPicker from './CustomColorPicker'
-import { buildImageUrlByStyle } from '@/utils/oss'
+import {
+  buildImageUrlByStyle
+} from '@/utils/oss'
 const directUploadUrl = '/api/backend/photos/ztoupiao/create'
+import BgImageBrowser from '@/components/ImageBrowser/better'
+import HoverableImage from './HoverableImage'
 export default {
   name: 'GameRoundGeneralForm',
   components: {
     ImageBrowser,
     // ChangeSlideBrowser,
+    BgImageBrowser,
+    HoverableImage,
     CustomColorPicker
   },
   props: {
@@ -94,13 +125,17 @@ export default {
   },
   data() {
     return {
+      menuData: ['介绍', '作品', '排名', '我的', '动态'],
       viewableType: 'slide',
+      bgviewableType: 'bgImg',
       newUploads: [],
       imageStyle: 'create',
       imageBrowserVisible: false,
+      bgImageBrowserVisible: false,
       // ChangeSlideBrowserVisible: false,
       activeName: 'first',
       postersData: [],
+      menus: [],
       formData: {
         color: '#409EFF'
       },
@@ -151,7 +186,9 @@ export default {
     // 当gameRound数据改变，重新初始化数据
     gameRound: 'initData'
   },
-  created() {},
+  created() {
+    this.getMenus()
+  },
   mounted() {},
   methods: {
     onSubmit() {
@@ -165,6 +202,35 @@ export default {
     },
     refresh() {
       this.$emit('changed')
+    },
+    onChangeBgImg() {
+      updateGameRound(this.gameRound.id, {
+        gameRound: {
+          bg_img_url: this.formData.bg_img_url
+        }
+      }).then(res => {
+        console.log('onChangeBgImg res------:', res)
+        // this.$emit('changed', res)
+      })
+    },
+    getMenus() {
+      const param = {
+        game_round_id: this.gameRound.id
+      }
+      getMenuData(param).then((res) => {
+        this.menus = JSON.parse(res.param_value)
+      })
+    },
+    onChangeMenus() {
+      console.log('===========onChangeMenus============')
+      const param = {
+        game_round_id: this.gameRound.id,
+        menus: JSON.stringify(this.menus)
+      }
+      updateMenuData(param).then((res) => {
+        console.log('updateMenuData res---:', res)
+        this.refresh()
+      })
     },
     handleDirectUpload(option) {
       const file = option.file
@@ -214,6 +280,9 @@ export default {
       this.imageStyle = 'create'
       this.imageBrowserVisible = true
     },
+    handleOpenBgImageBrowser() {
+      this.bgImageBrowserVisible = true
+    },
     handleChangeSlideBrowser(slide) {
       this.imageStyle = 'change'
       this.slideToChange = slide
@@ -261,125 +330,130 @@ export default {
         this.formData.color = newColor
         this.$emit('changed', res)
       })
+    },
+    handleBgImageSelected(e) {
+      // 图片数据结构 [{id, url}]
+      const [image] = [...e.selectedImages]
+      if (image) {
+        console.log('============handleBgImageSelected===========')
+        this.formData.bg_img_url = image.url
+      }
     }
   }
 }
-
 </script>
 
 <style lang="scss" >
-
-  .round-general-wrap {
+.round-general-wrap {
     .el-tab-pane {
-      padding: 0 8px;
+        padding: 0 8px;
     }
     .images-wrap {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: flex-start;
-      flex-direction: row;
-    }
-    .image-item {
-      margin: 0 20px 20px 0;
-      height: 161px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      overflow: hidden;
-    }
-    .image-wrap {
-      position: relative;
-      .options-wrap {
-        color: #303133;
-        position: absolute;
-        left: 0;
-        width: 100%;
-        bottom: 0;
-        top: 0;
-        .cover {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          background-color: #fff;
-          opacity: 0.8;
-        }
-        .delete-btn {
-          position: absolute;
-          top: 0;
-          right: 0;
-          i.el-icon-delete {
-            padding: 8px;
-            color: #303133;
-          }
-          i.el-icon-delete:hover {
-            color: #f56c6c;
-          }
-        }
-        .replace-btn {
-          position: absolute;
-          right: 0;
-          top: 0;
-          bottom: 0;
-          left: 0;
-          line-height: 150px;
-          text-align: center;
-          a:hover {
-            color: #409eff;
-          }
-        }
-      }
-    }
-
-    .new-image-wrap {
-      width: 295px;
-      height: 161px;
-      .el-image {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        .image-slot {
-          text-align: center;
+        justify-content: flex-start;
+        flex-direction: row;
+    }
+    .image-item {
+        margin: 0 20px 20px 0;
+        height: 161px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+    .image-wrap {
+        position: relative;
+        .options-wrap {
+            color: #303133;
+            position: absolute;
+            left: 0;
+            width: 100%;
+            bottom: 0;
+            top: 0;
+            .cover {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                background-color: #fff;
+                opacity: 0.8;
+            }
+            .delete-btn {
+                position: absolute;
+                top: 0;
+                right: 0;
+                i.el-icon-delete {
+                    padding: 8px;
+                    color: #303133;
+                }
+                i.el-icon-delete:hover {
+                    color: #f56c6c;
+                }
+            }
+            .replace-btn {
+                position: absolute;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                line-height: 150px;
+                text-align: center;
+                a:hover {
+                    color: #409eff;
+                }
+            }
         }
-      }
+    }
 
-      i {
-        color: #ccc;
-        font-size: 48px;
-      }
-      div {
-        color: #333;
-      }
+    .new-image-wrap {
+        width: 295px;
+        height: 161px;
+        .el-image {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            .image-slot {
+                text-align: center;
+            }
+        }
+
+        i {
+            color: #ccc;
+            font-size: 48px;
+        }
+        div {
+            color: #333;
+        }
     }
     .color-ul {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-      flex-direction: row;
-      width: 440px;
-      li {
-        position: relative;
-        width: 34px;
-        height: 34px;
-        margin-right: 10px;
-        margin-bottom: 10px;
-        border-radius: 4px;
-        .el-icon-check {
-           position: absolute;
-           top: 50%;
-           left: 50%;
-           transform: translate(-50%,-50%);
-           font-size: 26px;
-           color: #fff;
-         }
-      }
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        flex-direction: row;
+        width: 440px;
+        li {
+            position: relative;
+            width: 34px;
+            height: 34px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            .el-icon-check {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+                font-size: 26px;
+                color: #fff;
+            }
+        }
     }
-    .custom-color-picker .el-color-picker__trigger{
-      padding: 5px 0;
-      width: 60px;
-      border: none;
+    .custom-color-picker .el-color-picker__trigger {
+        padding: 5px 0;
+        width: 60px;
+        border: none;
     }
-  }
-
+}
 </style>
