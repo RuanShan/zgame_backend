@@ -16,7 +16,7 @@
           </el-form-item>
 
           <el-form-item label="bg图片">
-            <HoverableImage :url="formData.bg_img_url">
+            <HoverableImage :url="formData.bg_img_key">
               <el-button type="text" class="add-btn" @click="handleOpenBgImageBrowser"> 添加图片 </el-button>
             </HoverableImage>
           </el-form-item>
@@ -206,7 +206,7 @@ export default {
     onChangeBgImg() {
       updateGameRound(this.gameRound.id, {
         gameRound: {
-          bg_img_url: this.formData.bg_img_url
+          bg_img_key: this.formData.bg_img_key
         }
       }).then(res => {
         console.log('onChangeBgImg res------:', res)
@@ -336,7 +336,7 @@ export default {
       const [image] = [...e.selectedImages]
       if (image) {
         console.log('============handleBgImageSelected===========')
-        this.formData.bg_img_url = image.url
+        this.formData.bg_img_key = image.url
       }
     }
   }

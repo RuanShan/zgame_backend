@@ -72,7 +72,7 @@ export default {
   },
   methods: {
     initData() {
-      this.formData.shareImageUrl = this.gameRound.wxshare_img_url
+      this.formData.shareImageUrl = this.gameRound.wxshare_img_key
       this.formData.gameShareName = this.gameRound.wxshare_title
       this.formData.albumShareName = this.gameRound.wxshare_ptitle
       this.formData.albumShareDesc = this.gameRound.wxshare_desc
@@ -95,7 +95,7 @@ export default {
       } else {
         wxshareParams.wxshare_desc = ''
       }
-      wxshareParams.wxshare_img_url = this.formData.shareImageUrl
+      wxshareParams.wxshare_img_key = this.formData.shareImageUrl
       updateGameRound(this.gameRound.id, {
         gameRound: wxshareParams
       }).then(res => {
